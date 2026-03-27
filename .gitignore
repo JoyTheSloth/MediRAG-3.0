@@ -1,0 +1,18 @@
+# Root .gitignore
+node_modules/
+.venv/
+venv/
+__pycache__/
+dist/
+.dist/
+.pytest_cache/
+.env
+*.log
+.DS_Store
+.idea/
+.vs/
+.vscode/
+
+# Ignore .git from subdirectories so we can treat them as part of one repo
+Frontend/.git/
+Backend/.git/
