@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About MediRAG-Eval</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <!-- Load script slightly deferred for animations -->
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <canvas id="bg-canvas"></canvas>
+    <div class="glow-radial"></div>
+
+    <!-- NAVBAR -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <div class="logo">
+                    <svg class="pulse-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M22 12H18L15 21L9 3L6 12H2" stroke="#00C896" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <div class="logo-text">
+                        <span class="logo-white">MediRAG</span><span class="logo-green">-Eval</span>
+                    </div>
+                </div>
+                <div class="tagline">Hallucination Detection for Medical AI</div>
+            </div>
+            
+            <div class="nav-center">
+                <a href="index.html#home" class="nav-link">Home</a>
+                <a href="index.html#evaluate" class="nav-link">Evaluate</a>
+                <a href="index.html#dashboard" class="nav-link">Dashboard</a>
+                <a href="index.html#api" class="nav-link">API Docs</a>
+                <a href="about.html" class="nav-link active">About</a>
+            </div>
+
+            <div class="nav-right">
+                <a href="https://github.com/medirag/medirag-eval" class="github-btn" target="_blank">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="github-icon">
+                        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                    </svg>
+                    GitHub
+                </a>
+                <button class="primary-btn">Run Evaluation &rarr;</button>
+            </div>
+
+            <button class="mobile-menu-btn" id="mobile-menu-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 12h18M3 6h18M3 18h18" stroke-linecap="round"/>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- SECTION 1 — HERO / MISSION STATEMENT -->
+    <header class="section about-hero">
+        <div class="section-container align-center reveal-up">
+            <div class="badge badge-outline"><span class="shield-icon">🎯</span> Our Mission</div>
+            <h1 class="main-title">
+                Building Trust in Medical AI.<br/>
+                <span class="gradient-text-green">One Audit at a Time.</span>
+            </h1>
+            <p class="about-hero-subtext">
+                Hallucinations in medical AI aren't just errors &mdash; they're patient safety risks. MediRAG-Eval was built to give developers, researchers, and AI governance teams a rigorous, open-source framework to detect, score, and explain hallucinations in RAG-based medical QA systems before they reach clinicians or patients.
+            </p>
+        </div>
+    </header>
+
+    <!-- SECTION 2 — THE PROBLEM WE SOLVE -->
+    <section class="section">
+        <div class="section-container">
+            <div class="section-header reveal-up">
+                <div class="section-label">THE PROBLEM</div>
+            </div>
+            
+            <div class="problem-grid">
+                <!-- Left Column -->
+                <div class="problem-stats reveal-left">
+                    <div class="stat-block">
+                        <div class="huge-stat green-text">~30%</div>
+                        <p class="stat-desc">of LLM-generated medical answers contain at least one hallucinated claim &mdash; Ji et al., ACM Computing Surveys 2023</p>
+                    </div>
+                    <div class="stat-block">
+                        <div class="huge-stat amber-text">~12%</div>
+                        <p class="stat-desc">involve critical drug or dosage errors that could directly harm patients</p>
+                    </div>
+                </div>
+                
+                <!-- Right Column -->
+                <div class="problem-cards reveal-right">
+                    <div class="problem-card red-border">
+                        <div class="problem-icon red-text">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                        </div>
+                        <div class="problem-content">
+                            <h3 class="problem-title">Unverified Claims</h3>
+                            <p class="problem-text">LLMs confidently generate medical statements unsupported by retrieved evidence. Standard RAG pipelines have no mechanism to catch this.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="problem-card orange-border">
+                        <div class="problem-icon orange-text">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"></rect><circle cx="12" cy="5" r="2"></circle><path d="M12 7v4"></path></svg>
+                        </div>
+                        <div class="problem-content">
+                            <h3 class="problem-title">Drug & Dosage Errors</h3>
+                            <p class="problem-text">Entity-level hallucinations &mdash; wrong drug names, incorrect dosages, contraindicated combinations &mdash; go undetected without domain-specific verification.</p>
+                        </div>
+                    </div>
+
+                    <div class="problem-card amber-border">
+                        <div class="problem-icon amber-text">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                        </div>
+                        <div class="problem-content">
+                            <h3 class="problem-title">No Audit Trail</h3>
+                            <p class="problem-text">Existing RAG systems produce answers with no explainability layer. Regulators, clinicians, and developers have no way to trace why an answer was generated or how trustworthy it is.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3 — HOW MEDIRAG-EVAL WORKS -->
+    <section class="section">
+        <div class="section-container">
+            <div class="section-header reveal-up">
+                <div class="section-label">OUR APPROACH</div>
+                <h2 class="section-title">A Four-Layer Audit Engine</h2>
+            </div>
+            
+            <div class="audit-pipeline-diagram reveal-up">
+                <div class="flow-box blue-box">
+                    <div class="flow-title">User Query + Retrieved Chunks + Generated Answer</div>
+                    <div class="flow-tag blue-tag">Input Data</div>
+                </div>
+                
+                <div class="flow-arrow">&rarr;</div>
+                <div class="flow-box green-box">
+                    <div class="flow-title">Module 1: Faithfulness Scorer</div>
+                    <div class="flow-tag green-tag">DeBERTa NLI</div>
+                </div>
+                
+                <div class="flow-arrow">&rarr;</div>
+                <div class="flow-box green-box">
+                    <div class="flow-title">Module 2: Entity Verifier</div>
+                    <div class="flow-tag green-tag">SciSpaCy + DrugBank</div>
+                </div>
+                
+                <div class="flow-arrow">&rarr;</div>
+                <div class="flow-box green-box">
+                    <div class="flow-title">Module 3: Source Credibility</div>
+                    <div class="flow-tag green-tag">Tier Ranker</div>
+                </div>
+                
+                <div class="flow-arrow">&rarr;</div>
+                <div class="flow-box green-box">
+                    <div class="flow-title">Module 4: Contradiction Detector</div>
+                    <div class="flow-tag green-tag">NLI Cross-check</div>
+                </div>
+
+                <div class="flow-arrow">&rarr;</div>
+                <div class="flow-box amber-box glow-box">
+                    <div class="flow-title">HRS Score + JSON Audit Report</div>
+                    <div class="flow-tag amber-tag">Output Payload</div>
+                </div>
+            </div>
+            
+            <p class="pipeline-caption reveal-up">All modules run locally. Zero paid APIs. Full pipeline completes in < 30 seconds on CPU.</p>
+        </div>
+    </section>
+
+    <!-- SECTION 4 — MEET THE TEAM -->
+    <section class="section">
+        <div class="section-container">
+            <div class="section-header reveal-up">
+                <div class="section-label">THE TEAM</div>
+                <h2 class="section-title">Built by MediRAG</h2>
+                <p class="section-subtitle">B.Tech Computer Science & Engineering, 2026 &mdash; Amity University Kolkata</p>
+            </div>
+            
+            <div class="team-grid reveal-up">
+                <div class="team-card">
+                    <div class="avatar bg-dark-green">AS</div>
+                    <h3 class="team-name">Alapan Sen</h3>
+                    <div class="team-role">Team Lead & Architecture</div>
+                    <p class="team-bio">RAG pipeline design, faithfulness scoring, system integration</p>
+                    <div class="team-socials">
+                        <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a>
+                        <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg></a>
+                    </div>
+                </div>
+
+                <div class="team-card">
+                    <div class="avatar bg-dark-blue">BS</div>
+                    <h3 class="team-name">Bikram Sardar</h3>
+                    <div class="team-role">NLP & Entity Verification</div>
+                    <p class="team-bio">SciSpaCy NER, DrugBank integration, entity accuracy module</p>
+                    <div class="team-socials">
+                        <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a>
+                        <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg></a>
+                    </div>
+                </div>
+
+                <div class="team-card">
+                    <div class="avatar bg-dark-purple">JD</div>
+                    <h3 class="team-name">Joydeep Das</h3>
+                    <div class="team-role">Evaluation & Dashboard</div>
+                    <p class="team-bio">RAGAS integration, score aggregation, Streamlit UI, FastAPI endpoint</p>
+                    <div class="team-socials">
+                        <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a>
+                        <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 5 — BUILT FOR INDIA'S HEALTH ECOSYSTEM -->
+    <section class="section">
+        <div class="section-container">
+            <div class="section-header reveal-up">
+                <div class="section-label">IMPACT</div>
+                <h2 class="section-title">Designed with India's Digital Health Future in Mind</h2>
+            </div>
+            
+            <div class="impact-grid reveal-up">
+                <div class="impact-card">
+                    <div class="impact-icon green-text">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><line x1="9" y1="22" x2="9" y2="12"></line><line x1="15" y1="22" x2="15" y2="12"></line><line x1="9" y1="12" x2="15" y2="12"></line></svg>
+                    </div>
+                    <h3 class="impact-title">eSanjeevani</h3>
+                    <p class="impact-text">Audit AI advice before it reaches 13+ crore teleconsultation users</p>
+                </div>
+                
+                <div class="impact-card">
+                    <div class="impact-icon green-text">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                    </div>
+                    <h3 class="impact-title">ABDM Compliance</h3>
+                    <p class="impact-text">Safety layer for AI tools plugged into Ayushman Bharat Digital Mission</p>
+                </div>
+                
+                <div class="impact-card">
+                    <div class="impact-icon green-text">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.3 6.6L14.7 12 9.3 17.4"></path><path d="M10 2v4"></path><path d="M14 2v4"></path><path d="M21 16v-4c0-3.3-2.7-6-6-6H9c-3.3 0-6 2.7-6 6v4"></path></svg>
+                    </div>
+                    <h3 class="impact-title">ICMR Research</h3>
+                    <p class="impact-text">Faithfulness verification for clinical guideline-based QA systems</p>
+                </div>
+                
+                <div class="impact-card">
+                    <div class="impact-icon green-text">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"></rect><circle cx="12" cy="5" r="2"></circle><path d="M12 7v4"></path></svg>
+                    </div>
+                    <h3 class="impact-title">Pharma AI</h3>
+                    <p class="impact-text">Drug interaction and dosage hallucination detection for pharma internal tools</p>
+                </div>
+                
+                <div class="impact-card">
+                    <div class="impact-icon green-text">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+                    </div>
+                    <h3 class="impact-title">Consumer Health</h3>
+                    <p class="impact-text">Safety auditing for Practo, Tata 1mg, Apollo 24/7 AI chatbots</p>
+                </div>
+                
+                <div class="impact-card">
+                    <div class="impact-icon green-text">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                    </div>
+                    <h3 class="impact-title">CDSCO Regulation</h3>
+                    <p class="impact-text">Alignment with upcoming India AI-in-healthcare SaMD regulatory framework</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 6 — TECH PHILOSOPHY -->
+    <section class="section">
+        <div class="section-container">
+            <div class="tech-philosophy-card reveal-up">
+                <div class="philosophy-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                </div>
+                <h2 class="section-title">100% Open Source. Zero Cost. Maximum Transparency.</h2>
+                
+                <div class="philosophy-tags">
+                    <div class="ptag ptag-red"><span class="strike">No OpenAI API</span></div>
+                    <div class="ptag ptag-green">Runs on Free Colab T4</div>
+                    <div class="ptag ptag-green">All Models on HuggingFace</div>
+                    <div class="ptag ptag-green">Local LLM via Ollama</div>
+                    <div class="ptag ptag-green">Public Benchmark Datasets Only</div>
+                </div>
+                
+                <p class="philosophy-text">
+                    Every component &mdash; from BioBERT embeddings to DeBERTa NLI scoring to Mistral-7B claim decomposition &mdash; is freely available and reproducible. No black boxes. No vendor lock-in. Full audit trail from query to score.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 7 — HACKATHON & ACADEMIC CONTEXT -->
+    <section class="section">
+        <div class="section-container">
+            <div class="context-grid reveal-up">
+                <!-- Left Card -->
+                <div class="context-card green-context">
+                    <div class="context-icon green-text">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                    </div>
+                    <h3 class="context-title">India Innovates 2026</h3>
+                    <div class="context-subtitle">Bharat Mandapam, New Delhi &mdash; March 28, 2026</div>
+                    <p class="context-desc">MediRAG-Eval was built for India Innovates 2026, demonstrating 3 live modules: RAG backbone, faithfulness scoring, and the Streamlit audit dashboard.</p>
+                    <div class="context-tag green-tag">Demo-Ready &check;</div>
+                </div>
+                
+                <!-- Right Card -->
+                <div class="context-card blue-context">
+                    <div class="context-icon blue-text">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
+                    </div>
+                    <h3 class="context-title">B.Tech Major Project</h3>
+                    <div class="context-subtitle">Amity University Kolkata &mdash; May 2026</div>
+                    <p class="context-desc">Full 4-module implementation with RAGAS benchmarks, ablation experiments, FastAPI endpoint, and evaluation on PubMedQA, MedQA-USMLE, and BioASQ 2023 datasets.</p>
+                    <div class="context-tag blue-tag">Submission: May 2026</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 8 — CTA FOOTER BANNER -->
+    <section class="cta-banner reveal-up">
+        <div class="cta-banner-content">
+            <h2 class="cta-banner-title">Ready to Audit Your Medical AI?</h2>
+            <p class="cta-banner-subtext">Run your first evaluation in under 30 seconds. No API key needed.</p>
+            <div class="cta-banner-actions">
+                <button class="primary-btn-white large">Try the Demo &rarr;</button>
+                <button class="secondary-btn large">View on GitHub</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-left">
+                <div class="logo">
+                    <svg class="pulse-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M22 12H18L15 21L9 3L6 12H2" stroke="#00C896" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <div class="logo-text">
+                        <span class="logo-white">MediRAG</span><span class="logo-green">-Eval</span>
+                    </div>
+                </div>
+                <div class="tagline">Hallucination Detection for Medical AI</div>
+                <div class="footer-credits">
+                    Built by MediRAG Team &mdash; Amity University Kolkata<br>
+                    B.Tech CSE 2026
+                </div>
+            </div>
+            
+            <div class="footer-center">
+                <div class="footer-links">
+                    <a href="index.html#home">Home</a>
+                    <a href="index.html#evaluate">Evaluate</a>
+                    <a href="index.html#dashboard">Dashboard</a>
+                    <a href="index.html#api">API Docs</a>
+                    <a href="about.html">About</a>
+                </div>
+            </div>
+
+            <div class="footer-right">
+                <a href="https://github.com/medirag/medirag-eval" class="github-link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="github-icon">
+                        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                    </svg>
+                </a>
+                <div class="license">Open Source &middot; MIT License</div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <div class="footer-copyright">&copy; 2026 MediRAG-Eval &middot; Amity University Kolkata &middot; India Innovates 2026</div>
+            <div class="footer-warning">Not for clinical use</div>
+        </div>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediRAG-Eval - Hallucination Detection for Medical AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Background Canvas for animations -->
+    <canvas id="bg-canvas"></canvas>
+    <div class="glow-radial"></div>
+
+    <!-- NAVBAR -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <div class="logo">
+                    <svg class="pulse-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M22 12H18L15 21L9 3L6 12H2" stroke="#00C896" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <div class="logo-text">
+                        <span class="logo-white">MediRAG</span><span class="logo-green">-Eval</span>
+                    </div>
+                </div>
+                <div class="tagline">Hallucination Detection for Medical AI</div>
+            </div>
+            
+            <div class="nav-center">
+                <a href="#home" class="nav-link active">Home</a>
+                <a href="#evaluate" class="nav-link">Evaluate</a>
+                <a href="#dashboard" class="nav-link">Dashboard</a>
+                <a href="#api" class="nav-link">API Docs</a>
+                <a href="#about" class="nav-link">About</a>
+            </div>
+
+            <div class="nav-right">
+                <a href="https://github.com/medirag/medirag-eval" class="github-btn" target="_blank">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="github-icon">
+                        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                    </svg>
+                    GitHub
+                </a>
+                <button class="primary-btn">Run Evaluation &rarr;</button>
+            </div>
+
+            <button class="mobile-menu-btn" id="mobile-menu-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 12h18M3 6h18M3 18h18" stroke-linecap="round"/>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- SECTION 1 — HERO -->
+    <header id="home" class="hero-section">
+        <div class="hero-container">
+            <div class="hero-left reveal-left">
+                <div class="badge badge-outline">
+                    <span class="shield-icon">🛡</span> Open Source &middot; India Innovates 2026
+                </div>
+                <h1 class="main-title">
+                    Detect Medical AI<br/>
+                    <span class="gradient-text-danger">Hallucinations.</span><br/>
+                    Before They Harm.
+                </h1>
+                <p class="subheadline">
+                    MediRAG-Eval is a post-generation audit layer for RAG-based medical QA systems &mdash; scoring faithfulness, entity accuracy, source credibility, and internal consistency in under 30 seconds.
+                </p>
+                <div class="cta-group">
+                    <button class="primary-btn large">Try Live Demo &rarr;</button>
+                    <button class="secondary-btn large">Read the Docs</button>
+                </div>
+                <div class="trust-indicators">
+                    <span class="trust-item"><span class="check-icon">&check;</span> Zero paid APIs</span>
+                    <span class="trust-item"><span class="check-icon">&check;</span> Runs on free Colab</span>
+                    <span class="trust-item"><span class="check-icon">&check;</span> 100% open source</span>
+                </div>
+            </div>
+
+            <div class="hero-right reveal-right">
+                <div class="floating-card audit-card">
+                    <div class="card-header">
+                        <div class="mac-dots">
+                            <span class="dot red-dot"></span>
+                            <span class="dot yellow-dot"></span>
+                            <span class="dot green-dot"></span>
+                        </div>
+                        <div class="card-label">Live Audit Result</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="query-text">
+                            <span class="query-label">Query:</span> What is the dosage of metformin for T2 diabetes?
+                        </div>
+                        <div class="divider"></div>
+                        
+                        <div class="gauge-container">
+                            <svg class="gauge-svg" viewBox="0 0 120 120">
+                                <path class="gauge-bg" d="M 20 95 A 50 50 0 1 1 100 95" fill="none" stroke="#1F2937" stroke-width="12" stroke-linecap="round"/>
+                                <!-- The filled arc will be animated via JS -->
+                                <path id="gauge-fill" class="gauge-fill orange-fill" d="M 20 95 A 50 50 0 1 1 100 95" fill="none" stroke-width="12" stroke-linecap="round" stroke-dasharray="235.6" stroke-dashoffset="77"/>
+                            </svg>
+                            <div class="gauge-content">
+                                <div class="gauge-number" id="gauge-number">67</div>
+                                <div class="gauge-label">HALLUCINATION RISK</div>
+                            </div>
+                        </div>
+                        <div class="risk-badge-container">
+                            <span class="risk-badge orange-badge">HIGH RISK</span>
+                        </div>
+                        
+                        <div class="score-rows">
+                            <div class="score-row">
+                                <div class="score-name">Faithfulness</div>
+                                <div class="score-bar-container">
+                                    <div class="score-bar red-bg" style="width: 45%;"></div>
+                                </div>
+                                <div class="score-val red-text">0.45</div>
+                            </div>
+                            <div class="score-row">
+                                <div class="score-name">Entity Accuracy</div>
+                                <div class="score-bar-container">
+                                    <div class="score-bar amber-bg" style="width: 60%;"></div>
+                                </div>
+                                <div class="score-val amber-text">0.60</div>
+                            </div>
+                            <div class="score-row">
+                                <div class="score-name">Source Credib.</div>
+                                <div class="score-bar-container">
+                                    <div class="score-bar green-bg" style="width: 80%;"></div>
+                                </div>
+                                <div class="score-val green-text">0.80</div>
+                            </div>
+                            <div class="score-row">
+                                <div class="score-name">Contradiction</div>
+                                <div class="score-bar-container">
+                                    <div class="score-bar green-bg" style="width: 28%;"></div>
+                                </div>
+                                <div class="score-val green-text">0.28</div>
+                            </div>
+                        </div>
+                        
+                        <div class="flagged-claim">
+                            <span class="flag-icon">🔴</span>
+                            <span class="flag-text">"Drug X safe for all ages" &rarr; <span class="flag-critical">CONTRADICTED &mdash; CRITICAL</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- SECTION 2 — STATS BAR -->
+    <section class="stats-band">
+        <div class="stats-shimmer"></div>
+        <div class="stats-container reveal-up">
+            <div class="stat-item">
+                <div class="stat-value counter" data-target="4">0</div>
+                <div class="stat-label">Evaluation Modules</div>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <div class="stat-value">&lt; <span class="counter" data-target="30">0</span>s</div>
+                <div class="stat-label">End-to-End Audit Time</div>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <div class="stat-value"><span class="counter" data-target="211">0</span>K+</div>
+                <div class="stat-label">PubMed Samples Supported</div>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <div class="stat-value counter" data-target="0">0</div>
+                <div class="stat-label">Paid APIs Required</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3 — HOW IT WORKS -->
+    <section class="section" id="how-it-works">
+        <div class="section-container">
+            <div class="section-header reveal-up">
+                <div class="section-label">HOW IT WORKS</div>
+                <h2 class="section-title">Four Modules. One Risk Score.</h2>
+                <p class="section-subtitle">
+                    Every generated medical answer passes through four independent evaluation layers before receiving a Hallucination Risk Score.
+                </p>
+            </div>
+
+            <div class="pipeline-container reveal-up">
+                <!-- Step 1 -->
+                <div class="pipeline-step">
+                    <div class="step-number">01</div>
+                    <div class="step-card">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                        </div>
+                        <h3 class="step-title">Faithfulness Scoring</h3>
+                        <p class="step-desc">Atomic claims are extracted from the generated answer and checked against retrieved context using DeBERTa-v3 NLI. Each claim is labeled ENTAILED, NEUTRAL, or CONTRADICTED.</p>
+                        <div class="step-tag">DeBERTa-v3 &middot; NLI</div>
+                    </div>
+                </div>
+                
+                <div class="pipeline-arrow">&rarr;</div>
+
+                <!-- Step 2 -->
+                <div class="pipeline-step">
+                    <div class="step-number">02</div>
+                    <div class="step-card">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="2" x2="12" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line></svg>
+                        </div>
+                        <h3 class="step-title">Medical Entity Verification</h3>
+                        <p class="step-desc">Drug names, dosages, conditions, and procedures are extracted via SciSpaCy and cross-referenced against DrugBank and retrieved context. Mismatches flagged as CRITICAL / MODERATE / MINOR.</p>
+                        <div class="step-tag">SciSpaCy &middot; DrugBank</div>
+                    </div>
+                </div>
+
+                <div class="pipeline-arrow">&rarr;</div>
+
+                <!-- Step 3 -->
+                <div class="pipeline-step">
+                    <div class="step-number">03</div>
+                    <div class="step-card">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                        </div>
+                        <h3 class="step-title">Source Credibility Ranking</h3>
+                        <p class="step-desc">Retrieved context chunks are classified into 5 credibility tiers &mdash; from RCTs and systematic reviews (Tier 1) down to grey literature (Tier 5). Weighted average forms the credibility score.</p>
+                        <div class="step-tag">RCT &rarr; Grey Literature</div>
+                    </div>
+                </div>
+
+                <div class="pipeline-arrow">&rarr;</div>
+
+                <!-- Step 4 -->
+                <div class="pipeline-step">
+                    <div class="step-number">04</div>
+                    <div class="step-card">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                        </div>
+                        <h3 class="step-title">Contradiction Detection</h3>
+                        <p class="step-desc">Every sentence pair in the generated answer is checked for internal contradiction using DeBERTa NLI. Pairs with confidence > 0.75 are flagged automatically.</p>
+                        <div class="step-tag">Cross-sentence NLI</div>
+                    </div>
+                </div>
+
+                <div class="pipeline-arrow last-arrow">&rarr;</div>
+
+                <!-- Final Output -->
+                <div class="pipeline-final">
+                    <div class="final-card amber-border-glow">
+                        <div class="step-icon amber-text">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
+                        </div>
+                        <h3 class="step-title">Hallucination Risk Score</h3>
+                        <p class="step-desc">Composite 0&ndash;100 score with clause-level annotations and full JSON audit report.</p>
+                        <div class="step-tag">HRS = 0&ndash;100</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 4 — RISK BANDS EXPLAINER -->
+    <section class="section" id="risk-bands">
+        <div class="section-container">
+            <div class="section-header reveal-up">
+                <div class="section-label">RISK SCORING</div>
+                <h2 class="section-title">Know Exactly How Risky Every Answer Is</h2>
+            </div>
+            
+            <div class="risk-grid reveal-up">
+                <!-- Low Risk -->
+                <div class="risk-card green-glow">
+                    <div class="risk-number green-text">0&ndash;30</div>
+                    <div class="risk-badge green-badge">LOW RISK</div>
+                    <div class="risk-icon green-text">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                    </div>
+                    <p class="risk-desc">Answer is well-supported by retrieved context. Claims are entailed, entities verified, sources credible.</p>
+                    <div class="risk-footer">Safe to use with review</div>
+                </div>
+
+                <!-- Moderate Risk -->
+                <div class="risk-card amber-glow">
+                    <div class="risk-number amber-text">31&ndash;60</div>
+                    <div class="risk-badge amber-badge">MODERATE RISK</div>
+                    <div class="risk-icon amber-text">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path></svg>
+                    </div>
+                    <p class="risk-desc">Some claims lack context support or minor entity mismatches detected. Human review recommended.</p>
+                    <div class="risk-footer">Review before deployment</div>
+                </div>
+
+                <!-- High Risk -->
+                <div class="risk-card orange-glow">
+                    <div class="risk-number orange-text">61&ndash;85</div>
+                    <div class="risk-badge orange-badge">HIGH RISK</div>
+                    <div class="risk-icon orange-text">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                    </div>
+                    <p class="risk-desc">Multiple unsupported claims or drug/dosage mismatches found. Do not use without expert clinical review.</p>
+                    <div class="risk-footer">Expert review required</div>
+                </div>
+
+                <!-- Critical Risk -->
+                <div class="risk-card red-glow">
+                    <div class="risk-number red-text">86&ndash;100</div>
+                    <div class="risk-badge red-badge">CRITICAL RISK</div>
+                    <div class="risk-icon red-text">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                    </div>
+                    <p class="risk-desc">Severe hallucinations detected. Answer contains contradictions or critical entity errors. Block from patient-facing use immediately.</p>
+                    <div class="risk-footer">Block from use</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 6 — TECH STACK -->
+    <section class="section" id="tech-stack">
+        <div class="section-container">
+            <div class="section-header reveal-up">
+                <div class="section-label">TECHNOLOGY</div>
+                <h2 class="section-title">Built on Best-in-Class Open Source Tools</h2>
+                <p class="section-subtitle">Every component is free, reproducible, and runs without any paid API.</p>
+            </div>
+            
+            <div class="tech-grid reveal-up">
+                <div class="tech-card">
+                    <div class="tech-name">BioBERT</div>
+                    <div class="tech-purpose">Document Embeddings</div>
+                </div>
+                <div class="tech-card">
+                    <div class="tech-name">DeBERTa-v3</div>
+                    <div class="tech-purpose">NLI Faithfulness Scoring</div>
+                </div>
+                <div class="tech-card">
+                    <div class="tech-name">SciSpaCy</div>
+                    <div class="tech-purpose">Biomedical NER</div>
+                </div>
+                <div class="tech-card">
+                    <div class="tech-name">FAISS</div>
+                    <div class="tech-purpose">Vector Similarity Search</div>
+                </div>
+                <div class="tech-card">
+                    <div class="tech-name">LangChain</div>
+                    <div class="tech-purpose">RAG Pipeline</div>
+                </div>
+                <div class="tech-card">
+                    <div class="tech-name">RAGAS</div>
+                    <div class="tech-purpose">Evaluation Metrics</div>
+                </div>
+                <div class="tech-card">
+                    <div class="tech-name">Mistral-7B</div>
+                    <div class="tech-purpose">Local LLM Judge (Ollama)</div>
+                </div>
+                <div class="tech-card">
+                    <div class="tech-name">FastAPI</div>
+                    <div class="tech-purpose">REST Endpoint</div>
+                </div>
+                <div class="tech-card">
+                    <div class="tech-name">Streamlit</div>
+                    <div class="tech-purpose">Evaluation Dashboard</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 7 — USE CASES -->
+    <section class="section">
+        <div class="section-container">
+            <div class="section-header reveal-up">
+                <div class="section-label">USE CASES</div>
+                <h2 class="section-title">Built For Everyone Building Medical AI</h2>
+            </div>
+            
+            <div class="use-cases-grid reveal-up">
+                <div class="persona-card">
+                    <div class="persona-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                    </div>
+                    <h3 class="persona-title">AI Developers</h3>
+                    <p class="persona-text">Integrate MediRAG-Eval as a post-generation middleware layer in your medical RAG pipeline via the FastAPI endpoint. Get clause-level annotations in your CI/CD pipeline.</p>
+                    <a href="#" class="cta-link">See API Docs &rarr;</a>
+                </div>
+                
+                <div class="persona-card">
+                    <div class="persona-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    </div>
+                    <h3 class="persona-title">Researchers</h3>
+                    <p class="persona-text">Benchmark your RAG system on PubMedQA, MedQA-USMLE, and BioASQ. Compare faithfulness and RAGAS scores across model variants with full ablation support.</p>
+                    <a href="#" class="cta-link">See Evaluation Criteria &rarr;</a>
+                </div>
+                
+                <div class="persona-card">
+                    <div class="persona-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                    </div>
+                    <h3 class="persona-title">AI Governance Teams</h3>
+                    <p class="persona-text">Generate structured JSON audit reports for every LLM output. Track hallucination risk trends on the dashboard. Build compliance evidence for CDSCO SaMD regulations.</p>
+                    <a href="#" class="cta-link">See Dashboard &rarr;</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 8 — INDIA HEALTH ECOSYSTEM BANNER -->
+    <section class="section ecosystem-section">
+        <div class="section-container block-reveal">
+            <div class="ecosystem-banner">
+                <div class="ecosystem-bg"></div>
+                <div class="ecosystem-content reveal-up">
+                    <div class="badge badge-outline">🇮🇳 Made for Bharat</div>
+                    <h2 class="ecosystem-title">Designed for India's Digital Health Future</h2>
+                    <p class="ecosystem-text">From eSanjeevani's 13 crore teleconsultations to ABDM's national health stack, India's medical AI ecosystem needs a safety layer. MediRAG-Eval is built to be that layer &mdash; open, free, and deployable anywhere.</p>
+                    <div class="ecosystem-logos">
+                        <div class="logo-placeholder">eSanjeevani</div>
+                        <div class="logo-placeholder">ABDM</div>
+                        <div class="logo-placeholder">ICMR</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 9 — CTA SECTION -->
+    <section class="section cta-section">
+        <div class="section-container align-center reveal-up">
+            <h2 class="cta-headline">Start Auditing Your Medical AI Today.</h2>
+            <p class="cta-subtext">No API key. No GPU required. Clone, install, and run in under 5 minutes.</p>
+            
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="mac-dots">
+                        <span class="dot red-dot"></span>
+                        <span class="dot yellow-dot"></span>
+                        <span class="dot green-dot"></span>
+                    </div>
+                    <span class="code-label">bash</span>
+                </div>
+                <pre><code>git clone https://github.com/medirag/medirag-eval
+pip install -r requirements.txt
+streamlit run src/dashboard/app.py</code></pre>
+            </div>
+
+            <div class="cta-actions">
+                <button class="primary-btn large">Try Live Demo &rarr;</button>
+                <button class="secondary-btn large">View on GitHub</button>
+            </div>
+            
+            <div class="cta-footer-note">India Innovates 2026 &middot; Bharat Mandapam &middot; March 28</div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-left">
+                <div class="logo">
+                    <svg class="pulse-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M22 12H18L15 21L9 3L6 12H2" stroke="#00C896" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <div class="logo-text">
+                        <span class="logo-white">MediRAG</span><span class="logo-green">-Eval</span>
+                    </div>
+                </div>
+                <div class="tagline">Hallucination Detection for Medical AI</div>
+                <div class="footer-credits">
+                    Built by MediRAG Team &mdash; Amity University Kolkata<br>
+                    B.Tech CSE 2026
+                </div>
+            </div>
+            
+            <div class="footer-center">
+                <div class="footer-links">
+                    <a href="#home">Home</a>
+                    <a href="#evaluate">Evaluate</a>
+                    <a href="#dashboard">Dashboard</a>
+                    <a href="#api">API Docs</a>
+                    <a href="#about">About</a>
+                </div>
+            </div>
+
+            <div class="footer-right">
+                <a href="https://github.com/medirag/medirag-eval" class="github-link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="github-icon">
+                        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                    </svg>
+                </a>
+                <div class="license">Open Source &middot; MIT License</div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <div class="footer-copyright">&copy; 2026 MediRAG-Eval &middot; Amity University Kolkata &middot; India Innovates 2026</div>
+            <div class="footer-warning">Not for clinical use</div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

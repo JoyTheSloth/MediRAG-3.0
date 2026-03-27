@@ -1,0 +1,120 @@
+.console-page {
+    padding-top: 80px; /* offset for nav */
+    min-height: 100vh;
+    background: #0A0F1E;
+    color: var(--text-white);
+}
+
+.console-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    max-width: 1600px;
+    margin: 0 auto;
+    min-height: calc(100vh - 80px);
+}
+
+/* --- SIDEBAR --- */
+.console-sidebar {
+    background: #0C1224;
+    border-right: 1px solid rgba(255,255,255,0.05);
+    padding: 32px 24px;
+    position: sticky;
+    top: 80px;
+    height: calc(100vh - 80px);
+    overflow-y: auto;
+}
+
+.console-nav-group {
+    margin-bottom: 40px;
+}
+
+.console-nav-label {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.15em;
+    color: var(--text-gray-dark);
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
+.console-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    background: transparent;
+    border: none;
+    padding: 12px 16px;
+    color: var(--text-gray-light);
+    font-size: 14px;
+    font-weight: 500;
+    text-align: left;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 6px;
+    font-family: inherit;
+}
+
+.console-nav-link:hover {
+    background: rgba(255,255,255,0.03);
+    color: var(--text-white);
+}
+
+.console-nav-link.active {
+    background: rgba(0, 200, 150, 0.1);
+    color: var(--green-accent);
+    font-weight: 700;
+}
+
+.console-nav-icon {
+    font-size: 16px;
+}
+
+/* --- MAIN CONTENT --- */
+.console-main {
+    padding: 40px 60px;
+    width: 100%;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Chat section fills full height without extra padding */
+.console-main:has(.medichat-layout) {
+    padding: 0;
+    overflow: hidden;
+}
+
+.console-view-wrapper {
+    animation: fade-in 0.4s ease-out;
+}
+
+@keyframes fade-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.console-view-header {
+    margin-bottom: 40px;
+}
+
+.console-view-title {
+    font-size: 32px;
+    font-weight: 800;
+    margin-top: 12px;
+    letter-spacing: -0.02em;
+}
+
+/* --- MOBILE RESPONSIVE --- */
+@media (max-width: 1024px) {
+    .console-layout {
+        grid-template-columns: 1fr;
+    }
+    .console-sidebar {
+        display: none; /* simple hide for now or implement as top horizontal */
+    }
+    .console-main {
+        padding: 32px 24px;
+    }
+}
