@@ -1,15 +1,1 @@
-{
-  "version": 2,
-  "buildCommand": "cd Frontend && npm install && npm run build",
-  "outputDirectory": "Frontend/dist",
-  "routes": [
-    {
-      "src": "/assets/(.*)",
-      "dest": "/assets/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
-    }
-  ]
-}
+{"version": 2, "env": {"API_URL": "https://api.example.com","ANOTHER_VAR": "some_value"}}
