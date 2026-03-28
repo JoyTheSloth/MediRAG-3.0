@@ -28,3 +28,7 @@ numpy>=1.26.4,<2       # langchain==0.1.20 requires numpy<2; 1.26.4 has Python 3
 requests==2.31.0
 google-genai>=1.0.0                # New Google GenAI SDK (replaces deprecated google-generativeai)
 pysbd>=0.3.4                       # sentence boundary detection (faithfulness module)
+pymupdf>=1.24.0                    # fitz: extracted text from PDF
+python-docx>=1.1.0                 # extracted text from DOCX
+rank-bm25>=0.2.2                   # keyword search for retriever
+python-multipart>=0.0.12           # handle form data in FastAPI
