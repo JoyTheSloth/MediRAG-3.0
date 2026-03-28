@@ -178,7 +178,7 @@ class QueryRequest(BaseModel):
     )
     ollama_url: Optional[str] = Field(
         default=None,
-        description="Ollama base URL override (e.g. 'http://localhost:8080')"
+        description="Ollama base URL override (e.g. 'http://localhost:11434')"
     )
     # Demo/test only — injects a false claim into the LLM answer before evaluation
     # to demonstrate the intervention system catching hallucinations.

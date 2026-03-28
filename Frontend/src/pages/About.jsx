@@ -85,40 +85,276 @@ const About = () => {
                 <h2 className="section-title">A Four-Layer Audit Engine</h2>
             </div>
             
-            <div className="audit-pipeline-diagram reveal-up">
-                <div className="flow-box blue-box">
-                    <div className="flow-title">User Query + Retrieved Chunks + Generated Answer</div>
-                    <div className="flow-tag blue-tag">Input Data</div>
-                </div>
-                
-                <div className="flow-arrow">→</div>
-                <div className="flow-box green-box">
-                    <div className="flow-title">Module 1: Faithfulness Scorer</div>
-                    <div className="flow-tag green-tag">DeBERTa NLI</div>
-                </div>
-                
-                <div className="flow-arrow">→</div>
-                <div className="flow-box green-box">
-                    <div className="flow-title">Module 2: Entity Verifier</div>
-                    <div className="flow-tag green-tag">SciSpaCy + DrugBank</div>
-                </div>
-                
-                <div className="flow-arrow">→</div>
-                <div className="flow-box green-box">
-                    <div className="flow-title">Module 3: Source Credibility</div>
-                    <div className="flow-tag green-tag">Tier Ranker</div>
-                </div>
-                
-                <div className="flow-arrow">→</div>
-                <div className="flow-box green-box">
-                    <div className="flow-title">Module 4: Contradiction Detector</div>
-                    <div className="flow-tag green-tag">NLI Cross-check</div>
+            <style>
+            {`
+            .pipeline-3d-container {
+                position: relative;
+                max-width: 900px;
+                margin: 60px auto;
+                padding: 20px 0;
+                font-family: inherit;
+                perspective: 1500px;
+            }
+
+            .modules-flow-wrapper {
+                position: relative;
+                padding-bottom: 20px;
+            }
+
+            .pipe-line-3d {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 50%;
+                width: 24px;
+                background: linear-gradient(90deg, #1e3a8a, #3b82f6, #60a5fa, #3b82f6, #1e3a8a);
+                transform: translateX(-50%);
+                border-radius: 12px;
+                box-shadow: 
+                    inset 0 0 15px rgba(255,255,255,0.4),
+                    0 0 30px rgba(59, 130, 246, 0.6),
+                    0 0 10px rgba(59, 130, 246, 0.8);
+                z-index: 0;
+            }
+
+            .pipe-pulse-3d {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 120px;
+                background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.9), transparent);
+                animation: pulse-down-3d 3s infinite linear;
+                border-radius: 12px;
+                box-shadow: 0 0 20px rgba(255,255,255,0.8);
+            }
+            @keyframes pulse-down-3d {
+                0% { top: -10%; opacity: 0; }
+                10% { opacity: 1; }
+                90% { opacity: 1; }
+                100% { top: 110%; opacity: 0; }
+            }
+
+            .module-3d-node {
+                position: relative;
+                z-index: 1;
+                display: flex;
+                align-items: center;
+                background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.95));
+                backdrop-filter: blur(12px);
+                border: 1px solid rgba(148, 163, 184, 0.2);
+                border-top: 1px solid rgba(255, 255, 255, 0.3);
+                border-radius: 20px;
+                padding: 24px;
+                margin: 50px 0;
+                width: 45%;
+                transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                box-shadow: 
+                    0 15px 35px rgba(0,0,0,0.6),
+                    inset 0 1px 1px rgba(255,255,255,0.1);
+                cursor: pointer;
+                transform-style: preserve-3d;
+            }
+
+            .module-3d-node:nth-child(even) {
+                margin-left: auto;
+                flex-direction: row-reverse;
+                text-align: right;
+            }
+            .module-3d-node:nth-child(odd) {
+                margin-right: auto;
+            }
+
+            .module-3d-node:hover {
+                box-shadow: 
+                    0 25px 50px rgba(0,0,0,0.7),
+                    0 0 30px rgba(59, 130, 246, 0.5),
+                    inset 0 1px 1px rgba(255,255,255,0.4);
+                border-color: rgba(96, 165, 250, 0.8);
+            }
+
+            .module-3d-node:nth-child(odd):hover {
+                transform: translateY(-8px) scale(1.03) rotateY(4deg) rotateX(2deg);
+            }
+            .module-3d-node:nth-child(even):hover {
+                transform: translateY(-8px) scale(1.03) rotateY(-4deg) rotateX(2deg);
+            }
+
+            .node-icon-3d {
+                width: 70px;
+                height: 70px;
+                background: linear-gradient(135deg, #1e3a8a, #3b82f6, #60a5fa);
+                border-radius: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 32px;
+                box-shadow: 
+                    0 10px 20px rgba(0,0,0,0.5),
+                    inset 0 2px 5px rgba(255,255,255,0.5);
+                flex-shrink: 0;
+                transform: translateZ(30px);
+            }
+
+            .module-3d-node:nth-child(odd) .node-icon-3d { margin-right: 20px; }
+            .module-3d-node:nth-child(even) .node-icon-3d { margin-left: 20px; margin-right: 0;}
+
+            .node-content-3d {
+                flex-grow: 1;
+                transform: translateZ(20px);
+            }
+
+            .node-m-title {
+                font-size: 12px;
+                font-weight: 800;
+                color: #60a5fa;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+                margin-bottom: 6px;
+            }
+            .node-m-heading {
+                font-size: 18px;
+                font-weight: 800;
+                color: white;
+                margin-bottom: 8px;
+                line-height: 1.2;
+            }
+            .node-m-desc {
+                font-size: 13px;
+                color: #cbd5e1;
+                line-height: 1.5;
+            }
+
+            .connector-arm-3d {
+                position: absolute;
+                top: 50%;
+                width: 12%;
+                height: 16px;
+                background: linear-gradient(90deg, #1e3a8a, #60a5fa);
+                box-shadow: inset 0 2px 4px rgba(255,255,255,0.5), 0 5px 15px rgba(0,0,0,0.6);
+                z-index: -1;
+                transform: translateY(-50%);
+            }
+
+            .module-3d-node:nth-child(odd) .connector-arm-3d {
+                right: -10%;
+                border-radius: 0 8px 8px 0;
+            }
+
+            .module-3d-node:nth-child(even) .connector-arm-3d {
+                left: -10%;
+                border-radius: 8px 0 0 8px;
+                background: linear-gradient(90deg, #60a5fa, #1e3a8a);
+            }
+
+            .engine-output-3d {
+                background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(5, 150, 105, 0.4));
+                border: 1px solid rgba(52, 211, 153, 0.5);
+                border-top: 1px solid rgba(110, 231, 183, 0.8);
+                border-radius: 24px;
+                padding: 40px;
+                text-align: center;
+                margin: 40px auto 0 auto;
+                width: 80%;
+                max-width: 600px;
+                position: relative;
+                z-index: 2;
+                box-shadow: 
+                    0 20px 50px rgba(0,0,0,0.6),
+                    0 0 40px rgba(16, 185, 129, 0.3),
+                    inset 0 2px 20px rgba(255,255,255,0.1);
+                transform-style: preserve-3d;
+                transition: transform 0.4s ease;
+            }
+            .engine-output-3d:hover {
+                transform: translateY(-5px) scale(1.02);
+            }
+            .engine-output-3d h3 {
+                color: #6ee7b7;
+                font-size: 26px;
+                font-weight: 900;
+                margin-bottom: 12px;
+                letter-spacing: 1px;
+                transform: translateZ(20px);
+            }
+            .engine-output-3d p {
+                color: #d1fae5;
+                font-size: 15px;
+                line-height: 1.6;
+                transform: translateZ(10px);
+            }
+
+            @media (max-width: 768px) {
+                .pipe-line-3d { left: 40px; }
+                .module-3d-node {
+                    width: calc(100% - 70px);
+                    margin-left: auto !important;
+                    margin-right: 0 !important;
+                    flex-direction: row-reverse !important;
+                    text-align: left !important;
+                }
+                .module-3d-node:nth-child(even) .node-icon-3d { margin-right: 20px; margin-left: 0; }
+                .connector-arm-3d {
+                    width: 40px;
+                    left: -40px !important;
+                    right: auto !important;
+                    border-radius: 8px 0 0 8px !important;
+                    background: linear-gradient(90deg, #60a5fa, #1e3a8a) !important;
+                }
+            }
+            `}
+            </style>
+
+            <div className="pipeline-3d-container reveal-up">
+                <div className="modules-flow-wrapper">
+                    <div className="pipe-line-3d">
+                        <div className="pipe-pulse-3d"></div>
+                    </div>
+
+                    <div className="module-3d-node">
+                        <div className="node-icon-3d">⚖️</div>
+                        <div className="node-content-3d">
+                            <div className="node-m-title">Module 1</div>
+                            <div className="node-m-heading">Faithfulness Scorer</div>
+                            <div className="node-m-desc">Uses NLI-based entailment checks; ensures answer is strictly derived from retrieved source documents.</div>
+                        </div>
+                        <div className="connector-arm-3d"></div>
+                    </div>
+
+                    <div className="module-3d-node">
+                        <div className="node-icon-3d">🔍</div>
+                        <div className="node-content-3d">
+                            <div className="node-m-title">Module 2</div>
+                            <div className="node-m-heading">Medical Entity Verifier</div>
+                            <div className="node-m-desc">Utilizes SciSpaCy NER and Neo4j Knowledge Graph to verify drug names, dosages, and clinical entities.</div>
+                        </div>
+                        <div className="connector-arm-3d"></div>
+                    </div>
+
+                    <div className="module-3d-node">
+                        <div className="node-icon-3d">📄</div>
+                        <div className="node-content-3d">
+                            <div className="node-m-title">Module 3</div>
+                            <div className="node-m-heading">Source Credibility Ranker</div>
+                            <div className="node-m-desc">Evaluates evidence based on clinical hierarchy (e.g., prioritizing Randomized Controlled Trials over case studies).</div>
+                        </div>
+                        <div className="connector-arm-3d"></div>
+                    </div>
+
+                    <div className="module-3d-node">
+                        <div className="node-icon-3d">💬</div>
+                        <div className="node-content-3d">
+                            <div className="node-m-title">Module 4</div>
+                            <div className="node-m-heading">Contradiction Detector</div>
+                            <div className="node-m-desc">Performs cross-sentence consistency checks to ensure AI does not contradict itself within the response.</div>
+                        </div>
+                        <div className="connector-arm-3d"></div>
+                    </div>
                 </div>
 
-                <div className="flow-arrow">→</div>
-                <div className="flow-box amber-box glow-box">
-                    <div className="flow-title">HRS Score + JSON Audit Report</div>
-                    <div className="flow-tag amber-tag">Output Payload</div>
+                <div className="engine-output-3d">
+                    <h3>THE SOLUTION: MediRAG-Eval</h3>
+                    <p>Calculates the Composite Hallucination Risk Score (0-100), provides clause-level annotations, and generates a fully explainable JSON audit report for AI Governance.</p>
                 </div>
             </div>
             

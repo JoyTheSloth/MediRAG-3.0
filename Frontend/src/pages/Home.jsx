@@ -398,6 +398,145 @@ const Home = () => {
         </div>
     </section>
 
+    <section className="section" id="datasets">
+        <div className="section-container">
+            <div className="section-header reveal-up">
+                <div className="section-label home-section-label"><span className="sl-dash">—</span>DATA SOURCES<span className="sl-dash">—</span></div>
+                <h2 className="section-title">Verified Clinical Knowledge Bases</h2>
+                <p className="section-subtitle">MediRAG-Eval grounds every decision using over 211K+ verified medical samples and gold-standard biomedical databases to ensure maximum accuracy.</p>
+            </div>
+            
+            <style>
+            {`
+            .datasets-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+                gap: 24px;
+                margin-top: 40px;
+            }
+            .dataset-card {
+                background: linear-gradient(145deg, rgba(30, 41, 59, 0.5), rgba(15, 23, 42, 0.8));
+                border: 1px solid rgba(255,255,255,0.05);
+                border-top: 1px solid rgba(148, 163, 184, 0.2);
+                border-radius: 20px;
+                padding: 30px;
+                display: flex;
+                flex-direction: column;
+                position: relative;
+                overflow: hidden;
+                transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+            }
+            .dataset-card:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 20px rgba(59, 130, 246, 0.2), inset 0 1px 0 rgba(255,255,255,0.2);
+                border-color: rgba(96, 165, 250, 0.4);
+            }
+            .ds-icon {
+                width: 48px;
+                height: 48px;
+                border-radius: 12px;
+                background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(14, 165, 233, 0.2));
+                border: 1px solid rgba(59, 130, 246, 0.3);
+                color: #60a5fa;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 20px;
+            }
+            .ds-title {
+                font-size: 20px;
+                font-weight: 800;
+                color: white;
+                margin-bottom: 8px;
+                letter-spacing: 0.5px;
+            }
+            .ds-desc {
+                font-size: 14px;
+                color: #94a3b8;
+                line-height: 1.6;
+                margin-bottom: 24px;
+            }
+            .ds-meta {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                border-top: 1px solid rgba(255,255,255,0.05);
+                padding-top: 16px;
+                margin-top: auto;
+            }
+            .ds-stat {
+                font-size: 11px;
+                font-weight: 800;
+                color: #34d399;
+                background: rgba(16, 185, 129, 0.1);
+                border: 1px solid rgba(16, 185, 129, 0.2);
+                padding: 4px 10px;
+                border-radius: 20px;
+            }
+            .ds-source {
+                font-size: 11px;
+                color: #64748b;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                font-weight: 800;
+            }
+            `}
+            </style>
+
+            <div className="datasets-grid reveal-up">
+                
+                <div className="dataset-card">
+                    <div className="ds-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                    </div>
+                    <div className="ds-title">PubMedQA</div>
+                    <div className="ds-desc">Biomedical research question answering dataset collected from original PubMed abstracts.</div>
+                    <div className="ds-meta">
+                        <div className="ds-stat">211K+ Samples</div>
+                        <div className="ds-source">NIH / NLM</div>
+                    </div>
+                </div>
+
+                <div className="dataset-card">
+                    <div className="ds-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+                    </div>
+                    <div className="ds-title">MedQA-USMLE</div>
+                    <div className="ds-desc">Multiple-choice questions collected directly from the US Medical Licensing Examinations.</div>
+                    <div className="ds-meta">
+                        <div className="ds-stat">12.7K+ Cases</div>
+                        <div className="ds-source">USMLE</div>
+                    </div>
+                </div>
+
+                <div className="dataset-card">
+                    <div className="ds-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                    </div>
+                    <div className="ds-title">BioASQ 2023</div>
+                    <div className="ds-desc">Large-scale biomedical semantic indexing and question answering challenge data.</div>
+                    <div className="ds-meta">
+                        <div className="ds-stat">4.5K+ Gold Standard</div>
+                        <div className="ds-source">BioASQ</div>
+                    </div>
+                </div>
+
+                <div className="dataset-card">
+                    <div className="ds-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path></svg>
+                    </div>
+                    <div className="ds-title">DrugBank</div>
+                    <div className="ds-desc">Comprehensive database containing exhaustive information on drugs and clinical drug targets.</div>
+                    <div className="ds-meta">
+                        <div className="ds-stat">506K+ Interactions</div>
+                        <div className="ds-source">DrugBank</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
     
     <section className="section">
         <div className="section-container">

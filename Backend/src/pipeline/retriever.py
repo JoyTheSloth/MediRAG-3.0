@@ -69,8 +69,12 @@ class Retriever:
                 from sentence_transformers import SentenceTransformer
                 logger.info("Loading BioBERT: %s", self.model_name)
                 self._model = SentenceTransformer(self.model_name)
+                logger.info("BioBERT model loaded successfully.")
             except ImportError as e:
                 logger.error("sentence_transformers not installed: %s", e)
+                self._model = None
+            except Exception as e:
+                logger.error("Failed to load embedding model '%s': %s — FAISS search will be skipped, falling back to BM25.", self.model_name, e)
                 self._model = None
 
     def _load_index(self) -> None:
@@ -86,21 +90,27 @@ class Retriever:
                 "Run python src/pipeline/ingest.py && python src/pipeline/embedder.py first."
             )
 
-        logger.info("Loading FAISS index from %s", idx_path)
-        if faiss is not None:
-            self._index = faiss.read_index(str(idx_path))
-        else:
+        try:
+            logger.info("Loading FAISS index from %s", idx_path)
+            if faiss is not None:
+                self._index = faiss.read_index(str(idx_path))
+            else:
+                self._index = None
+                logger.warning("FAISS not installed — FAISS search disabled.")
+
+            logger.info("Loading metadata store from %s", meta_path)
+            with open(meta_path, "rb") as f:
+                self._metadata = pickle.load(f)
+
+            logger.info(
+                "Retriever ready: %d vectors, %d metadata entries",
+                self._index.ntotal if self._index is not None else 0, len(self._metadata),
+            )
+        except Exception as e:
+            logger.error("Failed to load FAISS index or metadata: %s", e)
             self._index = None
-            logger.warning("FAISS not installed, using None index.")
-
-        logger.info("Loading metadata store from %s", meta_path)
-        with open(meta_path, "rb") as f:
-            self._metadata = pickle.load(f)
-
-        logger.info(
-            "Retriever ready: %d vectors, %d metadata entries",
-            self._index.ntotal if self._index is not None else 0, len(self._metadata),
-        )
+            if self._metadata is None:
+                self._metadata = {}
 
     def _build_bm25(self) -> None:
         """Build BM25 index from the loaded metadata store (called once)."""
@@ -186,12 +196,14 @@ class Retriever:
             except Exception as e:
                 logger.error("FAISS search failed: %s", e)
         
-        # If both fail due to missing dependencies, return mock text
+        # If FAISS failed but BM25 is available, continue with BM25-only (no stub)
+        if not faiss_ranks and self._bm25 is not None:
+            logger.warning("FAISS model unavailable — using BM25-only search for this query.")
+
+        # Only return empty if BOTH are completely unavailable
         if not faiss_ranks and self._bm25 is None:
-            logger.warning("Both FAISS and BM25 unavailable, returning stub results.")
-            return [
-                (f"Stub chunk for '{query}' because embedding models failed to load due to missing dependencies.", {"source": "stub", "doc_id": "0", "chunk_id": "1"}, 0.99)
-            ][:k]
+            logger.error("Both FAISS and BM25 are unavailable. Cannot retrieve. Check that the index exists and dependencies are installed.")
+            return []
 
         # ── 2. BM25 keyword search ────────────────────────────────────
         bm25_ranks: dict[int, int] = {}

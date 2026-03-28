@@ -28,8 +28,7 @@ import json
 import sqlite3
 import yaml
 from datetime import datetime
-from fastapi import FastAPI, HTTPException, UploadFile, File, Form
-from typing import Optional, List
+from fastapi import FastAPI, HTTPException, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 
 import threading
@@ -524,104 +523,6 @@ def query(req: QueryRequest) -> QueryResponse:
 # ---------------------------------------------------------------------------
 _faiss_lock = threading.Lock()
 
-@app.post("/upload-document", tags=["pipeline"])
-async def upload_document(
-    file: UploadFile = File(...),
-    title: Optional[str] = Form(None),
-    source: Optional[str] = Form("User Upload"),
-    pub_type: Optional[str] = Form("Unverified Patient Doc"),
-):
-    """
-    Handle direct file uploads (PDF, DOCX, TXT). Extracts text and injects it into FAISS.
-    """
-    content = await file.read()
-    filename = file.filename
-    doc_title = title or filename
-    extracted_text = ""
-
-    if filename.lower().endswith(".pdf"):
-        try:
-            import pypdf
-            import io
-            reader = pypdf.PdfReader(io.BytesIO(content))
-            extracted_text = "\n".join([page.extract_text() for page in reader.pages if page.extract_text()])
-        except Exception as e:
-            raise HTTPException(status_code=400, detail=f"PDF extraction failed: {str(e)}")
-            
-    elif filename.lower().endswith(".docx"):
-        try:
-            import docx
-            import io
-            doc = docx.Document(io.BytesIO(content))
-            extracted_text = "\n".join([p.text for p in doc.paragraphs])
-        except Exception as e:
-            raise HTTPException(status_code=400, detail=f"DOCX extraction failed: {str(e)}")
-            
-    else:
-        try:
-            extracted_text = content.decode("utf-8")
-        except UnicodeDecodeError:
-            extracted_text = content.decode("latin-1")
-
-    if not extracted_text.strip():
-        raise HTTPException(status_code=400, detail="No readable text found in file.")
-
-    import pickle
-    import faiss
-    import numpy as np
-    from src.pipeline.chunker import chunk_documents
-    
-    retriever = getattr(app.state, "retriever", None)
-    if retriever is None or retriever._index is None:
-        raise HTTPException(status_code=503, detail="Retriever not pre-warmed.")
-
-    doc_obj = {
-        "text": extracted_text,
-        "doc_id": "file_" + "".join(filter(str.isalnum, doc_title))[:15],
-        "title": doc_title,
-        "source": source,
-        "pub_type": pub_type,
-        "pub_year": 2026,
-    }
-    chunks = chunk_documents([doc_obj], _cfg)
-    
-    if not chunks:
-        raise HTTPException(status_code=400, detail="Document produced 0 chunks.")
-
-    if retriever._model is None:
-        retriever._load_model()
-    st_model = retriever._model
-    
-    texts = [c["chunk_text"] for c in chunks]
-    embeddings = np.array(st_model.encode(texts, show_progress_bar=False), dtype=np.float32)
-    faiss.normalize_L2(embeddings)
-
-    with _faiss_lock:
-        import os
-        idx_path = Path(_cfg["retrieval"]["index_path"])
-        meta_path = Path(_cfg["retrieval"]["metadata_path"])
-        index = retriever._index
-        metadata_store = retriever._metadata
-        start_id = len(metadata_store)
-
-        for i, chunk in enumerate(chunks):
-            metadata_store[start_id + i] = chunk
-            
-        index.add(embeddings)
-        
-        idx_tmp = str(idx_path) + ".tmp"
-        faiss.write_index(index, idx_tmp)
-        os.replace(idx_tmp, str(idx_path))
-        
-        meta_tmp = str(meta_path) + ".tmp"
-        with open(meta_tmp, "wb") as f:
-            pickle.dump(metadata_store, f)
-        os.replace(meta_tmp, str(meta_path))
-        retriever.rebuild_bm25()
-
-    logger.info("Uploaded and injected %d chunks for '%s'.", len(chunks), doc_title)
-    return {"status": "success", "chunks_added": len(chunks), "title": doc_title}
-
 @app.post("/ingest", tags=["ingestion"])
 def ingest_document(req: IngestRequest):
     """
@@ -745,4 +646,32 @@ def get_stats():
         return {
             "totalEvals": 0, "avgHrs": 0, "critAlerts": 0, "interventions": 0, "monthly": []
         }
+
+# ---------------------------------------------------------------------------
+# POST /parse_file — helper for frontend to extract PDF/DOCX text
+# ---------------------------------------------------------------------------
+@app.post("/parse_file", tags=["ingestion"])
+async def parse_file(file: UploadFile = File(...)):
+    """Extract text from uploaded txt, md, pdf, or docx files."""
+    content = await file.read()
+    filename = file.filename.lower()
+    text = ""
+    try:
+        if filename.endswith(".pdf"):
+            import fitz
+            doc = fitz.open(stream=content, filetype="pdf")
+            msgs = []
+            for page in doc:
+                msgs.append(page.get_text())
+            text = "\n".join(msgs)
+        elif filename.endswith(".docx"):
+            import docx
+            from io import BytesIO
+            doc = docx.Document(BytesIO(content))
+            text = "\n".join([p.text for p in doc.paragraphs])
+        else:
+            text = content.decode("utf-8", errors="replace")
+        return {"status": "success", "text": text}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Failed to parse file: {e}")
 

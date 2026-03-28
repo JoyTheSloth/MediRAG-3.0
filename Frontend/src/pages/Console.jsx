@@ -14,9 +14,9 @@ const Console = () => {
     // Global settings for Evaluate / Patient
     const [engineConfig, setEngineConfig] = useState({
         apiUrl: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000',
-        provider: 'Gemini',
-        apiKey: '',
-        model: 'gemini-2.0-flash',
+        provider: 'Mistral',
+        apiKey: import.meta.env.VITE_MISTRAL_API_KEY || 'UNWuD4qMgZeZAVdcAiC2dsuZwGFr9IE0',
+        model: 'mistral-large-latest',
         topK: 5,
         runRagas: false
     });
@@ -109,18 +109,19 @@ const Console = () => {
                                     setEngineConfig({
                                         ...engineConfig, 
                                         provider: p,
-                                        model: p === 'OpenAI' ? 'gpt-4o' : 'gemini-2.0-flash'
+                                        model: p === 'OpenAI' ? 'gpt-4o' : p === 'Mistral' ? 'mistral-large-latest' : 'gemini-2.0-flash'
                                     });
                                 }}
                                 style={{ width: '100%', background: '#121620', border: '1px solid #1c253b', borderRadius: '6px', padding: '8px 12px', color: 'white', fontSize: '12px' }}
                             >
                                 <option value="Gemini">Gemini</option>
                                 <option value="OpenAI">OpenAI</option>
+                                <option value="Mistral">Mistral AI</option>
                                 <option value="Ollama">Ollama (Local)</option>
                             </select>
                         </div>
 
-                        {['Gemini', 'OpenAI'].includes(engineConfig.provider) && (
+                        {['Gemini', 'OpenAI', 'Mistral'].includes(engineConfig.provider) && (
                             <>
                                 <div className="settings-group" style={{ marginBottom: '16px' }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
@@ -150,6 +151,11 @@ const Console = () => {
                                             <>
                                                 <option value="gemini-2.0-flash">gemini-2.0-flash</option>
                                                 <option value="gemini-1.5-pro">gemini-1.5-pro</option>
+                                            </>
+                                        ) : engineConfig.provider === 'Mistral' ? (
+                                            <>
+                                                <option value="mistral-large-latest">mistral-large-latest</option>
+                                                <option value="mistral-small-latest">mistral-small-latest</option>
                                             </>
                                         ) : (
                                             <>

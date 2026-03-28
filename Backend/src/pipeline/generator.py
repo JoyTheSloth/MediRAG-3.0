@@ -239,7 +239,7 @@ def _generate_ollama(prompt: str, config: dict) -> str:
     import requests as _requests
 
     llm_cfg = config.get("llm", {})
-    base_url = llm_cfg.get("base_url", "http://localhost:8080")
+    base_url = llm_cfg.get("base_url", "http://localhost:11434")
     model = llm_cfg.get("model", "mistral")
     timeout = llm_cfg.get("timeout_seconds", 120)
     temperature = llm_cfg.get("generation_temperature", 0.7)
@@ -280,6 +280,60 @@ def _generate_ollama(prompt: str, config: dict) -> str:
 
     elapsed = int((time.perf_counter() - t0) * 1000)
     logger.info("Ollama generated answer in %d ms (%d chars)", elapsed, len(answer))
+    return answer
+
+
+# ---------------------------------------------------------------------------
+# Mistral provider
+# ---------------------------------------------------------------------------
+
+def _generate_mistral(prompt: str, config: dict) -> str:
+    import requests as _requests
+    
+    llm_cfg = config.get("llm", {})
+    api_key = llm_cfg.get("mistral_api_key") or os.environ.get("MISTRAL_API_KEY")
+    if not api_key:
+        raise RuntimeError("Mistral API key not found in config or env vars.")
+        
+    model = llm_cfg.get("model", "mistral-large-latest")
+    timeout = llm_cfg.get("timeout_seconds", 120)
+    temperature = llm_cfg.get("generation_temperature", 0.7)
+
+    payload = {
+        "model": model,
+        "messages": [{"role": "user", "content": prompt}],
+        "temperature": temperature,
+        "max_tokens": 1024,
+    }
+    
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json"
+    }
+
+    url = "https://api.mistral.ai/v1/chat/completions"
+    logger.info("Calling Mistral API (model=%s)...", model)
+    t0 = time.perf_counter()
+
+    try:
+        resp = _requests.post(url, json=payload, headers=headers, timeout=timeout)
+    except Exception as exc:
+        raise RuntimeError(f"Mistral API network error: {exc}") from exc
+
+    if resp.status_code != 200:
+        raise RuntimeError(f"Mistral HTTP {resp.status_code}: {resp.text[:300]}")
+
+    try:
+        data = resp.json()
+        answer = data["choices"][0]["message"]["content"].strip()
+    except Exception as exc:
+        raise RuntimeError(f"Unexpected Mistral response: {exc}") from exc
+
+    if not answer:
+        raise RuntimeError("Mistral returned an empty response.")
+
+    elapsed = int((time.perf_counter() - t0) * 1000)
+    logger.info("Mistral generated answer in %d ms (%d chars)", elapsed, len(answer))
     return answer
 
 
@@ -349,10 +403,12 @@ def generate_answer(
         return _generate_openai(prompt, effective_config)
     elif provider == "ollama":
         return _generate_ollama(prompt, effective_config)
+    elif provider == "mistral":
+        return _generate_mistral(prompt, effective_config)
     else:
         raise RuntimeError(
             f"Unknown LLM provider '{provider}'. "
-            "Set llm.provider to 'gemini' or 'ollama'."
+            "Set llm.provider to 'gemini', 'ollama', or 'mistral'."
         )
 
 
@@ -399,5 +455,7 @@ def generate_strict_answer(
         return _generate_openai(prompt, effective_config)
     elif provider == "ollama":
         return _generate_ollama(prompt, effective_config)
+    elif provider == "mistral":
+        return _generate_mistral(prompt, effective_config)
     else:
         raise RuntimeError(f"Unknown LLM provider '{provider}'.")

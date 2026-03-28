@@ -149,39 +149,173 @@ function AIMessageCard({ msg }) {
 
             {/* Source Citations */}
             {chunks.length > 0 ? (
-                <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '12px' }}>
+                <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '14px' }}>
                     <button className="mc-expand-btn" onClick={() => setExpanded(e => !e)}>
-                        {expanded ? '&#8679; Hide' : '&#8681; View'} {chunks.length} MediRAG dataset source{chunks.length > 1 ? 's' : ''}
+                        {expanded ? '▲ Hide' : '▼ View'} {chunks.length} verified source{chunks.length > 1 ? 's' : ''} from medical dataset
                     </button>
                     {expanded && (
-                        <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                            {chunks.map((c, i) => (
-                                <div key={i} style={{ background: 'rgba(0,200,150,0.03)', border: '1px solid rgba(0,200,150,0.1)', borderRadius: '9px', padding: '12px 14px' }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px', marginBottom: '7px' }}>
-                                        <div style={{ fontSize: '11.5px', color: '#00C896', fontWeight: 700 }}>
-                                            [{i + 1}] {c.title || c.source || 'Medical Literature'}
+                        <div style={{ marginTop: '12px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                            {chunks.map((c, i) => {
+                                const sim = typeof c.similarity_score === 'number' ? c.similarity_score : parseFloat(c.similarity_score) || 0;
+                                const simPct = Math.min(100, Math.round(sim * 100));
+                                const simColor = simPct >= 70 ? '#00C896' : simPct >= 40 ? '#ffc832' : '#ff6432';
+                                const tierColor = {
+                                    'systematic review': '#a78bfa',
+                                    'rct': '#60a5fa',
+                                    'clinical trial': '#60a5fa',
+                                    'meta-analysis': '#a78bfa',
+                                    'guideline': '#34d399',
+                                    'review': '#fb923c',
+                                }[(c.pub_type || '').toLowerCase()] || '#64748b';
+
+                                return (
+                                    <div key={i} style={{
+                                        background: 'linear-gradient(135deg, rgba(0,200,150,0.04), rgba(15,23,42,0.8))',
+                                        border: '1px solid rgba(0,200,150,0.12)',
+                                        borderLeft: `3px solid ${simColor}`,
+                                        borderRadius: '10px',
+                                        padding: '14px 16px',
+                                        transition: 'border-color 0.2s',
+                                    }}>
+                                        {/* Header row */}
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '10px', marginBottom: '10px' }}>
+                                            <div style={{ flex: 1 }}>
+                                                {/* Rank + Title */}
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '5px' }}>
+                                                    <span style={{
+                                                        background: simColor,
+                                                        color: '#000',
+                                                        fontWeight: 900,
+                                                        fontSize: '10px',
+                                                        padding: '2px 7px',
+                                                        borderRadius: '4px',
+                                                        flexShrink: 0,
+                                                    }}>#{i + 1}</span>
+                                                    <span style={{ fontSize: '13px', fontWeight: 700, color: 'white', lineHeight: 1.4 }}>
+                                                        {c.title || 'Medical Literature'}
+                                                    </span>
+                                                </div>
+                                                {/* Source / Journal */}
+                                                {c.source && (
+                                                    <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', marginBottom: '4px' }}>
+                                                        📰 {c.source}
+                                                    </div>
+                                                )}
+                                            </div>
+                                            {/* Right badges */}
+                                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '5px', flexShrink: 0 }}>
+                                                {c.pub_type && (
+                                                    <span style={{
+                                                        fontSize: '9px', fontWeight: 800, letterSpacing: '0.5px',
+                                                        background: `${tierColor}22`,
+                                                        color: tierColor,
+                                                        border: `1px solid ${tierColor}55`,
+                                                        borderRadius: '4px',
+                                                        padding: '3px 8px',
+                                                        textTransform: 'uppercase',
+                                                    }}>{c.pub_type}</span>
+                                                )}
+                                                {c.pub_year && (
+                                                    <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.35)', fontWeight: 600 }}>{c.pub_year}</span>
+                                                )}
+                                            </div>
                                         </div>
-                                        <div style={{ display: 'flex', gap: '5px', flexShrink: 0, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
-                                            {c.pub_type && <span style={{ fontSize: '9px', background: 'rgba(0,200,150,0.12)', color: '#00C896', borderRadius: '4px', padding: '2px 7px', fontWeight: 700 }}>{c.pub_type}</span>}
-                                            {c.pub_year && <span style={{ fontSize: '9px', color: 'rgba(255,255,255,0.3)', padding: '2px 0' }}>{c.pub_year}</span>}
-                                            {c.similarity_score != null && <span style={{ fontSize: '9px', color: 'rgba(255,255,255,0.25)' }}>sim {typeof c.similarity_score === 'number' ? c.similarity_score.toFixed(2) : c.similarity_score}</span>}
+
+                                        {/* Similarity Score Bar */}
+                                        <div style={{ marginBottom: '11px' }}>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                                                <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.3)', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase' }}>
+                                                    Relevance Score
+                                                </span>
+                                                <span style={{ fontSize: '10px', fontWeight: 800, color: simColor }}>
+                                                    {simPct > 0 ? `${simPct}%` : (sim > 0 ? sim.toFixed(3) : 'N/A')}
+                                                </span>
+                                            </div>
+                                            <div style={{ height: '4px', background: 'rgba(255,255,255,0.06)', borderRadius: '99px', overflow: 'hidden' }}>
+                                                <div style={{
+                                                    height: '100%',
+                                                    width: simPct > 0 ? `${simPct}%` : (sim > 0 ? `${Math.round(sim * 100)}%` : '0%'),
+                                                    background: `linear-gradient(90deg, ${simColor}88, ${simColor})`,
+                                                    borderRadius: '99px',
+                                                    transition: 'width 0.8s ease',
+                                                }} />
+                                            </div>
                                         </div>
+
+                                        {/* Chunk Text */}
+                                        <div style={{
+                                            fontSize: '12.5px',
+                                            color: 'rgba(255,255,255,0.55)',
+                                            lineHeight: 1.7,
+                                            background: 'rgba(0,0,0,0.2)',
+                                            borderRadius: '7px',
+                                            padding: '10px 12px',
+                                            borderLeft: '2px solid rgba(255,255,255,0.05)',
+                                            fontFamily: 'inherit',
+                                        }}>
+                                            {(c.text || 'No text preview available.').slice(0, 500)}
+                                            {(c.text || '').length > 500 && (
+                                                <span style={{ color: 'rgba(255,255,255,0.25)', fontStyle: 'italic' }}> …[truncated]</span>
+                                            )}
+                                        </div>
+
+                                        {/* Chunk ID footer */}
+                                        {c.chunk_id && (
+                                            <div style={{ marginTop: '8px', fontSize: '10px', color: 'rgba(255,255,255,0.2)', fontFamily: 'monospace' }}>
+                                                chunk_id: {c.chunk_id}
+                                            </div>
+                                        )}
                                     </div>
-                                    <div style={{ fontSize: '12.5px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.6 }}>
-                                        {(c.text || '').slice(0, 300)}{(c.text || '').length > 300 ? '\u2026' : ''}
-                                    </div>
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
                     )}
                 </div>
             ) : (
                 <div style={{ fontSize: '11px', color: 'rgba(255,200,50,0.65)', marginTop: '10px', background: 'rgba(255,200,50,0.05)', borderRadius: '7px', padding: '8px 12px', border: '1px solid rgba(255,200,50,0.12)' }}>
-                    &#9888; No dataset sources retrieved — ensure the FAISS index is built and the backend is running.
+                    ⚠ No dataset sources retrieved — ensure the FAISS index is built and the backend is running.
                 </div>
             )}
         </div>
     );
+}
+
+// Generate smart contextual question suggestions from document text
+function generateDocSuggestions(text) {
+    const lower = text.toLowerCase();
+    const suggestions = [];
+    if (lower.includes('metformin') || lower.includes('diabetes') || lower.includes('insulin')) {
+        suggestions.push('What is the correct dosage mentioned in this document?');
+        suggestions.push('Are there any drug interactions I should be aware of?');
+    }
+    if (lower.includes('blood pressure') || lower.includes('hypertension') || lower.includes('atenolol') || lower.includes('amlodipine')) {
+        suggestions.push('What medications are mentioned for blood pressure?');
+        suggestions.push('Are there contraindications listed in this document?');
+    }
+    if (lower.includes('allergy') || lower.includes('allergic') || lower.includes('penicillin') || lower.includes('amoxicillin')) {
+        suggestions.push('What allergies are mentioned in this document?');
+        suggestions.push('What alternative medications are recommended?');
+    }
+    if (lower.includes('cholesterol') || lower.includes('statin') || lower.includes('lipid')) {
+        suggestions.push('What are the cholesterol levels mentioned?');
+        suggestions.push('What treatment is recommended for high cholesterol?');
+    }
+    if (lower.includes('diagnosis') || lower.includes('condition') || lower.includes('disease')) {
+        suggestions.push('What is the primary diagnosis described?');
+        suggestions.push('What are the recommended treatments?');
+    }
+    // Always add generic fallbacks if not enough
+    const generic = [
+        'Is the information in this document medically accurate?',
+        'What are the key medical findings in this document?',
+        'Are there any safety concerns or contraindications mentioned?',
+        'What follow-up care is recommended?',
+    ];
+    for (const g of generic) {
+        if (suggestions.length >= 4) break;
+        if (!suggestions.includes(g)) suggestions.push(g);
+    }
+    return suggestions.slice(0, 4);
 }
 
 const MediChat = ({ engineConfig }) => {
@@ -194,15 +328,18 @@ const MediChat = ({ engineConfig }) => {
     const [input, setInput] = useState('');
     const [isThinking, setIsThinking] = useState(false);
     const [error, setError] = useState('');
-    const [localApiKey, setLocalApiKey] = useState(engineConfig?.apiKey || '');
+    const [localApiKey, setLocalApiKey] = useState(engineConfig?.apiKey || import.meta.env.VITE_MISTRAL_API_KEY || 'UNWuD4qMgZeZAVdcAiC2dsuZwGFr9IE0');
     const [showKey, setShowKey] = useState(false);
     const [localConfig, setLocalConfig] = useState({
         apiUrl: engineConfig?.apiUrl || import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000',
-        provider: engineConfig?.provider || 'Gemini',
-        model: engineConfig?.model || 'gemini-2.0-flash',
+        provider: engineConfig?.provider || 'Mistral',
+        model: engineConfig?.model || 'mistral-large-latest',
         topK: engineConfig?.topK || 5,
         runRagas: engineConfig?.runRagas || false,
     });
+    const [uploadedDocText, setUploadedDocText] = useState('');
+    const [uploadedDocName, setUploadedDocName] = useState('');
+    const [isUploadingDoc, setIsUploadingDoc] = useState(false);
     const bottomRef = useRef(null);
     const inputRef = useRef(null);
     const pasteFileRef = useRef(null);
@@ -248,11 +385,16 @@ const MediChat = ({ engineConfig }) => {
 
         try {
             const endpoint = `${localConfig.apiUrl}/query`;
+            // If a doc is uploaded, enrich the question with doc context
+            const enrichedQuestion = uploadedDocText
+                ? `[User uploaded document: ${uploadedDocName}]\n\nDocument Content:\n${uploadedDocText.slice(0, 3000)}\n\n---\nUser Question: ${q}`
+                : q;
+
             const res = await fetch(endpoint, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    question: q,
+                    question: enrichedQuestion,
                     top_k: localConfig.topK,
                     run_ragas: localConfig.runRagas,
                     llm_provider: localConfig.provider.toLowerCase(),
@@ -384,18 +526,19 @@ const MediChat = ({ engineConfig }) => {
                                 setLocalConfig(c => ({ 
                                     ...c, 
                                     provider: p,
-                                    model: p === 'OpenAI' ? 'gpt-4o' : 'gemini-2.0-flash'
+                                    model: p === 'OpenAI' ? 'gpt-4o' : p === 'Mistral' ? 'mistral-large-latest' : 'gemini-2.0-flash'
                                 }));
                             }}
                             style={{ width: '100%', background: '#121620', border: '1px solid #1c253b', borderRadius: '6px', padding: '8px 10px', color: 'white', fontSize: '12px', outline: 'none' }}
                         >
                             <option value="Gemini">Gemini</option>
                             <option value="OpenAI">OpenAI</option>
+                            <option value="Mistral">Mistral AI</option>
                             <option value="Ollama">Ollama (Local)</option>
                         </select>
                     </div>
 
-                    {['Gemini', 'OpenAI'].includes(localConfig.provider) && (
+                    {['Gemini', 'OpenAI', 'Mistral'].includes(localConfig.provider) && (
                         <>
                             <div style={{ marginBottom: '14px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '7px' }}>
@@ -430,6 +573,11 @@ const MediChat = ({ engineConfig }) => {
                                         <>
                                             <option value="gemini-2.0-flash">gemini-2.0-flash</option>
                                             <option value="gemini-1.5-pro">gemini-1.5-pro</option>
+                                        </>
+                                    ) : localConfig.provider === 'Mistral' ? (
+                                        <>
+                                            <option value="mistral-large-latest">mistral-large-latest</option>
+                                            <option value="mistral-small-latest">mistral-small-latest</option>
                                         </>
                                     ) : (
                                         <>
@@ -513,6 +661,57 @@ const MediChat = ({ engineConfig }) => {
                                     </div>
                                     <div className="mc-msg-meta">YOU • {formatTime(msg.id)}</div>
                                 </div>
+                            ) : msg.isSuggestion ? (
+                                <div style={{ maxWidth: '90%' }}>
+                                    <div style={{
+                                        background: 'linear-gradient(135deg, rgba(0, 200, 150, 0.05), rgba(15, 23, 42, 0.9))',
+                                        border: '1px solid rgba(0, 200, 150, 0.2)',
+                                        borderRadius: '4px 16px 16px 16px',
+                                        padding: '20px 22px',
+                                    }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px' }}>
+                                            <span style={{ fontSize: '20px' }}>📄</span>
+                                            <div>
+                                                <div style={{ fontSize: '13px', fontWeight: 800, color: 'white' }}>Document ingested successfully!</div>
+                                                <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', marginTop: '2px' }}>{msg.docName}</div>
+                                            </div>
+                                        </div>
+                                        <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.6)', marginBottom: '14px' }}>
+                                            What would you like to know about this document?
+                                        </div>
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                            {msg.suggestions.map((s, i) => (
+                                                <button
+                                                    key={i}
+                                                    onClick={() => sendMessage(s)}
+                                                    style={{
+                                                        background: 'rgba(0,200,150,0.06)',
+                                                        border: '1px solid rgba(0,200,150,0.2)',
+                                                        borderRadius: '10px',
+                                                        color: 'rgba(255,255,255,0.75)',
+                                                        padding: '10px 14px',
+                                                        fontSize: '13px',
+                                                        textAlign: 'left',
+                                                        cursor: 'pointer',
+                                                        transition: 'all 0.2s',
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        gap: '10px'
+                                                    }}
+                                                    onMouseEnter={e => { e.currentTarget.style.background = 'rgba(0,200,150,0.14)'; e.currentTarget.style.color = 'white'; e.currentTarget.style.borderColor = 'rgba(0,200,150,0.5)'; }}
+                                                    onMouseLeave={e => { e.currentTarget.style.background = 'rgba(0,200,150,0.06)'; e.currentTarget.style.color = 'rgba(255,255,255,0.75)'; e.currentTarget.style.borderColor = 'rgba(0,200,150,0.2)'; }}
+                                                >
+                                                    <span style={{ color: '#00C896', fontSize: '15px', flexShrink: 0 }}>›</span>
+                                                    {s}
+                                                </button>
+                                            ))}
+                                        </div>
+                                        <div style={{ marginTop: '12px', fontSize: '11px', color: 'rgba(255,200,50,0.6)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                            <span>⚡</span> Answers verified against PubMed + DrugBank dataset
+                                        </div>
+                                    </div>
+                                    <div className="mc-msg-meta">MEDIRAG • {formatTime(msg.id)}</div>
+                                </div>
                             ) : (
                                 <div>
                                     {msg.data && !msg.isError ? (
@@ -553,25 +752,74 @@ const MediChat = ({ engineConfig }) => {
                             ref={pasteFileRef}
                             style={{ display: 'none' }}
                             accept=".pdf,.txt,.docx"
-                            onChange={(e) => {
-                                if (e.target.files[0]) {
-                                    setInput(prev => prev + `\n[Attached: ${e.target.files[0].name}]`);
+                            onChange={async (e) => {
+                                const file = e.target.files?.[0];
+                                if (!file) return;
+                                setIsUploadingDoc(true);
+                                setError('');
+
+                                // Show user upload message
+                                const sid = activeSession || Date.now();
+                                if (!activeSession) {
+                                    setSessions(prev => [{ id: sid, title: `📄 ${file.name}`, messages: [] }, ...prev]);
+                                    setActiveSession(sid);
+                                }
+                                const uploadMsg = { id: Date.now(), role: 'user', text: `📎 Uploaded: ${file.name}` };
+                                setMessages(prev => [...prev, uploadMsg]);
+
+                                try {
+                                    const formData = new FormData();
+                                    formData.append('file', file);
+                                    const res = await fetch(`${localConfig.apiUrl}/parse_file`, { method: 'POST', body: formData });
+                                    if (!res.ok) throw new Error('Failed to parse document.');
+                                    const { text } = await res.json();
+                                    setUploadedDocText(text);
+                                    setUploadedDocName(file.name);
+
+                                    // Generate smart suggestions based on doc content
+                                    const suggestions = generateDocSuggestions(text);
+
+                                    const botSuggestionMsg = {
+                                        id: Date.now() + 1,
+                                        role: 'bot',
+                                        isSuggestion: true,
+                                        docName: file.name,
+                                        suggestions,
+                                        text: ''
+                                    };
+                                    setMessages(prev => [...prev, botSuggestionMsg]);
+                                } catch (err) {
+                                    setError(err.message);
+                                    const errMsg = { id: Date.now() + 2, role: 'bot', text: `❌ Could not read document: ${err.message}`, isError: true };
+                                    setMessages(prev => [...prev, errMsg]);
+                                } finally {
+                                    setIsUploadingDoc(false);
+                                    // Reset file input so same file can be re-uploaded
+                                    e.target.value = '';
                                 }
                             }}
                         />
-                        <button className="mc-action-chip" onClick={() => pasteFileRef.current?.click()}>
-                            📋 PASTE HEALTH INFO
+                        <button
+                            className="mc-action-chip"
+                            onClick={() => pasteFileRef.current?.click()}
+                            disabled={isUploadingDoc}
+                            style={{ opacity: isUploadingDoc ? 0.6 : 1 }}
+                        >
+                            {isUploadingDoc ? '⏳ Reading...' : '📎 UPLOAD PDF / LABS'}
                         </button>
-                        <button className="mc-action-chip" onClick={() => pasteFileRef.current?.click()}>
-                            📎 UPLOAD LABS
-                        </button>
+                        {uploadedDocName && (
+                            <span style={{ fontSize: '11px', color: '#00C896', display: 'flex', alignItems: 'center', gap: '5px', background: 'rgba(0,200,150,0.08)', border: '1px solid rgba(0,200,150,0.2)', borderRadius: '20px', padding: '4px 10px' }}>
+                                📄 {uploadedDocName}
+                                <button onClick={() => { setUploadedDocText(''); setUploadedDocName(''); }} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', cursor: 'pointer', fontSize: '13px', padding: 0, lineHeight: 1 }}>✕</button>
+                            </span>
+                        )}
                     </div>
 
                     <div className="mc-input-row">
                         <textarea
                             ref={inputRef}
                             className="mc-input-field"
-                            placeholder="Ask a health question or paste a clinical summary..."
+                            placeholder={uploadedDocName ? `Ask about ${uploadedDocName}...` : 'Ask a health question or paste a clinical summary...'}
                             value={input}
                             onChange={e => setInput(e.target.value)}
                             onKeyDown={handleKeyDown}

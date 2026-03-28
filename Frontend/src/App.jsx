@@ -80,7 +80,7 @@ function App() {
             <Route path="/console" element={<Console />} />
             <Route path="/api-docs" element={<ApiDocs />} />
             <Route path="/about" element={<About />} />
-            <Route path="/chat" element={<MediChat engineConfig={{ apiUrl: 'http://localhost:8000', provider: 'Gemini', apiKey: '', model: 'gemini-2.5-flash-lite', topK: 5, runRagas: false }} />} />
+            <Route path="/chat" element={<MediChat engineConfig={{ apiUrl: 'http://localhost:8000', provider: 'Mistral', apiKey: 'UNWuD4qMgZeZAVdcAiC2dsuZwGFr9IE0', model: 'mistral-large-latest', topK: 5, runRagas: false }} />} />
         </Routes>
       </main>
 
