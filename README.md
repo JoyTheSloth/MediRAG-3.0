@@ -22,10 +22,11 @@ Yes. LLMs are notoriously overconfident medical students who skipped the lecture
 
 We've consolidated everything into a single, high-fidelity command center:
 
-- **💬 MediChat AI**: A standalone, immersive chat interface with real-time **Hallucination Risk Scoring (HRS)**, expandable source citations, and medical safety guards.
-- **📤 App Integration Console**: Test and verify third-party healthcare integrations (like Apollo 247, Tata 1mg) by uploading patient docs and auditing AI responses.
+- **💬 MediChat AI**: A standalone, immersive chat interface with real-time **Hallucination Risk Scoring (HRS)**, rich source cards, and doc-aware reasoning.
+- **📄 Document-Aware Chat**: Upload PDFs/Lab Reports to get **Smart Suggestions** (clinical follow-up questions) and answers grounded directly in your patient docs + the medical literature.
+- **📤 App Integration Console**: Test and verify third-party healthcare integrations (like Apollo 247, Tata 1mg) by auditing AI responses.
 - **🛡️ AI Governance Dashboard**: A complete audit log and compliance reporting system for medical AI oversight.
-- **📄 Interactive API Documentation**: A live OpenAPI-powered developer portal for integrating the MediRAG scoring engine into any pipeline.
+- **📡 Federated Dataset Section**: View the "Verified Clinical Knowledge Bases" (PubMed, MedQA, BioASQ, DrugBank) directly in the UI.
 
 ---
 
@@ -34,9 +35,19 @@ We've consolidated everything into a single, high-fidelity command center:
 Every answer passes through our forensic pipeline (running locally on CPU/GPU):
 
 1.  **Faithfulness Scorer (DeBERTa-v3 NLI)**: Checks if the LLM's claim is actually supported by the retrieved context. No support = Red Flag. 🚩
-2.  **Medical Entity Verifier (SciSpaCy + DrugBank)**: Extracts drug names, dosages, and conditions. Mismatching 500mg with 500g? We flag it. 💊
-3.  **Source Credibility Ranking**: Tiers your evidence (Tier 1: RCTs/Systematic Reviews → Tier 5: Grey Literature). 📚
-4.  **Contradiction Detection**: Does the AI contradict itself in its own answer? Our internal NLI cross-check finds out. ⚠️
+2.  **Mistral 2-Pass Verification**: A dual-call system that first generates an answer from the document, then triggers an independent "Authority" pass to cross-examine the answer for hallucinations.
+3.  **Medical Entity Verifier (SciSpaCy + DrugBank)**: Extracts drug names, dosages, and conditions. Mismatching 500mg with 500g? We flag it. 💊
+4.  **Source Credibility Ranking (Hybrid)**: Tiers your evidence (Tier 1: Systematic Reviews → Tier 5: Reviews) while showing an animated **Relevance Bar (0-100%)** based on FAISS/BM25 scores.
+5.  **Contradiction Detection**: Does the AI contradict itself in its own answer? Our internal NLI cross-check finds out. ⚠️
+
+---
+
+## 🔬 Latest Architectural Updates (v3.1)
+
+- **Vector Expansion**: Our retriever is now powered by **107,425 clinical vectors** sourced from PubMed and MedQA, ensuring high-density specialized knowledge.
+- **Hybrid Search Strategy**: Combining **FAISS (Semantic BioBERT)** and **BM25 (Keyword-based)** to provide both conceptual and exact-match retrieval.
+- **Smart Follow-ups**: The system statically analyzes uploaded clinical text to suggest highly relevant questions (e.g., "Are there any contraindications listed here?").
+- **Rich Citation Cards**: Each source now displays its evidence tier, publication year, journal name, and a text excerpt with an animated similarity score.
 
 ---
 
@@ -70,8 +81,9 @@ npm run dev
 
 - **Frontend**: React 19 + GSAP (Motion) + Custom Glassmorphism CSS 🧊
 - **Backend**: FastAPI + LangChain + FAISS + BM25 (Hybrid Retrieval) 🧱
-- **NLP Models**: DeBERTa-v3 (grounding), SciSpaCy (biomedical NER), BioBERT (embeddings) 🤖
-- **Vector DB**: FAISS (PubMed-indexed) 🗃️
+- **NLP Models**: DeBERTa-v3 (grounding), SciSpaCy (biomedical NER), BioBERT (embeddings), Mistral-Large-Latest (Generation & Verification) 🤖
+- **Vector DB**: FAISS indexed with **107,425 clinical entries** 🗃️
+- **Retrieval**: Hybrid BioBERT + BM25 ranking 🧱
 
 ---
 
