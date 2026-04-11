@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './Evaluate.css';
+import ApiKeyModal from '../components/ApiKeyModal';
 
-const Evaluate = ({ embedded = false, mode = 'researcher', engineConfig }) => {
+const Evaluate = ({ embedded = false, mode = 'researcher', engineConfig, setEngineConfig }) => {
     const location = useLocation();
     const navigate = useNavigate();
     const [view, setView] = useState(location.state?.defaultView || 'form');
@@ -57,7 +58,17 @@ const Evaluate = ({ embedded = false, mode = 'researcher', engineConfig }) => {
         }
     }, [location.state]);
 
-    const handleEvaluate = async () => {
+    const [isApiModalOpen, setIsApiModalOpen] = useState(false);
+
+    const handleEvaluate = () => {
+        if (!engineConfig?.apiKey) {
+            setIsApiModalOpen(true);
+            return;
+        }
+        executeEvaluationJob();
+    };
+
+    const executeEvaluationJob = async (overrideKey = null) => {
         setIsAnalyzing(true);
         setErrorMsg('');
         setResultData(null);
@@ -70,7 +81,7 @@ const Evaluate = ({ embedded = false, mode = 'researcher', engineConfig }) => {
                 run_ragas: engineConfig?.runRagas || false,
                 llm_provider: engineConfig?.provider ? engineConfig.provider.toLowerCase() : 'gemini',
                 llm_model: engineConfig?.model || 'gemini-2.5-flash-lite',
-                llm_api_key: engineConfig?.apiKey || ''
+                llm_api_key: overrideKey || engineConfig?.apiKey || ''
             };
 
             if (context && answer) {
@@ -83,7 +94,7 @@ const Evaluate = ({ embedded = false, mode = 'researcher', engineConfig }) => {
                     run_ragas: engineConfig?.runRagas || false,
                     llm_provider: engineConfig?.provider ? engineConfig.provider.toLowerCase() : 'gemini',
                     llm_model: engineConfig?.model || 'gemini-2.5-flash-lite',
-                    llm_api_key: engineConfig?.apiKey || ''
+                    llm_api_key: overrideKey || engineConfig?.apiKey || ''
                 };
             }
 
@@ -446,6 +457,19 @@ const Evaluate = ({ embedded = false, mode = 'researcher', engineConfig }) => {
     return (
         <div className="eval-page">
             {evalContent}
+            <ApiKeyModal 
+                isOpen={isApiModalOpen} 
+                onClose={() => setIsApiModalOpen(false)} 
+                defaultProvider={engineConfig?.provider || 'Mistral'}
+                onSave={(key) => {
+                    if (setEngineConfig) {
+                        setEngineConfig({ ...engineConfig, apiKey: key });
+                    }
+                    setIsApiModalOpen(false);
+                    // Pass the new key directly to avoid React state batched staleness
+                    executeEvaluationJob(key);
+                }} 
+            />
         </div>
     );
 };

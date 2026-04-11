@@ -208,7 +208,7 @@ const Console = () => {
                 <main className="console-main">
                     {activeSection === 'evaluate' && activeSubSection === 'researcher' && (
                         <div className="console-view-wrapper">
-                            <Evaluate embedded={true} mode={activeSubSection} engineConfig={engineConfig} />
+                            <Evaluate embedded={true} mode={activeSubSection} engineConfig={engineConfig} setEngineConfig={setEngineConfig} />
                         </div>
                     )}
 
@@ -219,7 +219,7 @@ const Console = () => {
                                 <h1 className="console-view-title">Upload Data &amp; Analyse</h1>
                                 <p style={{ color: 'var(--text-gray)', marginTop: '8px' }}>Test chatbot safety for healthcare apps like Apollo 247, Tata 1mg — upload patient docs and verify AI responses against medical sources</p>
                             </div>
-                            <PatientExperience engineConfig={engineConfig} />
+                            <PatientExperience engineConfig={engineConfig} setEngineConfig={setEngineConfig} />
                         </div>
                     )}
 

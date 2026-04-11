@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './PatientExperience.css';
+import ApiKeyModal from '../components/ApiKeyModal';
 
-const PatientExperience = ({ engineConfig }) => {
+const PatientExperience = ({ engineConfig, setEngineConfig }) => {
     const [selectedDocType, setSelectedDocType] = useState('Discharge summary');
     const [selectedQuestion, setSelectedQuestion] = useState('-- pick a common question --');
     const [customQuestion, setCustomQuestion] = useState('');
@@ -29,7 +30,17 @@ const PatientExperience = ({ engineConfig }) => {
         'How long should I take this medication?'
     ];
 
-    const handleCheck = async () => {
+    const [isApiModalOpen, setIsApiModalOpen] = useState(false);
+
+    const handleCheck = () => {
+        if (!engineConfig?.apiKey) {
+            setIsApiModalOpen(true);
+            return;
+        }
+        executeCheckJob();
+    };
+
+    const executeCheckJob = async (overrideKey = null) => {
         setIsAnalyzing(true);
         setShowResults(false);
         setErrorMsg('');
@@ -65,7 +76,7 @@ Based ONLY on the dataset provided above, answer the user's question. If the ans
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json',
-                    'Authorization': 'Bearer UNWuD4qMgZeZAVdcAiC2dsuZwGFr9IE0'
+                    'Authorization': `Bearer ${overrideKey || engineConfig?.apiKey || ''}`
                 },
                 body: JSON.stringify({
                     model: 'mistral-large-latest',
@@ -115,7 +126,7 @@ Task:
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json',
-                    'Authorization': 'Bearer UNWuD4qMgZeZAVdcAiC2dsuZwGFr9IE0'
+                    'Authorization': `Bearer ${overrideKey || engineConfig?.apiKey || ''}`
                 },
                 body: JSON.stringify({
                     model: 'mistral-large-latest',
@@ -487,6 +498,19 @@ Task:
                     </div>
                 </div>
             </div>
+            
+            <ApiKeyModal 
+                isOpen={isApiModalOpen} 
+                onClose={() => setIsApiModalOpen(false)} 
+                defaultProvider={engineConfig?.provider || 'Mistral'}
+                onSave={(key) => {
+                    if (setEngineConfig) {
+                        setEngineConfig({ ...engineConfig, apiKey: key });
+                    }
+                    setIsApiModalOpen(false);
+                    executeCheckJob(key);
+                }} 
+            />
         </div>
     );
 };

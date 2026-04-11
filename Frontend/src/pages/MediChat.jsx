@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './MediChat.css';
+import ApiKeyModal from '../components/ApiKeyModal';
 
 const POPULAR_TOPICS = [
     { icon: '🩸', label: 'Blood Pressure Tips' },
@@ -377,22 +378,24 @@ const MediChat = ({ engineConfig }) => {
         setError('');
     };
 
-    const sendMessage = async (text) => {
+    const [isApiModalOpen, setIsApiModalOpen] = useState(false);
+    const [pendingQuery, setPendingQuery] = useState('');
+
+    const sendMessage = (text) => {
         const q = (text || input).trim();
         if (!q || isThinking) return;
 
         const resolvedKey = localApiKey || engineConfig?.apiKey || '';
         if (!resolvedKey) {
-            setMessages(prev => [...prev, { id: Date.now(), role: 'user', text: q }, {
-                id: Date.now() + 1,
-                role: 'bot',
-                text: `❌ Please enter your LLM Provider API Key (e.g. Mistral, Groq, Gemini) in the sidebar settings panel to begin querying.`,
-                isError: true
-            }]);
-            setInput('');
+            setPendingQuery(q);
+            setIsApiModalOpen(true);
             return;
         }
 
+        executeQuery(q, resolvedKey);
+    };
+
+    const executeQuery = async (q, activeKey) => {
         const userMsg = { id: Date.now(), role: 'user', text: q };
         const newMessages = [...messages, userMsg];
         setMessages(newMessages);
@@ -425,7 +428,7 @@ const MediChat = ({ engineConfig }) => {
                     run_ragas: localConfig.runRagas,
                     llm_provider: localConfig.provider.toLowerCase(),
                     llm_model: localConfig.model,
-                    llm_api_key: localApiKey || engineConfig?.apiKey || ''
+                    llm_api_key: activeKey
                 })
             });
 
@@ -861,6 +864,20 @@ const MediChat = ({ engineConfig }) => {
                     </div>
                 </div>
             </div>
+            
+            <ApiKeyModal 
+                isOpen={isApiModalOpen} 
+                onClose={() => setIsApiModalOpen(false)} 
+                defaultProvider={localConfig.provider || 'Mistral'}
+                onSave={(key) => {
+                    setLocalApiKey(key);
+                    setIsApiModalOpen(false);
+                    if (pendingQuery) {
+                        executeQuery(pendingQuery, key);
+                        setPendingQuery('');
+                    }
+                }} 
+            />
         </div>
     );
 };
