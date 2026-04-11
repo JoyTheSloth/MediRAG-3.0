@@ -328,7 +328,21 @@ const MediChat = ({ engineConfig }) => {
     const [input, setInput] = useState('');
     const [isThinking, setIsThinking] = useState(false);
     const [error, setError] = useState('');
-    const [localApiKey, setLocalApiKey] = useState(engineConfig?.apiKey || import.meta.env.VITE_MISTRAL_API_KEY || 'UNWuD4qMgZeZAVdcAiC2dsuZwGFr9IE0');
+    const [localApiKey, setLocalApiKey] = useState(() => {
+        return sessionStorage.getItem('medirag_api_key') 
+            || engineConfig?.apiKey 
+            || import.meta.env.VITE_MISTRAL_API_KEY 
+            || '';
+    });
+    
+    useEffect(() => {
+        if (localApiKey) {
+            sessionStorage.setItem('medirag_api_key', localApiKey);
+        } else {
+            sessionStorage.removeItem('medirag_api_key');
+        }
+    }, [localApiKey]);
+
     const [showKey, setShowKey] = useState(false);
     const [localConfig, setLocalConfig] = useState({
         apiUrl: engineConfig?.apiUrl || import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000',
@@ -366,6 +380,18 @@ const MediChat = ({ engineConfig }) => {
     const sendMessage = async (text) => {
         const q = (text || input).trim();
         if (!q || isThinking) return;
+
+        const resolvedKey = localApiKey || engineConfig?.apiKey || '';
+        if (!resolvedKey) {
+            setMessages(prev => [...prev, { id: Date.now(), role: 'user', text: q }, {
+                id: Date.now() + 1,
+                role: 'bot',
+                text: `❌ Please enter your LLM Provider API Key (e.g. Mistral, Groq, Gemini) in the sidebar settings panel to begin querying.`,
+                isError: true
+            }]);
+            setInput('');
+            return;
+        }
 
         const userMsg = { id: Date.now(), role: 'user', text: q };
         const newMessages = [...messages, userMsg];

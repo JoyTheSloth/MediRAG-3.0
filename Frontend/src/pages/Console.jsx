@@ -12,14 +12,22 @@ const Console = () => {
     const [activeSubSection, setActiveSubSection] = useState(null);
 
     // Global settings for Evaluate / Patient
-    const [engineConfig, setEngineConfig] = useState({
+    const [engineConfig, setEngineConfig] = useState(() => ({
         apiUrl: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000',
         provider: 'Mistral',
-        apiKey: import.meta.env.VITE_MISTRAL_API_KEY || 'UNWuD4qMgZeZAVdcAiC2dsuZwGFr9IE0',
+        apiKey: sessionStorage.getItem('medirag_api_key') || import.meta.env.VITE_MISTRAL_API_KEY || '',
         model: 'mistral-large-latest',
         topK: 5,
         runRagas: false
-    });
+    }));
+
+    useEffect(() => {
+        if (engineConfig.apiKey) {
+            sessionStorage.setItem('medirag_api_key', engineConfig.apiKey);
+        } else {
+            sessionStorage.removeItem('medirag_api_key');
+        }
+    }, [engineConfig.apiKey]);
 
     // Initial section based on route or state
     useEffect(() => {
