@@ -1,0 +1,28 @@
+# MediRAG Backend - FastAPI only (no Gradio)
+# React frontend on Vercel, this is just the API backend
+
+# Core API
+fastapi>=0.110.0
+uvicorn>=0.27.0
+python-multipart>=0.0.12
+
+# Data handling
+pydantic>=2.0.0
+pyyaml>=6.0.0
+numpy>=1.26.0,<2
+pandas>=2.0.0
+requests>=2.30.0
+
+# Essential ML only
+torch --index-url https://download.pytorch.org/whl/cpu
+transformers>=4.40.0
+sentence-transformers>=2.5.0
+faiss-cpu>=1.9.0
+
+# Medical NLP
+scispacy
+https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.4/en_core_sci_lg-0.5.4.tar.gz
+
+# Utilities only
+pysbd>=0.3.0
+rank-bm25>=0.2.0

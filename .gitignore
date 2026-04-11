@@ -13,6 +13,16 @@ dist/
 .vs/
 .vscode/
 
+# Docker
+docker-compose.override.yml
+
 # Ignore .git from subdirectories so we can treat them as part of one repo
 Frontend/.git/
 Backend/.git/
+
+# Ignore large datasets and indexes for Github
+datafinal/
+Backend/data/
+*.index
+*.pkl
+*.csv

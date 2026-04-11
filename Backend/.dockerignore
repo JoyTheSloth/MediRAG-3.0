@@ -1,0 +1,9 @@
+# Override .gitignore for Docker builds
+# Include necessary data files
+!data/index/
+!data/index/*
+
+# Exclude everything else from data
+data/raw/*
+data/processed/*
+logs/*

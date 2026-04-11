@@ -1,17 +1,17 @@
 """
 src/pipeline/generator.py — LLM Answer Generation
 ===================================================
-Supports two providers based on config.yaml → llm.provider:
-  - "gemini"  : Google Gemini API (default, recommended — no local GPU needed)
+Supports multiple providers based on config.yaml → llm.provider:
+  - "gemini"  : Google Gemini API (recommended)
+  - "mistral" : Mistral AI API (api.mistral.ai)
+  - "groq"    : Groq Cloud API (fast inference)
   - "ollama"  : Local Ollama/Mistral (requires Ollama running locally)
 
-Gemini setup:
-  Set env variable: GEMINI_API_KEY=your_key_here
-  Or set config.yaml → llm.gemini_api_key (not recommended for production)
-
-Usage:
-    from src.pipeline.generator import generate_answer
-    answer = generate_answer(question, context_chunks, config)
+API Key setup:
+  Set env variables in Backend/.env:
+    GEMINI_API_KEY=your_key
+    MISTRAL_API_KEY=your_key
+    GROQ_API_KEY=your_key
 """
 from __future__ import annotations
 
@@ -26,6 +26,23 @@ import yaml
 
 logger = logging.getLogger(__name__)
 
+# Load .env file at module import time
+def _load_env():
+    env_path = Path(".env")
+    if not env_path.exists():
+        # Try one level up
+        env_path = Path("../Backend/.env")
+    if env_path.exists():
+        for line in env_path.read_text().splitlines():
+            line = line.strip()
+            if line and not line.startswith("#") and "=" in line:
+                key, val = line.split("=", 1)
+                key = key.strip()
+                val = val.strip().strip('"').strip("'")
+                if key and val and key not in os.environ:
+                    os.environ[key] = val
+
+_load_env()
 
 # ---------------------------------------------------------------------------
 # Config loader
@@ -291,9 +308,13 @@ def _generate_mistral(prompt: str, config: dict) -> str:
     import requests as _requests
     
     llm_cfg = config.get("llm", {})
-    api_key = llm_cfg.get("mistral_api_key") or os.environ.get("MISTRAL_API_KEY")
+    # Resolve placeholder or direct value
+    _raw_key = llm_cfg.get("mistral_api_key", "")
+    api_key = os.environ.get("MISTRAL_API_KEY") if (not _raw_key or _raw_key.startswith("${")) else _raw_key
     if not api_key:
-        raise RuntimeError("Mistral API key not found in config or env vars.")
+        raise RuntimeError(
+            "Mistral API key not found. Set MISTRAL_API_KEY in Backend/.env"
+        )
         
     model = llm_cfg.get("model", "mistral-large-latest")
     timeout = llm_cfg.get("timeout_seconds", 120)
@@ -312,7 +333,7 @@ def _generate_mistral(prompt: str, config: dict) -> str:
     }
 
     url = "https://api.mistral.ai/v1/chat/completions"
-    logger.info("Calling Mistral API (model=%s)...", model)
+    logger.info("Calling Mistral API (model=%s, key=...%s)...", model, api_key[-6:])
     t0 = time.perf_counter()
 
     try:
@@ -334,6 +355,63 @@ def _generate_mistral(prompt: str, config: dict) -> str:
 
     elapsed = int((time.perf_counter() - t0) * 1000)
     logger.info("Mistral generated answer in %d ms (%d chars)", elapsed, len(answer))
+    return answer
+
+
+# ---------------------------------------------------------------------------
+# Groq provider
+# ---------------------------------------------------------------------------
+
+def _generate_groq(prompt: str, config: dict) -> str:
+    import requests as _requests
+
+    llm_cfg = config.get("llm", {})
+    _raw_key = llm_cfg.get("groq_api_key", "")
+    api_key = os.environ.get("GROQ_API_KEY") if (not _raw_key or _raw_key.startswith("${")) else _raw_key
+    if not api_key:
+        raise RuntimeError(
+            "Groq API key not found. Set GROQ_API_KEY in Backend/.env"
+        )
+
+    model = llm_cfg.get("groq_model") or llm_cfg.get("model", "llama-3.3-70b-versatile")
+    timeout = llm_cfg.get("timeout_seconds", 120)
+    temperature = llm_cfg.get("generation_temperature", 0.7)
+
+    payload = {
+        "model": model,
+        "messages": [{"role": "user", "content": prompt}],
+        "temperature": temperature,
+        "max_tokens": 1024,
+    }
+
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json"
+    }
+
+    url = "https://api.groq.com/openai/v1/chat/completions"
+    logger.info("Calling Groq API (model=%s, key=...%s)...", model, api_key[-6:])
+    t0 = time.perf_counter()
+
+    try:
+        resp = _requests.post(url, json=payload, headers=headers, timeout=timeout)
+    except Exception as exc:
+        raise RuntimeError(f"Groq API network error: {exc}") from exc
+
+    if resp.status_code != 200:
+        raise RuntimeError(f"Groq HTTP {resp.status_code}: {resp.text[:300]}")
+
+    try:
+        data = resp.json()
+        answer = data["choices"][0]["message"]["content"].strip()
+    except Exception as exc:
+        raise RuntimeError(f"Unexpected Groq response: {exc}") from exc
+
+    if not answer:
+        raise RuntimeError("Groq returned an empty response.")
+
+    elapsed = int((time.perf_counter() - t0) * 1000)
+    logger.info("Groq generated answer in %d ms (%d chars)", elapsed, len(answer))
     return answer
 
 
@@ -405,10 +483,12 @@ def generate_answer(
         return _generate_ollama(prompt, effective_config)
     elif provider == "mistral":
         return _generate_mistral(prompt, effective_config)
+    elif provider == "groq":
+        return _generate_groq(prompt, effective_config)
     else:
         raise RuntimeError(
             f"Unknown LLM provider '{provider}'. "
-            "Set llm.provider to 'gemini', 'ollama', or 'mistral'."
+            "Set llm.provider to 'gemini', 'mistral', 'groq', or 'ollama'."
         )
 
 
@@ -457,5 +537,7 @@ def generate_strict_answer(
         return _generate_ollama(prompt, effective_config)
     elif provider == "mistral":
         return _generate_mistral(prompt, effective_config)
+    elif provider == "groq":
+        return _generate_groq(prompt, effective_config)
     else:
         raise RuntimeError(f"Unknown LLM provider '{provider}'.")

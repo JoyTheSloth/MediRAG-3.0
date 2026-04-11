@@ -30,6 +30,7 @@ import yaml
 from datetime import datetime
 from fastapi import FastAPI, HTTPException, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse
 
 import threading
 from src.api.schemas import (
@@ -164,7 +165,7 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# Allow all origins for local dev / Streamlit on same machine
+# Allow all origins for local dev / React frontend on same machine
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -198,6 +199,14 @@ def _module_score(module_results: dict, key: str) -> Optional[ModuleScore]:
         error=data.get("error"),
         latency_ms=data.get("latency_ms"),
     )
+
+
+# ---------------------------------------------------------------------------
+# GET / → redirect to /docs
+# ---------------------------------------------------------------------------
+@app.get("/", include_in_schema=False)
+def root():
+    return RedirectResponse(url="/docs")
 
 
 # ---------------------------------------------------------------------------

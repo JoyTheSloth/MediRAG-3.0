@@ -43,13 +43,16 @@ aggregator:
 
 llm:
   provider: mistral
-  # --- Mistral settings ---
-  mistral_api_key: UNWuD4qMgZeZAVdcAiC2dsuZwGFr9IE0
+  gemini_api_key: ${GEMINI_API_KEY}
+  mistral_api_key: ${MISTRAL_API_KEY}
+  groq_api_key: ${GROQ_API_KEY}
   model: mistral-large-latest
+  gemini_model: gemini-2.0-flash
+  groq_model: llama-3.3-70b-versatile
   base_url: http://localhost:11434
   timeout_seconds: 120
-  judge_temperature: 0.0            # deterministic — for RAGAS judging
-  generation_temperature: 0.7       # natural — for answer generation
+  judge_temperature: 0.0
+  generation_temperature: 0.7
 
 api:
   host: 0.0.0.0

@@ -1858,20 +1858,20 @@ button {
    ANIMATIONS UTILS
    ========================================================================= */
 .reveal-up {
-    opacity: 0;
-    transform: translateY(30px);
+    opacity: 1;
+    transform: none;
     transition: all 0.8s ease-out;
 }
 
 .reveal-left {
-    opacity: 0;
-    transform: translateX(-30px);
+    opacity: 1;
+    transform: none;
     transition: all 0.8s ease-out;
 }
 
 .reveal-right {
-    opacity: 0;
-    transform: translateX(30px);
+    opacity: 1;
+    transform: none;
     transition: all 0.8s ease-out;
 }
 
