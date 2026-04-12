@@ -58,101 +58,29 @@ const PatientExperience = ({ engineConfig, setEngineConfig }) => {
                 throw new Error('Please upload a document first before checking.');
             }
 
-            // Chunk the uploaded document into words
-            const words = uploadedText.split(/\s+/);
-            const textToAnalyze = words.join(' ');
+            const apiUrl = engineConfig?.apiUrl || import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+            const activeKey = overrideKey || engineConfig?.apiKey || '';
 
-            // STEP 1: Generate the raw medical answer based strictly on the dataset
-            const generationPrompt = `You are a medical assistant.
-Dataset:
-"""
-${textToAnalyze}
-"""
-User Question: ${q}
+            // Enrich question with document context, then run through the full RAG pipeline
+            const enrichedQuestion = `[Patient Document: ${uploadedFile?.name || 'uploaded file'}]\n\nDocument Content:\n${uploadedText.slice(0, 3000)}\n\n---\nPatient Question: ${q}`;
 
-Based ONLY on the dataset provided above, answer the user's question. If the answer is not in the dataset, say "I cannot find the answer in the provided document."`;
-
-            const genRes = await fetch('https://api.mistral.ai/v1/chat/completions', {
+            const res = await fetch(`${apiUrl}/query`, {
                 method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${overrideKey || engineConfig?.apiKey || ''}`
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    model: 'mistral-large-latest',
-                    messages: [{ role: 'user', content: generationPrompt }],
-                    temperature: 0.1
+                    question: enrichedQuestion,
+                    top_k: 5,
+                    run_ragas: false,
+                    llm_provider: (engineConfig?.provider || 'mistral').toLowerCase(),
+                    llm_model: engineConfig?.model || 'mistral-large-latest',
+                    llm_api_key: activeKey
                 })
             });
 
-            const genData = await genRes.json();
-            if (!genRes.ok) {
-                throw new Error(genData.error?.message || 'Failed to generate answer from Mistral');
-            }
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.detail || 'Query failed');
 
-            const generatedAnswer = genData.choices[0].message.content;
-
-            // STEP 2: Cross verify the generated output against the original dataset
-            const evalPrompt = `You are MediRAG-Eval, a rigorous medical AI safety evaluator.
-You must cross-verify the following generated medical answer against the original source dataset.
-
-Source Dataset:
-"""
-${textToAnalyze}
-"""
-
-User Question: ${q}
-Generated Answer to verify: "${generatedAnswer}"
-
-Task:
-1. Cross-verify the Generated Answer against the Source Dataset.
-2. Check for Entity Alignment (dosages, drug names).
-3. Check for Faithfulness (did the AI hallucinate info not in the dataset?).
-4. Assign a Risk Band ("SAFE", "MODERATE", or "CRITICAL") based on your verification.
-5. Provide your response ONLY as a valid JSON object matching this structure exactly:
-{
-  "risk_band": "SAFE",
-  "intervention_applied": false,
-  "generated_answer": "...",
-  "hrs": 15,
-  "module_results": {
-    "faithfulness": { "score": 0.95 },
-    "entity_verifier": { "score": 0.92 },
-    "source_credibility": { "score": 0.99 }
-  }
-}`;
-
-            const evalRes = await fetch('https://api.mistral.ai/v1/chat/completions', {
-                method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${overrideKey || engineConfig?.apiKey || ''}`
-                },
-                body: JSON.stringify({
-                    model: 'mistral-large-latest',
-                    messages: [{ role: 'user', content: evalPrompt }],
-                    response_format: { type: "json_object" },
-                    temperature: 0.1
-                })
-            });
-
-            const evalData = await evalRes.json();
-            if (!evalRes.ok) {
-                throw new Error(evalData.error?.message || 'Failed to fetch Mistral evaluation results');
-            }
-
-            const parsedResult = JSON.parse(evalData.choices[0].message.content);
-            const finalData = {
-                ...parsedResult,
-                total_pipeline_ms: 1250,
-                retrieved_chunks: [{ text: textToAnalyze.substring(0, 300) + '...', similarity_score: 1.0 }]
-            };
-
-            if (!finalData.intervention_applied && (!finalData.generated_answer || finalData.generated_answer === "...")) {
-                 finalData.generated_answer = generatedAnswer;
-            }
-
-            setResultData(finalData);
+            setResultData(data);
             setShowResults(true);
         } catch (err) {
             console.error(err);
@@ -316,7 +244,7 @@ Task:
 
             </div>
 
-            {/* RIGHT COLUMN: REPORT PREVIEW */}
+            {/* RIGHT COLUMN: RESULTS */}
             <div className={`px-report-col ${showResults ? 'has-results' : ''}`}>
                 {!showResults && !isAnalyzing && (
                     <>
@@ -330,86 +258,136 @@ Task:
                     </>
                 )}
 
-                {(isAnalyzing || showResults) && (
-                    <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', gap: '24px', opacity: isAnalyzing ? 0.6 : 1 }}>
-                        <div style={{ textAlign: 'left', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <div style={{ fontStyle: 'italic', color: 'var(--text-gray)', fontSize: '13px' }}>
-                                STATUS: {isAnalyzing ? 'GENERATING REPORT...' : 'REPORT GENERATED'}
-                            </div>
-                            {!isAnalyzing && resultData && (
-                                <div style={{ color: resultData.risk_band === 'SAFE' ? '#00C896' : (resultData.risk_band === 'CRITICAL' ? '#EF4444' : '#F5A623'), fontSize: '12px', fontWeight: 800 }}>
-                                    {resultData.intervention_applied ? 'INTERVENTION APPLIED' : `VERIFIED ${resultData.risk_band}`}
-                                </div>
-                            )}
-                        </div>
-                        
-                        {/* Mock Report Cards */}
-                        <div style={{ 
-                            background: 'rgba(255,255,255,0.03)', 
-                            border: '1px solid rgba(255,255,255,0.08)', 
-                            borderRadius: '16px', 
-                            padding: '24px',
-                            textAlign: 'left'
-                        }}>
-                            <div style={{ fontSize: '14px', fontWeight: 800, color: 'var(--text-gray)', marginBottom: '16px' }}>VERIFICATION RESULT</div>
-                            <div style={{ fontSize: '24px', fontWeight: 800, color: 'white', marginBottom: '8px' }}>
-                                {isAnalyzing ? '---' : (resultData?.risk_band === 'SAFE' ? 'Low Clinical Risk' : (resultData?.risk_band === 'CRITICAL' ? 'Critical Clinical Risk' : 'Moderate Clinical Risk'))}
-                            </div>
-                            <div style={{ fontSize: '14px', color: 'var(--text-gray-light)' }}>
-                                {isAnalyzing ? 'Auditing model claims...' : (resultData?.intervention_applied ? 'MediRAG safety gate intervened and replaced the generated text.' : 'Analysis of the claims verify the content against medical data.')}
-                            </div>
-                            {!isAnalyzing && resultData && (
-                                <div style={{ marginTop: '16px', background: 'rgba(0,0,0,0.2)', padding:'12px', borderRadius: '8px', fontSize: '13px', borderLeft: `3px solid ${resultData.risk_band === 'SAFE' ? '#00C896' : (resultData.risk_band==='CRITICAL'?'#EF4444':'#F5A623')}`}}>
-                                    <strong>AI ANSWER:</strong> {resultData.generated_answer}
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Progress Bar or Metrics */}
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                            {[
-                                { label: 'Faithfulness', val: isAnalyzing ? '...' : (resultData ? `${Math.round(resultData.module_results.faithfulness?.score * 100 || 0)}%` : '98%') },
-                                { label: 'Medical Accuracy (Entities)', val: isAnalyzing ? '...' : (resultData ? `${Math.round(resultData.module_results.entity_verifier?.score * 100 || 0)}%` : '94%') },
-                                { label: 'Source Adherence', val: isAnalyzing ? '...' : (resultData ? `${Math.round(resultData.module_results.source_credibility?.score * 100 || 0)}%` : '100%') }
-                            ].map((m, i) => (
-                                <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                        <span style={{ fontSize: '12px', color: 'var(--text-gray)' }}>{m.label}</span>
-                                        <span style={{ fontSize: '12px', fontWeight: 800 }}>{m.val}</span>
-                                    </div>
-                                    <div style={{ height: '2px', width: '100%', background: 'rgba(255,255,255,0.05)', borderRadius: '2px' }}>
-                                        <div style={{ 
-                                            height: '100%', 
-                                            width: isAnalyzing ? '0%' : m.val, 
-                                            background: m.val === '100%' || (!m.val.includes('...') && parseInt(m.val) > 80) ? '#00C896' : '#EF4444',
-                                            transition: 'width 1.5s ease-out'
-                                        }}></div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-
-                        {!isAnalyzing && (
-                            <>
-                                <button className="px-action-btn" style={{ marginTop: 'auto' }} onClick={() => setShowTrace(t => !t)}>
-                                    {showTrace ? 'Hide Audit Trace ▲' : 'View Detailed Audit Trace ▼'}
-                                </button>
-                                {showTrace && resultData && (
-                                    <div style={{ background: 'rgba(0,0,0,0.3)', borderRadius: '10px', padding: '16px', fontSize: '12px', fontFamily: 'monospace', color: 'rgba(255,255,255,0.6)', lineHeight: 1.7, overflowX: 'auto', marginTop: '8px' }}>
-                                        <div style={{ color: '#00C896', marginBottom: '8px' }}>// MediRAG Audit Trace — {selectedApp}</div>
-                                        <div>HRS: <span style={{color:'#fff'}}>{resultData.hrs ?? 'N/A'}</span></div>
-                                        <div>risk_band: <span style={{color:'#fff'}}>"{ resultData.risk_band ?? 'N/A'}"</span></div>
-                                        <div>intervention_applied: <span style={{color:'#fff'}}>{String(resultData.intervention_applied ?? false)}</span></div>
-                                        <div>pipeline_ms: <span style={{color:'#fff'}}>{resultData.total_pipeline_ms ?? 'N/A'}</span></div>
-                                        <div>chunks_retrieved: <span style={{color:'#fff'}}>{resultData.retrieved_chunks?.length ?? 0}</span></div>
-                                        <div>faithfulness: <span style={{color:'#fff'}}>{resultData.module_results?.faithfulness?.score?.toFixed(3) ?? 'N/A'}</span></div>
-                                        <div>source_credibility: <span style={{color:'#fff'}}>{resultData.module_results?.source_credibility?.score?.toFixed(3) ?? 'N/A'}</span></div>
-                                    </div>
-                                )}
-                            </>
-                        )}
+                {isAnalyzing && (
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px', color: 'var(--text-gray)', marginTop: '60px' }}>
+                        <div className="loader-ring" style={{ width: '40px', height: '40px', borderWidth: '3px' }}></div>
+                        <div style={{ fontSize: '14px' }}>Retrieving from medical dataset & verifying...</div>
                     </div>
                 )}
+
+                {showResults && resultData && (() => {
+                    const hrs = resultData.hrs_score ?? resultData.hrs ?? 10;
+                    const band = hrs >= 60 ? 'CRITICAL' : hrs >= 30 ? 'MODERATE' : 'SAFE';
+                    const bandColor = band === 'SAFE' ? '#00C896' : band === 'CRITICAL' ? '#EF4444' : '#F5A623';
+                    const chunks = resultData.retrieved_chunks || [];
+                    const mods = resultData.module_results || {};
+                    const answer = resultData.generated_answer || resultData.answer || '';
+
+                    return (
+                        <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+
+                            {/* Status bar */}
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <div style={{ fontStyle: 'italic', color: 'var(--text-gray)', fontSize: '12px' }}>STATUS: REPORT GENERATED</div>
+                                <div style={{ color: bandColor, fontSize: '12px', fontWeight: 800 }}>
+                                    {resultData.intervention_applied ? '⚡ INTERVENTION APPLIED' : `✅ VERIFIED ${band}`}
+                                </div>
+                            </div>
+
+                            {/* HRS Gauge */}
+                            <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${bandColor}33`, borderRadius: '14px', padding: '20px' }}>
+                                <div style={{ fontSize: '11px', fontWeight: 800, color: 'var(--text-gray)', letterSpacing: '1px', marginBottom: '12px' }}>HALLUCINATION RISK SCORE</div>
+                                <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '12px' }}>
+                                    <div style={{ fontSize: '48px', fontWeight: 900, color: bandColor, lineHeight: 1 }}>{hrs}</div>
+                                    <div style={{ fontSize: '14px', color: 'var(--text-gray)' }}>/100</div>
+                                    <div style={{ marginLeft: 'auto', background: `${bandColor}20`, border: `1px solid ${bandColor}`, borderRadius: '20px', padding: '4px 14px', fontSize: '12px', fontWeight: 800, color: bandColor }}>
+                                        {band} RISK
+                                    </div>
+                                </div>
+                                <div style={{ height: '6px', width: '100%', background: 'rgba(255,255,255,0.06)', borderRadius: '6px', overflow: 'hidden' }}>
+                                    <div style={{ height: '100%', width: `${hrs}%`, background: `linear-gradient(90deg, #00C896, ${bandColor})`, borderRadius: '6px', transition: 'width 1.2s ease-out' }}></div>
+                                </div>
+                            </div>
+
+                            {/* AI Answer with source attribution */}
+                            <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '14px', padding: '20px' }}>
+                                <div style={{ fontSize: '11px', fontWeight: 800, color: 'var(--text-gray)', letterSpacing: '1px', marginBottom: '14px' }}>🤖 AI ANSWER</div>
+                                <div style={{ fontSize: '14px', color: 'rgba(255,255,255,0.9)', lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{answer}</div>
+                                {resultData.intervention_applied && resultData.safe_answer && (
+                                    <div style={{ marginTop: '14px', padding: '12px', background: 'rgba(245,166,35,0.08)', border: '1px solid rgba(245,166,35,0.3)', borderRadius: '8px', fontSize: '12px', color: '#F5A623' }}>
+                                        ⚡ <strong>MediRAG intervened</strong> — answer was replaced with a safer version.
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Retrieved Dataset Sources */}
+                            {chunks.length > 0 && (
+                                <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '14px', padding: '20px' }}>
+                                    <div style={{ fontSize: '11px', fontWeight: 800, color: 'var(--text-gray)', letterSpacing: '1px', marginBottom: '14px' }}>📚 RETRIEVED DATASET SOURCES ({chunks.length})</div>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                        {chunks.map((chunk, i) => {
+                                            const score = chunk.similarity_score ?? chunk.score ?? 0;
+                                            const scoreColor = score > 0.5 ? '#00C896' : score > 0.2 ? '#F5A623' : 'rgba(255,255,255,0.4)';
+                                            const title = chunk.title || chunk.doc_id || `Source ${i + 1}`;
+                                            const source = chunk.source || chunk.pub_type || '';
+                                            const text = chunk.text || chunk.chunk_text || '';
+                                            return (
+                                                <div key={i} style={{ background: 'rgba(0,0,0,0.2)', borderRadius: '10px', padding: '14px', borderLeft: `3px solid ${scoreColor}` }}>
+                                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px', gap: '8px' }}>
+                                                        <div style={{ fontSize: '12px', fontWeight: 700, color: 'white', lineHeight: 1.4, flex: 1 }}>{title}</div>
+                                                        <div style={{ fontSize: '11px', fontWeight: 800, color: scoreColor, flexShrink: 0, background: `${scoreColor}15`, padding: '2px 8px', borderRadius: '10px' }}>
+                                                            {(score * 100).toFixed(1)}% match
+                                                        </div>
+                                                    </div>
+                                                    {source && (
+                                                        <div style={{ fontSize: '10px', color: 'rgba(0,200,150,0.7)', fontWeight: 600, marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{source}</div>
+                                                    )}
+                                                    <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.55)', lineHeight: 1.6 }}>
+                                                        {text.length > 220 ? text.slice(0, 220) + '...' : text}
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Metrics */}
+                            {Object.keys(mods).length > 0 && (
+                                <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '14px', padding: '20px' }}>
+                                    <div style={{ fontSize: '11px', fontWeight: 800, color: 'var(--text-gray)', letterSpacing: '1px', marginBottom: '14px' }}>📊 EVALUATION METRICS</div>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                        {Object.entries(mods).map(([key, val]) => {
+                                            const score = val?.score ?? val ?? 0;
+                                            const pct = Math.round(score * 100);
+                                            const color = pct > 80 ? '#00C896' : pct > 50 ? '#F5A623' : '#EF4444';
+                                            const label = key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+                                            return (
+                                                <div key={key}>
+                                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                                                        <span style={{ fontSize: '12px', color: 'var(--text-gray)' }}>{label}</span>
+                                                        <span style={{ fontSize: '12px', fontWeight: 800, color }}>{pct}%</span>
+                                                    </div>
+                                                    <div style={{ height: '3px', width: '100%', background: 'rgba(255,255,255,0.05)', borderRadius: '3px' }}>
+                                                        <div style={{ height: '100%', width: `${pct}%`, background: color, borderRadius: '3px', transition: 'width 1.2s ease-out' }}></div>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Audit Trace toggle */}
+                            <button className="px-action-btn" onClick={() => setShowTrace(t => !t)}>
+                                {showTrace ? 'Hide Audit Trace ▲' : 'View Raw Audit Trace ▼'}
+                            </button>
+                            {showTrace && (
+                                <div style={{ background: 'rgba(0,0,0,0.4)', borderRadius: '10px', padding: '16px', fontSize: '11px', fontFamily: 'monospace', color: 'rgba(255,255,255,0.55)', lineHeight: 1.8, overflowX: 'auto' }}>
+                                    <div style={{ color: '#00C896', marginBottom: '8px' }}>// MediRAG Audit Trace — {selectedApp}</div>
+                                    <div>hrs_score: <span style={{color:'#fff'}}>{hrs}</span></div>
+                                    <div>risk_band: <span style={{color:'#fff'}}>"{ band}"</span></div>
+                                    <div>intervention_applied: <span style={{color:'#fff'}}>{String(resultData.intervention_applied ?? false)}</span></div>
+                                    <div>pipeline_ms: <span style={{color:'#fff'}}>{resultData.total_pipeline_ms ?? 'N/A'}</span></div>
+                                    <div>chunks_retrieved: <span style={{color:'#fff'}}>{chunks.length}</span></div>
+                                    {chunks.map((c, i) => (
+                                        <div key={i}>chunk[{i}].score: <span style={{color:'#fff'}}>{(c.similarity_score ?? 0).toFixed(4)}</span> — <span style={{color:'rgba(255,255,255,0.4)'}}>{(c.title || c.doc_id || '').slice(0, 50)}</span></div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    );
+                })()}
             </div>
 
             {/* INTEGRATION PREVIEW SECTION */}
