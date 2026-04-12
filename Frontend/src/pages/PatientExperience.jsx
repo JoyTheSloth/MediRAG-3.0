@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './PatientExperience.css';
 import ApiKeyModal from '../components/ApiKeyModal';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 const PatientExperience = ({ engineConfig, setEngineConfig }) => {
     const [selectedDocType, setSelectedDocType] = useState('Discharge summary');
@@ -318,10 +320,25 @@ const PatientExperience = ({ engineConfig, setEngineConfig }) => {
                                 </div>
                             </div>
 
-                            {/* AI Answer with source attribution */}
+                            {/* Answer — rendered as markdown */}
                             <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '14px', padding: '20px' }}>
-                                <div style={{ fontSize: '11px', fontWeight: 800, color: 'var(--text-gray)', letterSpacing: '1px', marginBottom: '14px' }}>🤖 AI ANSWER</div>
-                                <div style={{ fontSize: '14px', color: 'rgba(255,255,255,0.9)', lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{answer}</div>
+                                <ReactMarkdown
+                                    remarkPlugins={[remarkGfm]}
+                                    components={{
+                                        p:      ({node, ...props}) => <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.9)', lineHeight: 1.8, marginBottom: '12px', marginTop: 0 }} {...props} />,
+                                        strong: ({node, ...props}) => <strong style={{ color: '#ffffff', fontWeight: 700 }} {...props} />,
+                                        em:     ({node, ...props}) => <em style={{ color: 'rgba(0,200,150,0.9)', fontStyle: 'italic' }} {...props} />,
+                                        li:     ({node, ...props}) => <li style={{ fontSize: '13px', color: 'rgba(255,255,255,0.8)', lineHeight: 1.7, marginBottom: '4px' }} {...props} />,
+                                        ul:     ({node, ...props}) => <ul style={{ paddingLeft: '20px', margin: '8px 0' }} {...props} />,
+                                        ol:     ({node, ...props}) => <ol style={{ paddingLeft: '20px', margin: '8px 0' }} {...props} />,
+                                        h3:     ({node, ...props}) => <h3 style={{ fontSize: '14px', color: '#00C896', fontWeight: 700, margin: '14px 0 6px' }} {...props} />,
+                                        h4:     ({node, ...props}) => <h4 style={{ fontSize: '13px', color: '#00C896', fontWeight: 600, margin: '10px 0 4px' }} {...props} />,
+                                        code:   ({node, ...props}) => <code style={{ background: 'rgba(0,200,150,0.12)', color: '#00C896', padding: '1px 6px', borderRadius: '4px', fontSize: '12px', fontFamily: 'monospace' }} {...props} />,
+                                        blockquote: ({node, ...props}) => <blockquote style={{ borderLeft: '3px solid #00C896', paddingLeft: '12px', margin: '10px 0', color: 'rgba(255,255,255,0.6)', fontStyle: 'italic' }} {...props} />,
+                                    }}
+                                >
+                                    {answer}
+                                </ReactMarkdown>
                                 {resultData.intervention_applied && resultData.safe_answer && (
                                     <div style={{ marginTop: '14px', padding: '12px', background: 'rgba(245,166,35,0.08)', border: '1px solid rgba(245,166,35,0.3)', borderRadius: '8px', fontSize: '12px', color: '#F5A623' }}>
                                         ⚡ <strong>MediRAG intervened</strong> — answer was replaced with a safer version.
