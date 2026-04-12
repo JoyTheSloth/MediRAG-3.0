@@ -61,21 +61,21 @@ const Navbar = () => {
         {/* Mobile Floating Bottom Nav */}
         <div className="mobile-floating-nav">
             <NavLink to="/" end className={({ isActive }) => (isActive ? 'm-nav-item active' : 'm-nav-item')}>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.47 3.84a.75.75 0 011.06 0l8.99 9a.75.75 0 11-1.06 1.06l-1.21-1.21V20c0 1.1-.9 2-2 2H6c-1.1 0-2-.9-2-2v-7.31l-1.21 1.21a.75.75 0 11-1.06-1.06l8.99-9z"></path></svg>
             </NavLink>
             <NavLink to="/console" className={({ isActive }) => (isActive || location.pathname==='/evaluate' || location.pathname==='/dashboard' ? 'm-nav-item active' : 'm-nav-item')}>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 4C3 2.9 3.9 2 5 2H9C10.1 2 11 2.9 11 4V10C11 11.1 10.1 12 9 12H5C3.9 12 3 11.1 3 10V4ZM3 14C3 12.9 3.9 12 5 12H9C10.1 12 11 12.9 11 14V20C11 21.1 10.1 22 9 22H5C3.9 22 3 21.1 3 20V14ZM13 4C13 2.9 13.9 2 15 2H19C20.1 2 21 2.9 21 4V8C21 9.1 20.1 10 19 10H15C13.9 10 13 9.1 13 8V4ZM13 12C13 10.9 13.9 10 15 10H19C20.1 10 21 10.9 21 12V20C21 21.1 20.1 22 19 22H15C13.9 22 13 21.1 13 20V12Z"></path></svg>
             </NavLink>
             <NavLink to="/chat" className={({ isActive }) => (isActive ? 'm-nav-item active' : 'm-nav-item')}>
                 <div className="m-nav-action-btn">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                    <svg viewBox="0 0 24 24" fill="currentColor" style={{ width: '22px', height: '22px' }}><path d="M2 11.25C2 5.92 6.55 1.5 12 1.5C17.45 1.5 22 5.92 22 11.25C22 16.58 17.45 21 12 21C10.45 21 9.02 20.61 7.78 19.92L3 21L4.08 16.22C3.39 14.98 2 13.55 2 11.25z"></path></svg>
                 </div>
             </NavLink>
             <NavLink to="/api-docs" className={({ isActive }) => (isActive ? 'm-nav-item active' : 'm-nav-item')}>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 4C4 2.9 4.9 2 6 2H10.5C11.3 2 12 2.7 12 3.5V19.5C12 19.5 7.5 17 6 17C4.9 17 4 16.1 4 15V4ZM20 4C20 2.9 19.1 2 18 2H13.5C12.7 2 12 2.7 12 3.5V19.5C12 19.5 16.5 17 18 17C19.1 17 20 16.1 20 15V4Z"></path></svg>
             </NavLink>
             <NavLink to="/about" className={({ isActive }) => (isActive ? 'm-nav-item active' : 'm-nav-item')}>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"></path></svg>
             </NavLink>
         </div>
         </>
