@@ -64,31 +64,50 @@ const PatientExperience = ({ engineConfig, setEngineConfig }) => {
             // Enrich question with document context, then run through the full RAG pipeline
             const enrichedQuestion = `[Patient Document: ${uploadedFile?.name || 'uploaded file'}]\n\nDocument Content:\n${uploadedText.slice(0, 3000)}\n\n---\nPatient Question: ${q}`;
 
-            const res = await fetch(`${apiUrl}/query`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    question: enrichedQuestion,
-                    top_k: 5,
-                    run_ragas: false,
-                    llm_provider: (engineConfig?.provider || 'mistral').toLowerCase(),
-                    llm_model: engineConfig?.model || 'mistral-large-latest',
-                    llm_api_key: activeKey
-                })
-            });
+            let res;
+            try {
+                res = await fetch(`${apiUrl}/query`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        question: enrichedQuestion,
+                        top_k: 5,
+                        run_ragas: false,
+                        llm_provider: (engineConfig?.provider || 'mistral').toLowerCase(),
+                        llm_model: engineConfig?.model || 'mistral-large-latest',
+                        llm_api_key: activeKey
+                    })
+                });
+            } catch (networkErr) {
+                throw new Error(`Cannot reach MediRAG backend at ${apiUrl}. Is the HF Space running? (${networkErr.message})`);
+            }
 
             const data = await res.json();
-            if (!res.ok) throw new Error(data.detail || 'Query failed');
+            if (!res.ok) {
+                // FastAPI can return detail as string, object, or array
+                let errMsg;
+                if (typeof data.detail === 'string') {
+                    errMsg = data.detail;
+                } else if (Array.isArray(data.detail)) {
+                    errMsg = data.detail.map(e => e.msg || JSON.stringify(e)).join('; ');
+                } else if (data.detail) {
+                    errMsg = JSON.stringify(data.detail);
+                } else {
+                    errMsg = `Backend error ${res.status}: ${res.statusText}`;
+                }
+                throw new Error(errMsg);
+            }
 
             setResultData(data);
             setShowResults(true);
         } catch (err) {
             console.error(err);
-            setErrorMsg(err.message);
+            setErrorMsg(typeof err.message === 'string' ? err.message : JSON.stringify(err));
         } finally {
             setIsAnalyzing(false);
         }
     };
+
 
     return (
         <div className="patient-experience">
