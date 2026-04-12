@@ -172,7 +172,7 @@ const Home = () => {
             </div>
             <div className="stat-divider"></div>
             <div className="stat-item">
-                <div className="stat-value"><span className="counter" data-target="211">0</span>K+</div>
+                <div className="stat-value"><span className="counter" data-target="11">0</span> Lakh+</div>
                 <div className="stat-label">PubMed Samples Supported</div>
             </div>
             <div className="stat-divider"></div>
@@ -520,7 +520,7 @@ const Home = () => {
                     <div className="ds-title">PubMedQA</div>
                     <div className="ds-desc">Biomedical research question answering dataset collected from original PubMed abstracts.</div>
                     <div className="ds-meta">
-                        <div className="ds-stat">211K+ Samples</div>
+                        <div className="ds-stat">11 Lakh+ Samples</div>
                         <div className="ds-source">NIH / NLM</div>
                     </div>
                 </div>
