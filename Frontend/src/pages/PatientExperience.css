@@ -251,6 +251,142 @@
     }
 }
 
+/* --- MOBILE CHATGPT-LIKE UI --- */
+@media (max-width: 768px) {
+    .patient-experience {
+        padding: 12px;
+        gap: 24px;
+        background-color: #0c1224;
+    }
+
+    /* Input Col restyling */
+    .px-input-col {
+        gap: 24px;
+    }
+
+    /* Huge file upload zone into a sleek compact button */
+    .px-upload-zone {
+        padding: 16px 20px;
+        flex-direction: row;
+        gap: 16px;
+        justify-content: flex-start;
+        text-align: left;
+        border-radius: 20px;
+        border: none;
+        background: rgba(255, 255, 255, 0.05); /* slightly lighter than background */
+    }
+    
+    .px-upload-icon-wrapper {
+        margin-bottom: 0;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+    }
+
+    .px-upload-icon-wrapper svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .px-upload-subtitle {
+        display: none; /* hide subtitle for cleaner look */
+    }
+
+    .px-upload-title {
+        font-size: 15px;
+        margin-bottom: 0;
+        font-weight: 500;
+    }
+
+    /* Chips as floating option pills (2x2 grid look) */
+    .px-section-label {
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 13px;
+        letter-spacing: normal;
+        text-transform: none;
+        margin-bottom: 12px;
+    }
+
+    .px-chips-row {
+        gap: 8px;
+    }
+
+    .px-chip {
+        padding: 12px 16px;
+        border-radius: 24px;
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: rgba(255, 255, 255, 0.8);
+        font-weight: 500;
+        font-size: 13px;
+    }
+    
+    .px-chip.active {
+        background: #f8f9fa;
+        color: #0c1224;
+        border-color: #f8f9fa;
+    }
+
+    /* The Question + Action Box styling like a chat bar */
+    .px-question-box {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 24px;
+        padding: 16px;
+        gap: 12px;
+        margin-top: 10px;
+    }
+    
+    .px-question-box .px-section-label {
+        display: none; /* hide "Your Question" label for sleeker look */
+    }
+
+    .px-select {
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 12px;
+        border-radius: 16px;
+    }
+
+    .px-textarea {
+        background: transparent;
+        border: none;
+        padding: 0;
+        height: 60px;
+        font-size: 16px;
+        color: #fff;
+    }
+    
+    .px-textarea:focus {
+        background: transparent;
+        border: none;
+    }
+
+    /* The primary execute check box */
+    .px-action-btn.primary {
+        background: #f8f9fa;
+        color: #0c1224;
+        border-radius: 40px; /* pill shape */
+        padding: 16px;
+        font-size: 15px;
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        margin-top: -8px; /* pull closer to the question box */
+    }
+
+    .px-report-col {
+        border-radius: 24px;
+        border: none;
+        padding: 24px 16px;
+        margin-top: 10px;
+        background: transparent;
+    }
+
+    .px-report-col.has-results {
+        background: rgba(255, 255, 255, 0.03);
+    }
+}
+
 /* --- ANIMATION UTILS --- */
 .loader-ring {
     width: 20px;
