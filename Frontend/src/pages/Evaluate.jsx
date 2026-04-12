@@ -3,6 +3,94 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import './Evaluate.css';
 import ApiKeyModal from '../components/ApiKeyModal';
 
+// Extracted so useState is legal (Rules of Hooks: no hooks inside loops/maps)
+const SourceChunkCard = ({ chk, i, chunkDetails }) => {
+    const [expanded, setExpanded] = useState(false);
+    const score = chk.similarity_score ?? 0;
+    const scoreColor = score > 0.5 ? '#00C896' : score > 0.2 ? '#F5A623' : 'rgba(255,255,255,0.4)';
+    const tier = chunkDetails?.tier;
+    const tierColor = tier === 1 ? '#00C896' : tier === 2 ? '#4dabf7' : tier === 3 ? '#F5A623' : 'rgba(255,255,255,0.3)';
+    return (
+        <div style={{
+            background: 'rgba(255,255,255,0.02)',
+            border: `1px solid ${scoreColor}30`,
+            borderLeft: `3px solid ${scoreColor}`,
+            borderRadius: '10px',
+            padding: '16px',
+            marginBottom: '12px'
+        }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px', marginBottom: '10px' }}>
+                <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: '13px', fontWeight: 700, color: 'white', marginBottom: '4px' }}>
+                        {chk.title || chk.source || `Source ${i + 1}`}
+                    </div>
+                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                        {chk.pub_type && (
+                            <span style={{ fontSize: '10px', background: 'rgba(77,171,247,0.12)', color: '#4dabf7', padding: '2px 8px', borderRadius: '10px', fontWeight: 600 }}>
+                                {chk.pub_type.replace(/_/g, ' ').toUpperCase()}
+                            </span>
+                        )}
+                        {chk.source && chk.source !== chk.title && (
+                            <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', padding: '2px 8px', background: 'rgba(255,255,255,0.04)', borderRadius: '10px' }}>
+                                {chk.source}
+                            </span>
+                        )}
+                        {chk.pub_year && (
+                            <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', padding: '2px 8px', background: 'rgba(255,255,255,0.04)', borderRadius: '10px' }}>
+                                {chk.pub_year}
+                            </span>
+                        )}
+                        {chk.chunk_id && (
+                            <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.25)', fontFamily: 'monospace' }}>
+                                ID:{chk.chunk_id.slice(0, 8)}
+                            </span>
+                        )}
+                    </div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px', flexShrink: 0 }}>
+                    <span style={{ fontSize: '12px', fontWeight: 800, color: scoreColor, background: `${scoreColor}15`, padding: '3px 10px', borderRadius: '10px' }}>
+                        {(score * 100).toFixed(1)}% match
+                    </span>
+                    {tier && (
+                        <span style={{ fontSize: '10px', fontWeight: 700, color: tierColor, border: `1px solid ${tierColor}`, padding: '2px 8px', borderRadius: '4px' }}>
+                            TIER {tier}
+                        </span>
+                    )}
+                </div>
+            </div>
+            <div style={{ height: '3px', width: '100%', background: 'rgba(255,255,255,0.05)', borderRadius: '3px', marginBottom: '12px' }}>
+                <div style={{ height: '100%', width: `${score * 100}%`, background: scoreColor, borderRadius: '3px', transition: 'width 0.8s ease-out' }}></div>
+            </div>
+            {chk.text && (
+                <div>
+                    <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.7 }}>
+                        {expanded ? chk.text : chk.text.slice(0, 280) + (chk.text.length > 280 ? '...' : '')}
+                    </div>
+                    {chk.text.length > 280 && (
+                        <button
+                            onClick={() => setExpanded(e => !e)}
+                            style={{ marginTop: '8px', background: 'none', border: 'none', color: '#00C896', fontSize: '11px', cursor: 'pointer', padding: 0, fontWeight: 600 }}
+                        >
+                            {expanded ? '▲ Show less' : '▼ Show full text'}
+                        </button>
+                    )}
+                </div>
+            )}
+            {chunkDetails && Object.keys(chunkDetails).length > 0 && (
+                <div style={{ marginTop: '10px', paddingTop: '10px', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                    {chunkDetails.tier_score !== undefined && (
+                        <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)' }}>Tier score: <strong style={{color:'rgba(255,255,255,0.7)'}}>{chunkDetails.tier_score?.toFixed(3)}</strong></span>
+                    )}
+                    {chunkDetails.nli_score !== undefined && (
+                        <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)' }}>NLI: <strong style={{color:'rgba(255,255,255,0.7)'}}>{chunkDetails.nli_score?.toFixed(3)}</strong></span>
+                    )}
+                </div>
+            )}
+        </div>
+    );
+};
+
+
 const Evaluate = ({ embedded = false, mode = 'researcher', engineConfig, setEngineConfig }) => {
     const location = useLocation();
     const navigate = useNavigate();
@@ -518,96 +606,9 @@ const Evaluate = ({ embedded = false, mode = 'researcher', engineConfig, setEngi
                         )}
 
                         {(resultData.retrieved_chunks || []).map((chk, i) => {
-                            const score = chk.similarity_score ?? 0;
-                            const scoreColor = score > 0.5 ? '#00C896' : score > 0.2 ? '#F5A623' : 'rgba(255,255,255,0.4)';
                             const chunkDetails = resultData.module_results?.source_credibility?.details?.chunks?.find(c => c.chunk_id === chk.chunk_id) || {};
-                            const tier = chunkDetails.tier;
-                            const tierColor = tier === 1 ? '#00C896' : tier === 2 ? '#4dabf7' : tier === 3 ? '#F5A623' : 'rgba(255,255,255,0.3)';
-                            const [expanded, setExpanded] = React.useState(false);
                             return (
-                                <div key={i} style={{
-                                    background: 'rgba(255,255,255,0.02)',
-                                    border: `1px solid ${scoreColor}30`,
-                                    borderLeft: `3px solid ${scoreColor}`,
-                                    borderRadius: '10px',
-                                    padding: '16px',
-                                    marginBottom: '12px'
-                                }}>
-                                    {/* Top row: title + badges */}
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px', marginBottom: '10px' }}>
-                                        <div style={{ flex: 1 }}>
-                                            <div style={{ fontSize: '13px', fontWeight: 700, color: 'white', marginBottom: '4px' }}>
-                                                {chk.title || chk.source || `Source ${i + 1}`}
-                                            </div>
-                                            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                                                {chk.pub_type && (
-                                                    <span style={{ fontSize: '10px', background: 'rgba(77,171,247,0.12)', color: '#4dabf7', padding: '2px 8px', borderRadius: '10px', fontWeight: 600 }}>
-                                                        {chk.pub_type.replace(/_/g, ' ').toUpperCase()}
-                                                    </span>
-                                                )}
-                                                {chk.source && chk.source !== chk.title && (
-                                                    <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', padding: '2px 8px', background: 'rgba(255,255,255,0.04)', borderRadius: '10px' }}>
-                                                        {chk.source}
-                                                    </span>
-                                                )}
-                                                {chk.pub_year && (
-                                                    <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', padding: '2px 8px', background: 'rgba(255,255,255,0.04)', borderRadius: '10px' }}>
-                                                        {chk.pub_year}
-                                                    </span>
-                                                )}
-                                                {chk.chunk_id && (
-                                                    <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.25)', fontFamily: 'monospace' }}>
-                                                        ID:{chk.chunk_id.slice(0,8)}
-                                                    </span>
-                                                )}
-                                            </div>
-                                        </div>
-                                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px', flexShrink: 0 }}>
-                                            <span style={{ fontSize: '12px', fontWeight: 800, color: scoreColor, background: `${scoreColor}15`, padding: '3px 10px', borderRadius: '10px' }}>
-                                                {(score * 100).toFixed(1)}% match
-                                            </span>
-                                            {tier && (
-                                                <span style={{ fontSize: '10px', fontWeight: 700, color: tierColor, border: `1px solid ${tierColor}`, padding: '2px 8px', borderRadius: '4px' }}>
-                                                    TIER {tier}
-                                                </span>
-                                            )}
-                                        </div>
-                                    </div>
-
-                                    {/* Similarity bar */}
-                                    <div style={{ height: '3px', width: '100%', background: 'rgba(255,255,255,0.05)', borderRadius: '3px', marginBottom: '12px' }}>
-                                        <div style={{ height: '100%', width: `${score * 100}%`, background: scoreColor, borderRadius: '3px', transition: 'width 0.8s ease-out' }}></div>
-                                    </div>
-
-                                    {/* Text snippet */}
-                                    {chk.text && (
-                                        <div>
-                                            <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.7 }}>
-                                                {expanded ? chk.text : chk.text.slice(0, 280) + (chk.text.length > 280 ? '...' : '')}
-                                            </div>
-                                            {chk.text.length > 280 && (
-                                                <button
-                                                    onClick={() => setExpanded(e => !e)}
-                                                    style={{ marginTop: '8px', background: 'none', border: 'none', color: '#00C896', fontSize: '11px', cursor: 'pointer', padding: 0, fontWeight: 600 }}
-                                                >
-                                                    {expanded ? '▲ Show less' : '▼ Show full text'}
-                                                </button>
-                                            )}
-                                        </div>
-                                    )}
-
-                                    {/* Module-level details if available */}
-                                    {chunkDetails && Object.keys(chunkDetails).length > 0 && (
-                                        <div style={{ marginTop: '10px', paddingTop: '10px', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-                                            {chunkDetails.tier_score !== undefined && (
-                                                <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)' }}>Tier score: <strong style={{color:'rgba(255,255,255,0.7)'}}>{chunkDetails.tier_score?.toFixed(3)}</strong></span>
-                                            )}
-                                            {chunkDetails.nli_score !== undefined && (
-                                                <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)' }}>NLI: <strong style={{color:'rgba(255,255,255,0.7)'}}>{chunkDetails.nli_score?.toFixed(3)}</strong></span>
-                                            )}
-                                        </div>
-                                    )}
-                                </div>
+                                <SourceChunkCard key={chk.chunk_id || i} chk={chk} i={i} chunkDetails={chunkDetails} />
                             );
                         })}
                     </div>
