@@ -3171,8 +3171,8 @@ button {
     }
 
     .m-nav-item.active .m-nav-icon {
-        /* Fully white & opaque when active */
-        filter: brightness(0) invert(1) opacity(1);
+        /* Dark icon on white active background */
+        filter: brightness(0) opacity(1);
         transform: scale(1.1);
     }
 
