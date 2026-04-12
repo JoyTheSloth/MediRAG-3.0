@@ -3176,6 +3176,17 @@ button {
         transform: scale(1.1);
     }
 
+    /* Center action button: override active white bg — it has its own green visual */
+    .m-nav-item.active:has(.m-nav-action-btn) {
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+
+    /* Action icon inside center button stays white on green */
+    .m-nav-item.active .m-nav-action-btn .m-nav-icon {
+        filter: brightness(0) invert(1) opacity(1) !important;
+    }
+
     .m-nav-item:hover .m-nav-icon {
         filter: brightness(0) invert(1) opacity(0.7);
         transform: scale(1.05);
