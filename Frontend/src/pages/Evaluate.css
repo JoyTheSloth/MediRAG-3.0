@@ -69,6 +69,22 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
 
+.res-hamburger {
+    display: none;
+}
+
+.res-overlay {
+    display: none;
+}
+
+.res-tabs-close {
+    display: none;
+}
+
+.res-tabs-title {
+    display: none;
+}
+
 /* --- FORM VIEW --- */
 .eval-split {
     display: grid;
@@ -376,4 +392,118 @@
 @media (max-width: 1024px) {
     .eval-split, .config-grid { grid-template-columns: 1fr; }
     .realtime-panel-res { min-height: 200px; margin-top: 0; }
+}
+
+@media (max-width: 768px) {
+    .eval-container {
+        padding: 20px 16px 60px;
+    }
+
+    .res-top-bar {
+        margin-bottom: 24px;
+    }
+
+    .res-hamburger {
+        display: block;
+        background: none;
+        border: none;
+        color: white;
+        padding-right: 12px;
+        cursor: pointer;
+    }
+    
+    .res-hamburger svg {
+        width: 28px;
+        height: 28px;
+    }
+
+    .res-brand-block {
+        gap: 8px;
+    }
+
+    .res-brand-name {
+        font-size: 20px;
+    }
+
+    .res-overlay {
+        display: block;
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.7);
+        z-index: 99;
+    }
+
+    .res-tabs {
+        position: fixed;
+        top: 0;
+        left: -280px;
+        bottom: 0;
+        width: 260px;
+        background: #0f1320;
+        border: none;
+        border-right: 1px solid rgba(255,255,255,0.1);
+        border-radius: 0;
+        flex-direction: column;
+        padding: 80px 20px 20px;
+        gap: 12px;
+        z-index: 100;
+        transition: left 0.3s ease;
+        box-shadow: 0 0 40px rgba(0,0,0,0.8);
+    }
+
+    .res-tabs.open {
+        left: 0;
+    }
+
+    .res-tabs-close {
+        display: block;
+        position: absolute;
+        top: 24px;
+        right: 24px;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 20px;
+        cursor: pointer;
+    }
+    
+    .res-tabs-title {
+        display: block;
+        color: rgba(255,255,255,0.4);
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        padding-left: 8px;
+    }
+
+    .res-tab-btn {
+        text-align: left;
+        padding: 14px 16px;
+        font-size: 15px;
+    }
+
+    .btn-group-row {
+        flex-direction: column;
+    }
+    
+    .eval-btn-primary, .eval-btn-secondary {
+        width: 100%;
+    }
+
+    .sample-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .form-actions-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .rh-title {
+        font-size: 28px;
+    }
 }

@@ -147,6 +147,7 @@ const Evaluate = ({ embedded = false, mode = 'researcher', engineConfig, setEngi
     }, [location.state]);
 
     const [isApiModalOpen, setIsApiModalOpen] = useState(false);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     const handleEvaluate = () => {
         if (!engineConfig?.apiKey) {
@@ -250,13 +251,21 @@ const Evaluate = ({ embedded = false, mode = 'researcher', engineConfig, setEngi
         return (
             <div className="res-top-bar">
                 <div className="res-brand-block">
+                    <button className="res-hamburger" onClick={() => setIsSidebarOpen(true)}>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                    </button>
                     <span className="res-brand-name">MediRAG-Eval</span>
                     <span className="res-mode-pill">Researcher mode</span>
                 </div>
-                <div className="res-tabs">
-                    <button className={`res-tab-btn ${evalTab === 'single' ? 'active' : ''}`} onClick={() => setEvalTab('single')}>Single eval</button>
-                    <button className={`res-tab-btn ${evalTab === 'batch' ? 'active' : ''}`} onClick={() => setEvalTab('batch')}>Batch eval</button>
-                    <button className={`res-tab-btn ${evalTab === 'config' ? 'active' : ''}`} onClick={() => setEvalTab('config')}>Config</button>
+                
+                {isSidebarOpen && <div className="res-overlay" onClick={() => setIsSidebarOpen(false)}></div>}
+                
+                <div className={`res-tabs ${isSidebarOpen ? 'open' : ''}`}>
+                    <button className="res-tabs-close" onClick={() => setIsSidebarOpen(false)}>✕</button>
+                    <div className="res-tabs-title">Evaluator Menu</div>
+                    <button className={`res-tab-btn ${evalTab === 'single' ? 'active' : ''}`} onClick={() => { setEvalTab('single'); setIsSidebarOpen(false); }}>Single eval</button>
+                    <button className={`res-tab-btn ${evalTab === 'batch' ? 'active' : ''}`} onClick={() => { setEvalTab('batch'); setIsSidebarOpen(false); }}>Batch eval</button>
+                    <button className={`res-tab-btn ${evalTab === 'config' ? 'active' : ''}`} onClick={() => { setEvalTab('config'); setIsSidebarOpen(false); }}>Config</button>
                 </div>
             </div>
         );
