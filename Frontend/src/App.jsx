@@ -53,9 +53,7 @@ const App = () => {
 
     return (
         <>
-            <div style={{background: 'rgba(0,0,0,0.8)', color: 'white', padding: '10px', textAlign: 'center', position: 'relative', zIndex: 9999}}>
-                DEBUG: MediRAG-Eval App Component Mounted | Route: {location.pathname}
-            </div>
+
             <Navbar />
             <main>
                 <Routes>
