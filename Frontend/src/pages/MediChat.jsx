@@ -480,11 +480,17 @@ const MediChat = ({ engineConfig }) => {
 
     return (
         <div className="medichat-layout">
+            {/* ─── Mobile Overlay ─── */}
+            {isSidebarOpen && (
+                <div className="mc-mobile-overlay" onClick={() => setIsSidebarOpen(false)}></div>
+            )}
+
             {/* ─── Sidebar ─── */}
-            <div className="mc-sidebar">
+            <div className={`mc-sidebar ${isSidebarOpen ? 'open' : ''}`}>
                 <div className="mc-sidebar-header">
                     <div className="mc-brand-name">MEDIRAG ASSISTANT</div>
                     <div className="mc-brand-sub">Clinical AI v2.4</div>
+                    <button className="mc-close-sidebar-btn" onClick={() => setIsSidebarOpen(false)}>✕</button>
                 </div>
 
                 <button className="mc-new-chat-btn" onClick={startNewChat}>
@@ -650,6 +656,14 @@ const MediChat = ({ engineConfig }) => {
 
             {/* ─── Main ─── */}
             <div className="mc-main">
+                {/* Mobile Header Toggle */}
+                <div className="mc-mobile-header" style={{ display: 'none' }}>
+                    <button className="mc-hamburger-btn" onClick={() => setIsSidebarOpen(true)}>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                    </button>
+                    <div className="mc-mobile-title">MediRAG-Eval Assistant</div>
+                </div>
+
                 <div className="mc-chat-window">
 
                     {/* Welcome Screen */}
