@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import ApiDocs from './pages/ApiDocs';
 import About from './pages/About';
+import EcgCanvasBg from './components/EcgCanvasBg';
 import Console from './pages/Console';
 import MediChat from './pages/MediChat';
 
@@ -53,7 +54,7 @@ const App = () => {
 
     return (
         <>
-
+            <EcgCanvasBg />
             <Navbar />
             <main>
                 <Routes>
