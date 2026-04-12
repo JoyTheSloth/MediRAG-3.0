@@ -120,6 +120,43 @@ const Evaluate = ({ embedded = false, mode = 'researcher', engineConfig, setEngi
         }
     };
 
+    const exportToJson = () => {
+        if (!resultData) return;
+        const exportPayload = {
+            exported_at: new Date().toISOString(),
+            query,
+            generated_answer: resultData.generated_answer || answer,
+            hrs: resultData.hrs,
+            composite_score: resultData.composite_score,
+            risk_band: resultData.risk_band,
+            confidence_level: resultData.confidence_level,
+            intervention_applied: resultData.intervention_applied,
+            intervention_reason: resultData.intervention_reason || null,
+            total_pipeline_ms: resultData.total_pipeline_ms,
+            module_results: resultData.module_results,
+            retrieved_sources: (resultData.retrieved_chunks || []).map(c => ({
+                chunk_id: c.chunk_id,
+                title: c.title,
+                source: c.source,
+                pub_type: c.pub_type,
+                pub_year: c.pub_year,
+                similarity_score: c.similarity_score,
+                text_snippet: c.text?.slice(0, 500)
+            })),
+            llm_config: {
+                provider: engineConfig?.provider,
+                model: engineConfig?.model
+            }
+        };
+        const blob = new Blob([JSON.stringify(exportPayload, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `medirag_audit_${Date.now()}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+    };
+
     const renderResearcherHeader = () => {
         if (mode !== 'researcher') return null;
         return (
@@ -338,16 +375,37 @@ const Evaluate = ({ embedded = false, mode = 'researcher', engineConfig, setEngi
             )}
 
             {view === 'report' && resultData && (
-                <div className="eval-report-view">
+                    <div className="eval-report-view">
                     <div className="report-header">
                         <div className="rh-eyebrow">
                             SYSTEM REPORT // HRS-{resultData.hrs}
                             <span className="rh-pill" style={{ background: resultData.hrs > 40 ? '#FF6B6B' : '#00C896' }}>
                                 {resultData.risk_band} RISK
                             </span>
-                            <button onClick={() => setView('form')} style={{marginLeft:'auto', background:'transparent', border:'1px solid var(--card-border)', color:'white', padding:'4px 12px', borderRadius:'4px', cursor:'pointer', fontSize:'11px'}}>
-                                &larr; BACK
-                            </button>
+                            <div style={{ marginLeft: 'auto', display: 'flex', gap: '8px', alignItems: 'center' }}>
+                                <button
+                                    onClick={exportToJson}
+                                    style={{
+                                        background: 'rgba(0,200,150,0.1)',
+                                        border: '1px solid rgba(0,200,150,0.4)',
+                                        color: '#00C896',
+                                        padding: '4px 14px',
+                                        borderRadius: '4px',
+                                        cursor: 'pointer',
+                                        fontSize: '11px',
+                                        fontWeight: 700,
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '6px',
+                                        letterSpacing: '0.5px'
+                                    }}
+                                >
+                                    ⤓ EXPORT JSON
+                                </button>
+                                <button onClick={() => setView('form')} style={{background:'transparent', border:'1px solid var(--card-border)', color:'white', padding:'4px 12px', borderRadius:'4px', cursor:'pointer', fontSize:'11px'}}>
+                                    &larr; BACK
+                                </button>
+                            </div>
                         </div>
                         <h1 className="rh-title">Audit Report</h1>
                         <div className="rh-time">LATENCY: {resultData.total_pipeline_ms} ms | COMPOSITE: {resultData.composite_score?.toFixed(2)}</div>
@@ -446,6 +504,112 @@ const Evaluate = ({ embedded = false, mode = 'researcher', engineConfig, setEngi
                                 <div style={{ opacity: 0.5, padding: '16px' }}>No sources provided/retrieved.</div>
                             )}
                         </div>
+                    </div>
+
+                    {/* In-depth Source detail panel */}
+                    <div className="rep-panel" style={{ marginTop: '20px' }}>
+                        <div className="rep-panel-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span>RETRIEVED DATASET SOURCES</span>
+                            <span style={{ fontSize: '11px', opacity: 0.5 }}>{(resultData.retrieved_chunks || []).length} records</span>
+                        </div>
+
+                        {(resultData.retrieved_chunks || []).length === 0 && (
+                            <div style={{ opacity: 0.5, padding: '16px', fontSize: '13px' }}>No sources retrieved for this evaluation.</div>
+                        )}
+
+                        {(resultData.retrieved_chunks || []).map((chk, i) => {
+                            const score = chk.similarity_score ?? 0;
+                            const scoreColor = score > 0.5 ? '#00C896' : score > 0.2 ? '#F5A623' : 'rgba(255,255,255,0.4)';
+                            const chunkDetails = resultData.module_results?.source_credibility?.details?.chunks?.find(c => c.chunk_id === chk.chunk_id) || {};
+                            const tier = chunkDetails.tier;
+                            const tierColor = tier === 1 ? '#00C896' : tier === 2 ? '#4dabf7' : tier === 3 ? '#F5A623' : 'rgba(255,255,255,0.3)';
+                            const [expanded, setExpanded] = React.useState(false);
+                            return (
+                                <div key={i} style={{
+                                    background: 'rgba(255,255,255,0.02)',
+                                    border: `1px solid ${scoreColor}30`,
+                                    borderLeft: `3px solid ${scoreColor}`,
+                                    borderRadius: '10px',
+                                    padding: '16px',
+                                    marginBottom: '12px'
+                                }}>
+                                    {/* Top row: title + badges */}
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px', marginBottom: '10px' }}>
+                                        <div style={{ flex: 1 }}>
+                                            <div style={{ fontSize: '13px', fontWeight: 700, color: 'white', marginBottom: '4px' }}>
+                                                {chk.title || chk.source || `Source ${i + 1}`}
+                                            </div>
+                                            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                                                {chk.pub_type && (
+                                                    <span style={{ fontSize: '10px', background: 'rgba(77,171,247,0.12)', color: '#4dabf7', padding: '2px 8px', borderRadius: '10px', fontWeight: 600 }}>
+                                                        {chk.pub_type.replace(/_/g, ' ').toUpperCase()}
+                                                    </span>
+                                                )}
+                                                {chk.source && chk.source !== chk.title && (
+                                                    <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', padding: '2px 8px', background: 'rgba(255,255,255,0.04)', borderRadius: '10px' }}>
+                                                        {chk.source}
+                                                    </span>
+                                                )}
+                                                {chk.pub_year && (
+                                                    <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', padding: '2px 8px', background: 'rgba(255,255,255,0.04)', borderRadius: '10px' }}>
+                                                        {chk.pub_year}
+                                                    </span>
+                                                )}
+                                                {chk.chunk_id && (
+                                                    <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.25)', fontFamily: 'monospace' }}>
+                                                        ID:{chk.chunk_id.slice(0,8)}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
+                                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px', flexShrink: 0 }}>
+                                            <span style={{ fontSize: '12px', fontWeight: 800, color: scoreColor, background: `${scoreColor}15`, padding: '3px 10px', borderRadius: '10px' }}>
+                                                {(score * 100).toFixed(1)}% match
+                                            </span>
+                                            {tier && (
+                                                <span style={{ fontSize: '10px', fontWeight: 700, color: tierColor, border: `1px solid ${tierColor}`, padding: '2px 8px', borderRadius: '4px' }}>
+                                                    TIER {tier}
+                                                </span>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {/* Similarity bar */}
+                                    <div style={{ height: '3px', width: '100%', background: 'rgba(255,255,255,0.05)', borderRadius: '3px', marginBottom: '12px' }}>
+                                        <div style={{ height: '100%', width: `${score * 100}%`, background: scoreColor, borderRadius: '3px', transition: 'width 0.8s ease-out' }}></div>
+                                    </div>
+
+                                    {/* Text snippet */}
+                                    {chk.text && (
+                                        <div>
+                                            <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.7 }}>
+                                                {expanded ? chk.text : chk.text.slice(0, 280) + (chk.text.length > 280 ? '...' : '')}
+                                            </div>
+                                            {chk.text.length > 280 && (
+                                                <button
+                                                    onClick={() => setExpanded(e => !e)}
+                                                    style={{ marginTop: '8px', background: 'none', border: 'none', color: '#00C896', fontSize: '11px', cursor: 'pointer', padding: 0, fontWeight: 600 }}
+                                                >
+                                                    {expanded ? '▲ Show less' : '▼ Show full text'}
+                                                </button>
+                                            )}
+                                        </div>
+                                    )}
+
+                                    {/* Module-level details if available */}
+                                    {chunkDetails && Object.keys(chunkDetails).length > 0 && (
+                                        <div style={{ marginTop: '10px', paddingTop: '10px', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                                            {chunkDetails.tier_score !== undefined && (
+                                                <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)' }}>Tier score: <strong style={{color:'rgba(255,255,255,0.7)'}}>{chunkDetails.tier_score?.toFixed(3)}</strong></span>
+                                            )}
+                                            {chunkDetails.nli_score !== undefined && (
+                                                <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)' }}>NLI: <strong style={{color:'rgba(255,255,255,0.7)'}}>{chunkDetails.nli_score?.toFixed(3)}</strong></span>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        })}
                     </div>
                 </div>
             )}
