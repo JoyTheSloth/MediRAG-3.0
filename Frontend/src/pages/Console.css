@@ -106,15 +106,103 @@
     letter-spacing: -0.02em;
 }
 
+/* --- MOBILE HEADER & OVERLAY (Desktop hidden) --- */
+.con-mobile-header {
+    display: none;
+}
+
+.con-mobile-overlay {
+    display: none;
+}
+
+.console-sidebar-header-mobile {
+    display: none;
+}
+
 /* --- MOBILE RESPONSIVE --- */
 @media (max-width: 1024px) {
     .console-layout {
         grid-template-columns: 1fr;
     }
+    
     .console-sidebar {
-        display: none; /* simple hide for now or implement as top horizontal */
+        position: fixed;
+        left: -320px;
+        top: 0;
+        bottom: 0;
+        width: 300px;
+        height: 100vh;
+        z-index: 100;
+        transition: left 0.3s ease;
+        box-shadow: 0 0 40px rgba(0,0,0,0.8);
+        border: none;
     }
+
+    .console-sidebar.open {
+        left: 0;
+    }
+
+    .console-sidebar-header-mobile {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+        color: rgba(255,255,255,0.4);
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 2px;
+    }
+
+    .con-close-btn {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+    .con-mobile-overlay {
+        display: block;
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.7);
+        z-index: 99;
+    }
+
+    .con-mobile-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 0 0 24px;
+    }
+
+    .con-hamburger-btn {
+        background: none;
+        border: none;
+        color: white;
+        padding: 4px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+    }
+
+    .con-hamburger-btn svg {
+        width: 28px;
+        height: 28px;
+    }
+
+    .con-mobile-title {
+        font-size: 20px;
+        font-weight: 800;
+        color: white;
+    }
+
     .console-main {
-        padding: 32px 24px;
+        padding: 24px 16px;
+    }
+
+    .console-view-title {
+        font-size: 24px;
     }
 }
+

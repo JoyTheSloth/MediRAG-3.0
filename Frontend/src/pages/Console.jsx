@@ -10,6 +10,7 @@ const Console = () => {
     const location = useLocation();
     const [activeSection, setActiveSection] = useState('dashboard');
     const [activeSubSection, setActiveSubSection] = useState(null);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     // Global settings for Evaluate / Patient
     const [engineConfig, setEngineConfig] = useState(() => ({
@@ -45,15 +46,24 @@ const Console = () => {
     const handleNav = (section, sub = null) => {
         setActiveSection(section);
         setActiveSubSection(sub);
+        setIsSidebarOpen(false);
         window.scrollTo(0, 0);
     };
 
     return (
         <div className="console-page">
-            <div className="console-layout">
+            <div className={`console-layout ${isSidebarOpen ? 'overlay-active' : ''}`}>
                 
+                {/* --- MOBILE OVERLAY --- */}
+                {isSidebarOpen && <div className="con-mobile-overlay" onClick={() => setIsSidebarOpen(false)}></div>}
+
                 {/* --- SIDEBAR --- */}
-                <aside className="console-sidebar">
+                <aside className={`console-sidebar ${isSidebarOpen ? 'open' : ''}`}>
+                    <div className="console-sidebar-header-mobile">
+                        <span>MENU</span>
+                        <button className="con-close-btn" onClick={() => setIsSidebarOpen(false)}>✕</button>
+                    </div>
+
                     <div className="console-nav-group">
                         <div className="console-nav-label">EVALUATE</div>
                         <button 
@@ -206,6 +216,14 @@ const Console = () => {
                 </aside>
 
                 <main className="console-main">
+                    {/* --- MOBILE HEADER TOGGLE --- */}
+                    <div className="con-mobile-header">
+                        <button className="con-hamburger-btn" onClick={() => setIsSidebarOpen(true)}>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                        </button>
+                        <div className="con-mobile-title">Console</div>
+                    </div>
+
                     {activeSection === 'evaluate' && activeSubSection === 'researcher' && (
                         <div className="console-view-wrapper">
                             <Evaluate embedded={true} mode={activeSubSection} engineConfig={engineConfig} setEngineConfig={setEngineConfig} />
