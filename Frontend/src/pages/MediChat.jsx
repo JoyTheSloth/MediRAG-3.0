@@ -345,6 +345,7 @@ const MediChat = ({ engineConfig }) => {
     }, [localApiKey]);
 
     const [showKey, setShowKey] = useState(false);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [localConfig, setLocalConfig] = useState({
         apiUrl: engineConfig?.apiUrl || import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000',
         provider: engineConfig?.provider || 'Mistral',
