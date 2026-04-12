@@ -12,6 +12,7 @@ const PatientExperience = ({ engineConfig, setEngineConfig }) => {
     const [showResults, setShowResults] = useState(false);
     const [showTrace, setShowTrace] = useState(false);
     const [selectedApp, setSelectedApp] = useState('Apollo 247');
+    const [activeDemoStep, setActiveDemoStep] = useState(0);
 
     const [uploadedFile, setUploadedFile] = useState(null);
     const [uploadedText, setUploadedText] = useState('');
@@ -444,10 +445,18 @@ const PatientExperience = ({ engineConfig, setEngineConfig }) => {
                             { step: '03', title: 'MediRAG checks it', desc: 'Our system audits the claim in real-time before the user sees it.' },
                             { step: '04', title: 'Brand gets protection', desc: 'Hallucinations are blocked or flagged, ensuring clinical safety.' }
                         ].map((s, i) => (
-                            <div key={i} style={{ display: 'flex', gap: '20px', padding: '16px', borderRadius: '12px', background: i === 0 ? 'rgba(43, 89, 255, 0.05)' : 'transparent', border: i === 0 ? '1px solid rgba(43, 89, 255, 0.2)' : '1px solid transparent' }}>
-                                <div style={{ fontSize: '14px', fontWeight: 900, color: i === 0 ? '#4dabf7' : '#333' }}>{s.step}</div>
+                            <div 
+                                key={i} 
+                                onClick={() => setActiveDemoStep(i)}
+                                style={{ 
+                                    display: 'flex', gap: '20px', padding: '16px', borderRadius: '12px', cursor: 'pointer', transition: 'all 0.3s',
+                                    background: i === activeDemoStep ? 'rgba(43, 89, 255, 0.05)' : 'transparent', 
+                                    border: i === activeDemoStep ? '1px solid rgba(43, 89, 255, 0.2)' : '1px solid transparent' 
+                                }}
+                            >
+                                <div style={{ fontSize: '14px', fontWeight: 900, color: i === activeDemoStep ? '#4dabf7' : '#333' }}>{s.step}</div>
                                 <div>
-                                    <div style={{ fontSize: '15px', fontWeight: 700, color: i === 0 ? 'white' : 'var(--text-gray-light)' }}>{s.title}</div>
+                                    <div style={{ fontSize: '15px', fontWeight: 700, color: i === activeDemoStep ? 'white' : 'var(--text-gray-light)' }}>{s.title}</div>
                                     <div style={{ fontSize: '13px', color: 'var(--text-gray)', marginTop: '4px' }}>{s.desc}</div>
                                 </div>
                             </div>
@@ -482,32 +491,74 @@ const PatientExperience = ({ engineConfig, setEngineConfig }) => {
 
                         {/* Chat Area */}
                         <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                            <div style={{ border: '1px dashed rgba(255,255,255,0.1)', borderRadius: '12px', padding: '20px', textAlign: 'center' }}>
-                                <div style={{ color: '#4dabf7', marginBottom: '8px' }}>📤</div>
-                                <div style={{ fontSize: '11px', fontWeight: 700 }}>Upload your health document</div>
-                                <div style={{ fontSize: '9px', color: 'var(--text-gray)' }}>Lab report, prescription, discharge summary</div>
-                            </div>
+                            {activeDemoStep === 0 && (
+                                <>
+                                    <div style={{ border: '1px dashed rgba(255,255,255,0.1)', borderRadius: '12px', padding: '20px', textAlign: 'center' }}>
+                                        <div style={{ color: '#4dabf7', marginBottom: '8px' }}>📤</div>
+                                        <div style={{ fontSize: '11px', fontWeight: 700 }}>Upload your health document</div>
+                                        <div style={{ fontSize: '9px', color: 'var(--text-gray)' }}>Lab report, prescription, discharge summary</div>
+                                    </div>
 
-                            <div style={{ fontSize: '9px', textAlign: 'center', color: 'var(--text-gray)', position: 'relative' }}>
-                                <div style={{ position: 'absolute', top: '50%', left: 0, right: 0, height: '1px', background: 'rgba(255,255,255,0.05)' }}></div>
-                                <span style={{ background: '#121826', padding: '0 8px', position: 'relative' }}>or try an example</span>
-                            </div>
+                                    <div style={{ fontSize: '9px', textAlign: 'center', color: 'var(--text-gray)', position: 'relative' }}>
+                                        <div style={{ position: 'absolute', top: '50%', left: 0, right: 0, height: '1px', background: 'rgba(255,255,255,0.05)' }}></div>
+                                        <span style={{ background: '#121826', padding: '0 8px', position: 'relative' }}>or try an example</span>
+                                    </div>
 
-                            <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '10px', padding: '12px', display: 'flex', gap: '12px', alignItems: 'center' }}>
-                                <div style={{ background: '#e53e3e22', color: '#e53e3e', padding: '4px 8px', borderRadius: '4px', fontSize: '10px', fontWeight: 800 }}>PDF</div>
-                                <div style={{ textAlign: 'left' }}>
-                                    <div style={{ fontSize: '11px', fontWeight: 700 }}>Discharge_Summary_Rajan.pdf</div>
-                                    <div style={{ fontSize: '9px', color: 'var(--text-gray)' }}>Apollo Hospitals • 3 pages • 124 KB</div>
+                                    <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '10px', padding: '12px', display: 'flex', gap: '12px', alignItems: 'center' }}>
+                                        <div style={{ background: '#e53e3e22', color: '#e53e3e', padding: '4px 8px', borderRadius: '4px', fontSize: '10px', fontWeight: 800 }}>PDF</div>
+                                        <div style={{ textAlign: 'left' }}>
+                                            <div style={{ fontSize: '11px', fontWeight: 700 }}>Discharge_Summary_Rajan.pdf</div>
+                                            <div style={{ fontSize: '9px', color: 'var(--text-gray)' }}>Apollo Hospitals • 3 pages • 124 KB</div>
+                                        </div>
+                                    </div>
+
+                                    <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', padding: '16px', fontSize: '12px', lineHeight: '1.4', textAlign: 'left' }}>
+                                        My doctor mentioned metoprolol 25mg twice daily. Is this a normal dose for me?
+                                    </div>
+
+                                    <button style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', padding: '12px', borderRadius: '8px', fontSize: '12px', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                                        Ask Apollo AI →
+                                    </button>
+                                </>
+                            )}
+                            
+                            {activeDemoStep > 0 && (
+                                <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', padding: '16px', fontSize: '12px', lineHeight: '1.4', textAlign: 'left' }}>
+                                    My doctor mentioned metoprolol 25mg twice daily. Is this a normal dose for me?
                                 </div>
-                            </div>
+                            )}
 
-                            <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', padding: '16px', fontSize: '12px', lineHeight: '1.4', textAlign: 'left' }}>
-                                My doctor mentioned metoprolol 25mg twice daily. Is this a normal dose for me?
-                            </div>
+                            {activeDemoStep === 1 && (
+                                <div className="mc-thinking" style={{ fontSize: '11px', padding: '16px', borderRadius: '12px', background: 'rgba(255,255,255,0.05)', alignSelf: 'flex-start' }}>
+                                    <span className="dot-pulse"></span> Generative AI is typing...
+                                </div>
+                            )}
 
-                            <button style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', padding: '12px', borderRadius: '8px', fontSize: '12px', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-                                Ask Apollo AI →
-                            </button>
+                            {activeDemoStep === 2 && (
+                                <>
+                                    <div style={{ fontSize: '12px', lineHeight: '1.5', padding: '16px', borderRadius: '12px', background: 'rgba(255,255,255,0.05)', textAlign: 'left' }}>
+                                        Yes, generating 25mg twice daily is a completely normal dosage to begin with for hypertension...
+                                    </div>
+                                    <div style={{ marginTop: '-8px', alignSelf: 'center', background: 'rgba(43, 89, 255, 0.1)', border: '1px solid #4dabf7', borderRadius: '20px', padding: '8px 16px', fontSize: '10px', fontWeight: 700, color: '#4dabf7', display: 'flex', alignItems: 'center', gap: '8px', animation: 'pulse 1.5s infinite' }}>
+                                        <span style={{ fontSize: '14px' }}>🛡️</span> MediRAG Eval: Scanning output...
+                                    </div>
+                                </>
+                            )}
+
+                            {activeDemoStep === 3 && (
+                                <>
+                                    <div style={{ fontSize: '12px', lineHeight: '1.5', padding: '16px', borderRadius: '12px', background: 'rgba(239, 68, 68, 0.05)', border: '1px solid rgba(239, 68, 68, 0.3)', textAlign: 'left' }}>
+                                        <div style={{ color: '#EF4444', fontWeight: 800, marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                            <span>⚠️</span> Clinical Error Detected
+                                        </div>
+                                        Yes, generating 25mg twice daily is a completely normal dosage to begin with for hypertension...
+                                        <div style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px dashed rgba(239, 68, 68, 0.2)', color: 'rgba(255,255,255,0.6)', fontSize: '10px' }}>
+                                            <strong style={{color: '#EF4444'}}>MediRAG Audit:</strong> The uploaded document specifies 12.5mg twice daily, not 25mg. Response blocked for patient safety.
+                                        </div>
+                                    </div>
+                                    <button style={{ background: '#e53e3e', color: 'white', border: 'none', padding: '12px', borderRadius: '8px', fontSize: '12px', fontWeight: 800 }}>Connect to Human Doctor</button>
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>

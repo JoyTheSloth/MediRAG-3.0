@@ -1,8 +1,36 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import ScrambledText from '../components/ScrambledText';
 
 const Home = () => {
+    useEffect(() => {
+        const counters = document.querySelectorAll('.counter');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const obj = entry.target;
+                    const target = +obj.getAttribute('data-target');
+                    if(target === 0) return;
+                    let count = 0;
+                    const duration = 2000;
+                    const increment = target / (duration / 16);
+                    const updateCount = () => {
+                        count += increment;
+                        if(count < target) {
+                            obj.innerText = Math.ceil(count);
+                            requestAnimationFrame(updateCount);
+                        } else {
+                            obj.innerText = target;
+                        }
+                    };
+                    updateCount();
+                    observer.unobserve(obj);
+                }
+            });
+        }, { threshold: 0.5 });
+        counters.forEach(c => observer.observe(c));
+    }, []);
+
   return (
     <>
 
