@@ -22,7 +22,8 @@ ENV PIP_DISABLE_PIP_VERSION_CHECK=1
 # Copy requirements first for better caching
 COPY requirements_minimal.txt .
 
-# Install Python dependencies
+# Force pip re-run by busting the cache (update this date to force full reinstall)
+ARG CACHE_BUST=2026-04-12-v3
 RUN pip install --no-cache-dir -r requirements_minimal.txt
 
 # Copy the rest of the application

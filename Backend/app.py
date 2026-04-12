@@ -21,13 +21,26 @@ os.environ["TORCH_HOME"] = "/tmp/torch_cache"
 # Add src to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "src"))
 
-# Install spaCy model if not present
+# Install spaCy model if not present (optional — server starts without it)
 try:
     import spacy
-    spacy.load("en_core_sci_lg")
-except OSError:
-    logger.info("Downloading spaCy model en_core_sci_lg...")
-    subprocess.run([sys.executable, "-m", "spacy", "download", "en_core_sci_lg"], check=True)
+    try:
+        spacy.load("en_core_sci_lg")
+        logger.info("spaCy model en_core_sci_lg loaded.")
+    except OSError:
+        # Try installing the model at runtime
+        try:
+            logger.info("Attempting to install scispacy model en_core_sci_lg...")
+            subprocess.run([
+                sys.executable, "-m", "pip", "install", "--quiet",
+                "https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.4/en_core_sci_lg-0.5.4.tar.gz"
+            ], check=True, timeout=300)
+            spacy.load("en_core_sci_lg")
+            logger.info("spaCy model installed and loaded.")
+        except Exception as model_err:
+            logger.warning(f"Could not install spaCy model: {model_err}. NER features will be limited.")
+except ImportError:
+    logger.warning("spacy/scispacy not installed. NER features will be limited but server will still start.")
 
 # Download datasets using huggingface_hub
 from huggingface_hub import hf_hub_download

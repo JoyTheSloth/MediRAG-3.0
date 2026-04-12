@@ -148,8 +148,8 @@ class QueryRequest(BaseModel):
     question: str = Field(
         ...,
         min_length=5,
-        max_length=500,
-        description="Medical question (5–500 chars)",
+        max_length=8000,
+        description="Medical question (5–8000 chars; may include doc context)",
         examples=["What is the recommended dosage of Metformin for elderly Type 2 Diabetes patients?"],
     )
     top_k: int = Field(

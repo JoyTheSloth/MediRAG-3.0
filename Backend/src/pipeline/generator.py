@@ -457,17 +457,23 @@ def generate_answer(
         if overrides.get("provider"):
             effective_llm["provider"] = overrides["provider"]
         if overrides.get("api_key"):
-            pk = overrides["provider"].lower() if overrides.get("provider") else "gemini"
-            if pk == "openai":
-                effective_llm["openai_api_key"] = overrides["api_key"]
-            else:
-                effective_llm["gemini_api_key"] = overrides["api_key"]
+            pk = (overrides.get("provider") or "gemini").lower()
+            key_map = {
+                "gemini": "gemini_api_key",
+                "openai": "openai_api_key",
+                "mistral": "mistral_api_key",
+                "groq": "groq_api_key",
+            }
+            effective_llm[key_map.get(pk, "gemini_api_key")] = overrides["api_key"]
         if overrides.get("model"):
-            pk = overrides["provider"].lower() if overrides.get("provider") else "gemini"
-            if pk == "openai":
-                effective_llm["openai_model"] = overrides["model"]
-            else:
-                effective_llm["gemini_model"] = overrides["model"]
+            pk = (overrides.get("provider") or "gemini").lower()
+            model_map = {
+                "gemini": "gemini_model",
+                "openai": "openai_model",
+                "mistral": "model",
+                "groq": "groq_model",
+            }
+            effective_llm[model_map.get(pk, "gemini_model")] = overrides["model"]
         if overrides.get("ollama_url"):
             effective_llm["base_url"] = overrides["ollama_url"]
 
@@ -511,17 +517,23 @@ def generate_strict_answer(
         if overrides.get("provider"):
             effective_llm["provider"] = overrides["provider"]
         if overrides.get("api_key"):
-            pk = overrides["provider"].lower() if overrides.get("provider") else "gemini"
-            if pk == "openai":
-                effective_llm["openai_api_key"] = overrides["api_key"]
-            else:
-                effective_llm["gemini_api_key"] = overrides["api_key"]
+            pk = (overrides.get("provider") or "gemini").lower()
+            key_map = {
+                "gemini": "gemini_api_key",
+                "openai": "openai_api_key",
+                "mistral": "mistral_api_key",
+                "groq": "groq_api_key",
+            }
+            effective_llm[key_map.get(pk, "gemini_api_key")] = overrides["api_key"]
         if overrides.get("model"):
-            pk = overrides["provider"].lower() if overrides.get("provider") else "gemini"
-            if pk == "openai":
-                effective_llm["openai_model"] = overrides["model"]
-            else:
-                effective_llm["gemini_model"] = overrides["model"]
+            pk = (overrides.get("provider") or "gemini").lower()
+            model_map = {
+                "gemini": "gemini_model",
+                "openai": "openai_model",
+                "mistral": "model",
+                "groq": "groq_model",
+            }
+            effective_llm[model_map.get(pk, "gemini_model")] = overrides["model"]
         if overrides.get("ollama_url"):
             effective_llm["base_url"] = overrides["ollama_url"]
 

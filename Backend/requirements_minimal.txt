@@ -34,6 +34,9 @@ pymupdf>=1.24.0
 python-docx>=1.1.0
 
 # Medical NLP
+spacy>=3.7.0
+scispacy>=0.5.4
+https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.4/en_core_sci_lg-0.5.4.tar.gz
 pysbd>=0.3.0
 rank-bm25>=0.2.0
 
