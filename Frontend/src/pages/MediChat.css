@@ -619,7 +619,7 @@
     }
 
     .mc-chat-window {
-        padding: 20px 16px 110px 16px;
+        padding: 20px 16px 160px 16px;
     }
 
     .mc-msg-bubble {
@@ -650,7 +650,7 @@
 
     .mc-input-area {
         position: fixed;
-        bottom: 16px;
+        bottom: 86px;
         left: 16px;
         right: 16px;
         padding: 0;

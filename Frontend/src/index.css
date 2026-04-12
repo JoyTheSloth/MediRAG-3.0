@@ -2497,6 +2497,14 @@ button {
         margin-bottom: 32px;
     }
 
+    .hidden-mobile {
+        display: none !important;
+    }
+
+    .mobile-menu-btn {
+        display: none !important;
+    }
+
     /* Problem section */
     .problem-cards-row {
         grid-template-columns: 1fr;
@@ -3069,6 +3077,87 @@ button {
     /* Hide cursor demo on phones */
     .cursor-demo-section {
         display: none;
+    }
+}
+
+/* --- Mobile Floating Bottom Nav (Sticky Footer) --- */
+.mobile-floating-nav {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .mobile-floating-nav {
+        display: flex;
+        position: fixed;
+        bottom: 24px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #0f1320; /* Very dark background to match reference */
+        border: 1px solid rgba(255,255,255,0.08); /* slight stroke */
+        border-radius: 40px;
+        padding: 8px 12px;
+        z-index: 1000;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.8), inset 0 2px 2px rgba(255,255,255,0.05);
+        gap: 8px;
+        align-items: center;
+        justify-content: space-between;
+        width: calc(100% - 40px);
+        max-width: 360px; /* Keep it clamped so it doesn't get too wide on tablets */
+    }
+
+    .m-nav-item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        color: rgba(255,255,255,0.4);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    
+    .m-nav-item svg {
+        width: 22px;
+        height: 22px;
+        transition: transform 0.3s ease;
+    }
+
+    .m-nav-item:hover {
+        color: rgba(255,255,255,0.7);
+        transform: translateY(-2px);
+    }
+
+    .m-nav-item.active {
+        background: rgba(255,255,255,0.95); /* White highlight matching reference */
+        color: #0a0d14;
+        box-shadow: 0 4px 15px rgba(255,255,255,0.2);
+    }
+    
+    .m-nav-item.active svg {
+        transform: scale(1.1);
+    }
+
+    .m-nav-action-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #00C896, #009973);
+        color: #0a0d14;
+        box-shadow: 0 4px 15px rgba(0, 200, 150, 0.3);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .m-nav-item.active .m-nav-action-btn {
+        background: #fff;
+        box-shadow: 0 4px 15px rgba(255,255,255,0.2);
+    }
+
+    .m-nav-action-btn:hover {
+        transform: scale(1.1) rotate(5deg);
+        box-shadow: 0 6px 20px rgba(0, 200, 150, 0.5);
     }
 }
 
