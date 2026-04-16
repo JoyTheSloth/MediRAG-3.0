@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import './Research.css';
 
 const Research = () => {
     // Re-trigger animations
