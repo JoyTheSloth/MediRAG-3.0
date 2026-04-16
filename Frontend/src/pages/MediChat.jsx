@@ -866,6 +866,7 @@ const MediChat = ({ engineConfig }) => {
                             backgroundColor: 'rgba(15, 23, 42, 0.95)', 
                             border: '1px solid rgba(0, 200, 150, 0.3)', 
                             borderRadius: '16px', 
+                            width: '100%',
                             maxWidth: '450px',
                             boxShadow: '0 10px 30px rgba(0,0,0,0.5), inset 0 1px 2px rgba(255,255,255,0.1)'
                         }}>
