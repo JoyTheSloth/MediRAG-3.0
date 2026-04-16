@@ -2,8 +2,8 @@
 
 .medichat-layout {
     display: flex;
-    height: calc(100vh - 80px);
-    margin-top: 80px;
+    height: calc(100vh - 110px);
+    margin-top: 110px;
     background: #0a0d14;
     overflow: hidden;
 }

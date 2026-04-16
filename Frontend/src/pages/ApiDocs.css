@@ -1,5 +1,5 @@
 .api-page {
-    padding-top: 80px;
+    padding-top: 110px;
     min-height: 100vh;
     color: var(--text-white);
     background: #0A0F1E;
@@ -10,7 +10,7 @@
     grid-template-columns: 240px 1fr 280px;
     max-width: 1600px;
     margin: 0 auto;
-    min-height: calc(100vh - 80px - 80px); /* Account for nav and footer */
+    min-height: calc(100vh - 110px); /* Account for nav */
 }
 
 /* --- LEFT SIDEBAR NAV --- */
@@ -18,8 +18,8 @@
     border-right: 1px solid rgba(255,255,255,0.05);
     padding: 32px 24px;
     position: sticky;
-    top: 80px;
-    height: calc(100vh - 80px);
+    top: 110px;
+    height: calc(100vh - 110px);
     overflow-y: auto;
 }
 
@@ -310,8 +310,8 @@
     border-left: 1px solid rgba(255,255,255,0.05);
     padding: 32px 24px;
     position: sticky;
-    top: 80px;
-    height: calc(100vh - 80px);
+    top: 110px;
+    height: calc(100vh - 110px);
     overflow-y: auto;
 }
 
