@@ -8,6 +8,7 @@ import EcgCanvasBg from './components/EcgCanvasBg';
 import Console from './pages/Console';
 import MediChat from './pages/MediChat';
 import MediApiAgent from './pages/MediApiAgent';
+import Research from './pages/Research';
 
 const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
@@ -65,6 +66,7 @@ const App = () => {
                     <Route path="/console" element={<Console />} />
                     <Route path="/chat" element={<MediChat />} />
                     <Route path="/api-agent" element={<MediApiAgent />} />
+                    <Route path="/research" element={<Research />} />
                     <Route path="*" element={<Home />} />
                 </Routes>
             </main>
