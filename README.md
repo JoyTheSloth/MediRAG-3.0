@@ -24,9 +24,10 @@ We've consolidated everything into a single, high-fidelity command center:
 
 - **💬 MediChat AI**: A standalone, immersive chat interface with real-time **Hallucination Risk Scoring (HRS)**, rich source cards, and doc-aware reasoning.
 - **📄 Document-Aware Chat**: Upload PDFs/Lab Reports to get **Smart Suggestions** (clinical follow-up questions) and answers grounded directly in your patient docs + the medical literature.
-- **📤 App Integration Console**: Test and verify third-party healthcare integrations (like Apollo 247, Tata 1mg) by auditing AI responses.
+- **🔬 Researcher Lab (A/B Testing)**: A high-fidelity module for comparing clinical personas and system instructions side-by-side with real-time RAGAS/HRS scores.
+- **🚦 Traffic Control Visualization**: A real-time developer simulation showing the medical safety pipeline as it sanitizes, authorizes, or blocks API requests.
 - **🛡️ AI Governance Dashboard**: A complete audit log and compliance reporting system for medical AI oversight.
-- **📡 Federated Dataset Section**: View the "Verified Clinical Knowledge Bases" (PubMed, MedQA, BioASQ, DrugBank) directly in the UI.
+- **🧭 MediRAG Project Guide**: A Groq-powered interactive chatbot providing on-demand technical documentation and platform walkthroughs.
 
 ---
 
@@ -48,6 +49,15 @@ Every answer passes through our forensic pipeline (running locally on CPU/GPU):
 - **Hybrid Search Strategy**: Combining **FAISS (Semantic BioBERT)** and **BM25 (Keyword-based)** to provide both conceptual and exact-match retrieval.
 - **Smart Follow-ups**: The system statically analyzes uploaded clinical text to suggest highly relevant questions (e.g., "Are there any contraindications listed here?").
 - **Rich Citation Cards**: Each source now displays its evidence tier, publication year, journal name, and a text excerpt with an animated similarity score.
+
+---
+
+## 🚀 v3.2 Safety & Research Evolution (Latest)
+
+- **Side-by-Side Prompt Engineering**: Clinical researchers can now test multiple "Personas" (Control vs. Variant) against the same query to find the safest system instructions.
+- **The "Traffic Control" Simulator**: A developer-centric glassmorphic terminal summarizing the real-time middleware flow of sanitization, authorization, and clinical blocking.
+- **Backend AI Proxy**: Implemented a secure server-side relay for third-party AI requests (Groq/Gemini) to bypass browser CORS restrictions and enhance key security.
+- **Mobile-Adaptive Experience**: Full-width prompt engineering workspaces and a persistent top-right theme toggle for researchers on the go.
 
 ---
 
