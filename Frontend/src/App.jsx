@@ -1,6 +1,7 @@
 import React from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import './index.css';
 import Home from './pages/Home';
 import ApiDocs from './pages/ApiDocs';
 import About from './pages/About';
@@ -37,7 +38,7 @@ const App = () => {
             rootMargin: '0px 0px -50px 0px'
         });
 
-        // Find all hidden elements
+        // Find all hidden elements - re-scan every time the location changes
         const hiddenEls = document.querySelectorAll('.reveal-up, .reveal-left, .reveal-right, .reveal-stagger');
         hiddenEls.forEach(el => revealObserver.observe(el));
 
@@ -52,7 +53,7 @@ const App = () => {
             revealObserver.disconnect();
             clearTimeout(fallbackId);
         };
-    }, [location.pathname]); // Re-run whenever the route changes
+    }, [location.pathname]); // Trigger re-observation on each navigation
 
     return (
         <>

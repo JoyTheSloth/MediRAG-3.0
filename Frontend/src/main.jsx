@@ -2,7 +2,6 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App.jsx'
-import './index.css'
 
 // Global error catcher for debugging blank screen
 window.onerror = function(msg, url, lineNo, columnNo, error) {
