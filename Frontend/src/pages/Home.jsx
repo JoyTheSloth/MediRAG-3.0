@@ -37,6 +37,9 @@ const Home = () => {
     <header id="home" className="hero-section">
         <div className="hero-container">
             <div className="hero-left reveal-left">
+                <div className="hero-logo-container" style={{ marginBottom: '20px' }}>
+                    <img src="/logo.png" alt="MediRAG Logo" style={{ height: '80px', width: 'auto' }} />
+                </div>
                 <div className="badge badge-outline">
                     <span className="shield-icon">🛡</span> Open Source · India Innovates 2026
                 </div>
