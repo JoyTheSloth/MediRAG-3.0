@@ -16,6 +16,49 @@ const MediApiAgent = () => {
     
     const [activeDemoStep, setActiveDemoStep] = useState(0);
 
+    // Dynamic Traffic Logs State
+    const [trafficLogs, setTrafficLogs] = useState([
+        { id: 1, time: '19:14:02.1', end: '/p_check', meta: 'User query: "Is 50mg Sildenafil safe with nitrates?"', status: '🚫 BLOCKED (RISK)', class: 'status-fail' },
+        { id: 2, time: '19:14:01.4', end: '/predict', meta: 'Redacting PHI: "Patient [R.K. Gupta] age 54..."', status: '🔒 SANITIZED (PHI)', class: 'status-warn' },
+        { id: 3, time: '19:13:58.9', end: '/eval_v2', meta: 'Consensus Check: Gemini vs Mistral (94% agreement)', status: '✔ AUTHORIZED', class: 'status-pass' },
+        { id: 4, time: '19:13:55.2', end: '/p_check', meta: 'Tata1mg: Search query "mild fever in infants"', status: '✔ AUTHORIZED', class: 'status-pass' },
+        { id: 5, time: '19:13:52.8', end: '/redact', meta: 'Apollo247: Stripping Patient ID meta-tags', status: '🔒 SANITIZED', class: 'status-warn' }
+    ]);
+
+    React.useEffect(() => {
+        const endpoints = ['/safe_execute', '/p_check', '/predict', '/redact', '/eval_v2'];
+        const metaValues = [
+            'Analyzing medication compatibility for chronic patient',
+            'Applying HIPAA Privacy Shield to incoming payload',
+            'Consensus Engine: Verifying clinical accuracy (99%)',
+            'Sourcing evidence for "Pediatric dosage of Paracetamol"',
+            'Blocking adversarial prompt: "Bypass safety filters"',
+            'Sanitizing Discharge Summary from Apollo Hospitals',
+            'Checking Tata1mg API response for hallucinations'
+        ];
+        const statusMap = [
+            { s: '✔ AUTHORIZED', c: 'status-pass' },
+            { s: '✔ AUTHORIZED', c: 'status-pass' },
+            { s: '🔒 SANITIZED', c: 'status-warn' },
+            { s: '🚫 BLOCKED', c: 'status-fail' }
+        ];
+
+        const interval = setInterval(() => {
+            const now = new Date();
+            const timeStr = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}.${Math.floor(Math.random()*10)}`;
+            const newLog = {
+                id: Date.now(),
+                time: timeStr,
+                end: endpoints[Math.floor(Math.random() * endpoints.length)],
+                meta: metaValues[Math.floor(Math.random() * metaValues.length)],
+                ...statusMap[Math.floor(Math.random() * statusMap.length)]
+            };
+            setTrafficLogs(prev => [newLog, ...prev.slice(0, 4)]);
+        }, 3000);
+
+        return () => clearInterval(interval);
+    }, []);
+
     const [, setCopied] = useState(false);
 
     const handleCopy = () => {
@@ -65,6 +108,138 @@ const MediApiAgent = () => {
                 <h1>MediAPI Agent</h1>
                 <p>Automate safety and intelligence across your healthcare APIs</p>
             </div>
+
+            {/* REAL-TIME TRAFFIC CONTROL VISUALIZATION */}
+            <section className="agent-section traffic-control-section reveal-up">
+                <style>{`
+                    .traffic-control-section {
+                        grid-column: 1 / -1;
+                        background: rgba(15, 23, 42, 0.4);
+                        backdrop-filter: blur(12px);
+                        border: 1px solid rgba(255, 255, 255, 0.05);
+                        border-radius: 20px;
+                        margin-bottom: 30px;
+                        padding: 24px;
+                        overflow: hidden;
+                        position: relative;
+                    }
+                    .traffic-header {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        margin-bottom: 20px;
+                    }
+                    .traffic-badge {
+                        background: rgba(0, 200, 150, 0.1);
+                        color: #00C896;
+                        padding: 4px 12px;
+                        border-radius: 100px;
+                        font-size: 11px;
+                        font-weight: 800;
+                        letter-spacing: 1px;
+                        display: flex;
+                        align-items: center;
+                        gap: 6px;
+                    }
+                    .traffic-terminal {
+                        height: 220px;
+                        background: #0d1117;
+                        border-radius: 12px;
+                        border: 1px solid rgba(255,255,255,0.05);
+                        font-family: 'Fira Code', 'Courier New', monospace;
+                        font-size: 12px;
+                        padding: 16px;
+                        overflow-y: hidden;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 8px;
+                        box-shadow: inset 0 2px 20px rgba(0,0,0,0.5);
+                    }
+                    .traffic-row {
+                        display: grid;
+                        grid-template-columns: 100px 100px 1fr 140px;
+                        align-items: center;
+                        padding: 4px 0;
+                        border-bottom: 1px solid rgba(255,255,255,0.02);
+                        animation: slideUp 0.3s ease-out;
+                    }
+                    @keyframes slideUp {
+                        from { opacity: 0; transform: translateY(10px); }
+                        to { opacity: 1; transform: translateY(0); }
+                    }
+                    .t-timestamp { color: rgba(255,255,255,0.3); }
+                    .t-endpoint { color: #f59e0b; font-weight: bold; }
+                    .t-meta { color: rgba(255,255,255,0.6); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+                    .t-status { text-align: right; font-weight: 800; }
+                    .status-pass { color: #00C896; }
+                    .status-warn { color: #f59e0b; }
+                    .status-fail { color: #ef4444; }
+                    
+                    .traffic-stats {
+                        display: flex;
+                        gap: 30px;
+                        margin-top: 16px;
+                        padding-top: 16px;
+                        border-top: 1px solid rgba(255,255,255,0.05);
+                    }
+                    .stat-item {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 4px;
+                    }
+                    .stat-label { font-size: 10px; color: rgba(255,255,255,0.4); text-transform: uppercase; font-weight: 800; }
+                    .stat-value { font-size: 18px; font-weight: 800; color: white; }
+                `}</style>
+                
+                <div className="traffic-header">
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <h3 style={{ margin: 0, fontSize: '16px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <span style={{ fontSize: '20px' }}>📡</span> Live Safety Firewall Flow
+                        </h3>
+                        <p style={{ margin: '4px 0 0 0', fontSize: '13px', color: 'rgba(255,255,255,0.5)' }}>Intercepting and sanitizing traffic across all integrated platforms</p>
+                    </div>
+                    <div className="traffic-badge">
+                        <span className="pulse-icon-small" style={{ width: '8px', height: '8px', background: '#00C896', borderRadius: '50%' }}></span>
+                        LIVE INTERCEPTION ACTIVE
+                    </div>
+                </div>
+
+                <div className="traffic-terminal">
+                    <div className="traffic-row" style={{ borderBottomColor: 'rgba(255,255,255,0.1)', opacity: 0.5, fontWeight: 800 }}>
+                        <span>TIMESTAMP</span>
+                        <span>ENDPOINT</span>
+                        <span>ANALYSIS / PAYLOAD</span>
+                        <span style={{ textAlign: 'right' }}>ACTION</span>
+                    </div>
+                    {trafficLogs.map(log => (
+                        <div className="traffic-row" key={log.id}>
+                            <span className="t-timestamp">{log.time}</span>
+                            <span className="t-endpoint">{log.end}</span>
+                            <span className="t-meta">{log.meta}</span>
+                            <span className={`t-status ${log.class}`}>{log.status}</span>
+                        </div>
+                    ))}
+                </div>
+
+                <div className="traffic-stats">
+                    <div className="stat-item">
+                        <span className="stat-label">Requests/Min</span>
+                        <span className="stat-value">1,242</span>
+                    </div>
+                    <div className="stat-item">
+                        <span className="stat-label">Interceptions</span>
+                        <span className="stat-value" style={{ color: '#ef4444' }}>84</span>
+                    </div>
+                    <div className="stat-item">
+                        <span className="stat-label">Avg Sanitization Time</span>
+                        <span className="stat-value">14ms</span>
+                    </div>
+                    <div className="stat-item">
+                        <span className="stat-label">Safe Load</span>
+                        <span className="stat-value" style={{ color: '#00C896' }}>99.8%</span>
+                    </div>
+                </div>
+            </section>
 
             <div className="agent-layout">
                 {/* LEFT COLUMN */}
