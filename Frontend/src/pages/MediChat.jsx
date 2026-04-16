@@ -24,7 +24,77 @@ function getRiskBadge(risk_band) {
     return { label: 'ANALYZING', cls: 'safe', color: '#00C896' };
 }
 
-function FormattedAnswer({ text }) {
+function HeatmapAnswer({ claims }) {
+    if (!claims || claims.length === 0) return null;
+
+    return (
+        <div style={{ lineHeight: 1.8, fontSize: '14.5px', color: 'rgba(255,255,255,0.9)' }}>
+            {claims.map((item, i) => {
+                const status = item.status;
+                const score = item.nli_score;
+                
+                // Colors based on SRS/User request
+                let bgColor = 'transparent';
+                let borderColor = 'transparent';
+                let label = '';
+                let icon = '';
+
+                if (status === 'ENTAILED') {
+                    bgColor = 'rgba(0, 200, 150, 0.08)';
+                    borderColor = 'rgba(0, 200, 150, 0.2)';
+                    label = 'Verified';
+                    icon = '✓';
+                } else if (status === 'CONTRADICTED') {
+                    bgColor = 'rgba(255, 100, 50, 0.15)';
+                    borderColor = 'rgba(255, 100, 50, 0.4)';
+                    label = 'Possible Hallucination';
+                    icon = '⚠️';
+                } else {
+                    bgColor = 'rgba(255, 200, 50, 0.1)';
+                    borderColor = 'rgba(255, 200, 50, 0.3)';
+                    label = 'Uncertain / No Evidence';
+                    icon = '❓';
+                }
+
+                return (
+                    <span 
+                        key={i} 
+                        className="heatmap-sentence"
+                        title={`${label} (Score: ${score})`}
+                        style={{
+                            display: 'inline',
+                            padding: '2px 0',
+                            backgroundColor: bgColor,
+                            borderBottom: `2px solid ${borderColor}`,
+                            marginRight: '4px',
+                            cursor: 'help',
+                            transition: 'all 0.2s',
+                            borderRadius: '2px'
+                        }}
+                    >
+                        {item.claim}{' '}
+                    </span>
+                );
+            })}
+            <div style={{ marginTop: '16px', display: 'flex', gap: '15px', fontSize: '10px', fontWeight: 700, opacity: 0.6, letterSpacing: '0.5px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <div style={{ width: '8px', height: '8px', background: '#00C896', borderRadius: '2px' }} /> VERIFIED
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <div style={{ width: '8px', height: '8px', background: '#ffc832', borderRadius: '2px' }} /> UNCERTAIN
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <div style={{ width: '8px', height: '8px', background: '#ff6432', borderRadius: '2px' }} /> HALLUCINATION
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function FormattedAnswer({ text, claims }) {
+    if (claims && claims.length > 0) {
+        return <HeatmapAnswer claims={claims} />;
+    }
     if (!text) return null;
     const lines = text.split('\n').filter(l => l.trim() !== '');
     return (
@@ -130,7 +200,10 @@ function AIMessageCard({ msg }) {
                 <div style={{ fontSize: '10px', fontWeight: 700, color: 'rgba(255,255,255,0.3)', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '10px' }}>
                     &#128203; MediRAG Response — grounded from {chunks.length > 0 ? `${chunks.length} retrieved source${chunks.length > 1 ? 's' : ''}` : 'medical dataset'}
                 </div>
-                <FormattedAnswer text={data?.generated_answer || msg.text} />
+                <FormattedAnswer 
+                    text={data?.generated_answer || msg.text} 
+                    claims={mod.faithfulness?.details?.claims} 
+                />
             </div>
 
             {/* Module Scores */}

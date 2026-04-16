@@ -82,7 +82,7 @@ const About = () => {
         <div className="section-container">
             <div className="section-header reveal-up">
                 <div className="section-label about-section-label"><span className="sl-dash">—</span>OUR APPROACH<span className="sl-dash">—</span></div>
-                <h2 className="section-title">A Four-Layer Audit Engine</h2>
+                <h2 className="section-title">The MediRAG Safety Stack</h2>
             </div>
             
             <style>
@@ -146,12 +146,10 @@ const About = () => {
                 border-top: 1px solid rgba(255, 255, 255, 0.3);
                 border-radius: 20px;
                 padding: 24px;
-                margin: 50px 0;
+                margin: 40px 0;
                 width: 45%;
                 transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-                box-shadow: 
-                    0 15px 35px rgba(0,0,0,0.6),
-                    inset 0 1px 1px rgba(255,255,255,0.1);
+                box-shadow: 0 15px 35px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.1);
                 cursor: pointer;
                 transform-style: preserve-3d;
             }
@@ -166,19 +164,12 @@ const About = () => {
             }
 
             .module-3d-node:hover {
-                box-shadow: 
-                    0 25px 50px rgba(0,0,0,0.7),
-                    0 0 30px rgba(59, 130, 246, 0.5),
-                    inset 0 1px 1px rgba(255,255,255,0.4);
+                box-shadow: 0 25px 50px rgba(0,0,0,0.7), 0 0 30px rgba(59, 130, 246, 0.5);
                 border-color: rgba(96, 165, 250, 0.8);
             }
 
-            .module-3d-node:nth-child(odd):hover {
-                transform: translateY(-8px) scale(1.03) rotateY(4deg) rotateX(2deg);
-            }
-            .module-3d-node:nth-child(even):hover {
-                transform: translateY(-8px) scale(1.03) rotateY(-4deg) rotateX(2deg);
-            }
+            .module-3d-node:nth-child(odd):hover { transform: translateY(-8px) scale(1.03) rotateY(4deg); }
+            .module-3d-node:nth-child(even):hover { transform: translateY(-8px) scale(1.03) rotateY(-4deg); }
 
             .node-icon-3d {
                 width: 70px;
@@ -189,41 +180,19 @@ const About = () => {
                 align-items: center;
                 justify-content: center;
                 font-size: 32px;
-                box-shadow: 
-                    0 10px 20px rgba(0,0,0,0.5),
-                    inset 0 2px 5px rgba(255,255,255,0.5);
+                box-shadow: 0 10px 20px rgba(0,0,0,0.5), inset 0 2px 5px rgba(255,255,255,0.5);
                 flex-shrink: 0;
                 transform: translateZ(30px);
             }
 
             .module-3d-node:nth-child(odd) .node-icon-3d { margin-right: 20px; }
-            .module-3d-node:nth-child(even) .node-icon-3d { margin-left: 20px; margin-right: 0;}
+            .module-3d-node:nth-child(even) .node-icon-3d { margin-left: 20px; }
 
-            .node-content-3d {
-                flex-grow: 1;
-                transform: translateZ(20px);
-            }
+            .node-content-3d { flex-grow: 1; transform: translateZ(20px); }
 
-            .node-m-title {
-                font-size: 12px;
-                font-weight: 800;
-                color: #60a5fa;
-                text-transform: uppercase;
-                letter-spacing: 2px;
-                margin-bottom: 6px;
-            }
-            .node-m-heading {
-                font-size: 18px;
-                font-weight: 800;
-                color: white;
-                margin-bottom: 8px;
-                line-height: 1.2;
-            }
-            .node-m-desc {
-                font-size: 13px;
-                color: #cbd5e1;
-                line-height: 1.5;
-            }
+            .node-m-title { font-size: 11px; font-weight: 800; color: #60a5fa; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 6px; }
+            .node-m-heading { font-size: 17px; font-weight: 800; color: white; margin-bottom: 8px; }
+            .node-m-desc { font-size: 12.5px; color: #cbd5e1; line-height: 1.5; }
 
             .connector-arm-3d {
                 position: absolute;
@@ -231,26 +200,16 @@ const About = () => {
                 width: 12%;
                 height: 16px;
                 background: linear-gradient(90deg, #1e3a8a, #60a5fa);
-                box-shadow: inset 0 2px 4px rgba(255,255,255,0.5), 0 5px 15px rgba(0,0,0,0.6);
                 z-index: -1;
                 transform: translateY(-50%);
             }
 
-            .module-3d-node:nth-child(odd) .connector-arm-3d {
-                right: -10%;
-                border-radius: 0 8px 8px 0;
-            }
-
-            .module-3d-node:nth-child(even) .connector-arm-3d {
-                left: -10%;
-                border-radius: 8px 0 0 8px;
-                background: linear-gradient(90deg, #60a5fa, #1e3a8a);
-            }
-
+            .module-3d-node:nth-child(odd) .connector-arm-3d { right: -12%; border-radius: 0 8px 8px 0; }
+            .module-3d-node:nth-child(even) .connector-arm-3d { left: -12%; border-radius: 8px 0 0 8px; background: linear-gradient(90deg, #60a5fa, #1e3a8a); }
+            
             .engine-output-3d {
                 background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(5, 150, 105, 0.4));
                 border: 1px solid rgba(52, 211, 153, 0.5);
-                border-top: 1px solid rgba(110, 231, 183, 0.8);
                 border-radius: 24px;
                 padding: 40px;
                 text-align: center;
@@ -259,48 +218,14 @@ const About = () => {
                 max-width: 600px;
                 position: relative;
                 z-index: 2;
-                box-shadow: 
-                    0 20px 50px rgba(0,0,0,0.6),
-                    0 0 40px rgba(16, 185, 129, 0.3),
-                    inset 0 2px 20px rgba(255,255,255,0.1);
+                box-shadow: 0 20px 50px rgba(0,0,0,0.6);
                 transform-style: preserve-3d;
-                transition: transform 0.4s ease;
-            }
-            .engine-output-3d:hover {
-                transform: translateY(-5px) scale(1.02);
-            }
-            .engine-output-3d h3 {
-                color: #6ee7b7;
-                font-size: 26px;
-                font-weight: 900;
-                margin-bottom: 12px;
-                letter-spacing: 1px;
-                transform: translateZ(20px);
-            }
-            .engine-output-3d p {
-                color: #d1fae5;
-                font-size: 15px;
-                line-height: 1.6;
-                transform: translateZ(10px);
             }
 
             @media (max-width: 768px) {
-                .pipe-line-3d { left: 40px; }
-                .module-3d-node {
-                    width: calc(100% - 70px);
-                    margin-left: auto !important;
-                    margin-right: 0 !important;
-                    flex-direction: row-reverse !important;
-                    text-align: left !important;
-                }
-                .module-3d-node:nth-child(even) .node-icon-3d { margin-right: 20px; margin-left: 0; }
-                .connector-arm-3d {
-                    width: 40px;
-                    left: -40px !important;
-                    right: auto !important;
-                    border-radius: 8px 0 0 8px !important;
-                    background: linear-gradient(90deg, #60a5fa, #1e3a8a) !important;
-                }
+                .module-3d-node { width: calc(100% - 70px); margin-left: auto !important; flex-direction: row-reverse !important; text-align: left !important; }
+                .module-3d-node:nth-child(even) .node-icon-3d { margin-left: 0; margin-right: 20px; }
+                .connector-arm-3d { width: 30px; left: -30px !important; right: auto !important; }
             }
             `}
             </style>
@@ -312,11 +237,31 @@ const About = () => {
                     </div>
 
                     <div className="module-3d-node">
+                        <div className="node-icon-3d">🔒</div>
+                        <div className="node-content-3d">
+                            <div className="node-m-title">Middleware Phase 1</div>
+                            <div className="node-m-heading">PHI Privacy Shield</div>
+                            <div className="node-m-desc">Automatic PII/PHI redaction. Masks sensitive patient data before external processing.</div>
+                        </div>
+                        <div className="connector-arm-3d"></div>
+                    </div>
+
+                    <div className="module-3d-node">
                         <div className="node-icon-3d">⚖️</div>
                         <div className="node-content-3d">
-                            <div className="node-m-title">Module 1</div>
-                            <div className="node-m-heading">Faithfulness Scorer</div>
-                            <div className="node-m-desc">Uses NLI-based entailment checks; ensures answer is strictly derived from retrieved source documents.</div>
+                            <div className="node-m-title">Middleware Phase 2</div>
+                            <div className="node-m-heading">Consensus Judge</div>
+                            <div className="node-m-desc">Cross-references multiple AI models against the retrieved clinical dataset to identify the most evidence-supported response.</div>
+                        </div>
+                        <div className="connector-arm-3d"></div>
+                    </div>
+
+                    <div className="module-3d-node">
+                        <div className="node-icon-3d">📊</div>
+                        <div className="node-content-3d">
+                            <div className="node-m-title">Audit Layer 1</div>
+                            <div className="node-m-heading">Evidence Grounding</div>
+                            <div className="node-m-desc">Scientific verification using your medical dataset. Ensures every AI claim is explicitly supported by retrieved text chunks.</div>
                         </div>
                         <div className="connector-arm-3d"></div>
                     </div>
@@ -324,9 +269,9 @@ const About = () => {
                     <div className="module-3d-node">
                         <div className="node-icon-3d">🔍</div>
                         <div className="node-content-3d">
-                            <div className="node-m-title">Module 2</div>
-                            <div className="node-m-heading">Medical Entity Verifier</div>
-                            <div className="node-m-desc">Utilizes SciSpaCy NER and Neo4j Knowledge Graph to verify drug names, dosages, and clinical entities.</div>
+                            <div className="node-m-title">Audit Layer 2</div>
+                            <div className="node-m-heading">Entity Validation</div>
+                            <div className="node-m-desc">Verifies drug names and clinical entities using SciSpaCy and RxNorm, strictly cross-checking against the source dataset.</div>
                         </div>
                         <div className="connector-arm-3d"></div>
                     </div>
@@ -334,27 +279,17 @@ const About = () => {
                     <div className="module-3d-node">
                         <div className="node-icon-3d">📄</div>
                         <div className="node-content-3d">
-                            <div className="node-m-title">Module 3</div>
-                            <div className="node-m-heading">Source Credibility Ranker</div>
-                            <div className="node-m-desc">Evaluates evidence based on clinical hierarchy (e.g., prioritizing Randomized Controlled Trials over case studies).</div>
-                        </div>
-                        <div className="connector-arm-3d"></div>
-                    </div>
-
-                    <div className="module-3d-node">
-                        <div className="node-icon-3d">💬</div>
-                        <div className="node-content-3d">
-                            <div className="node-m-title">Module 4</div>
-                            <div className="node-m-heading">Contradiction Detector</div>
-                            <div className="node-m-desc">Performs cross-sentence consistency checks to ensure AI does not contradict itself within the response.</div>
+                            <div className="node-m-title">Audit Layer 3</div>
+                            <div className="node-m-heading">Dataset Credibility</div>
+                            <div className="node-m-desc">Ranks the reliability of the source evidence (RCTs vs Guidelines) used to verify the AI's generated response.</div>
                         </div>
                         <div className="connector-arm-3d"></div>
                     </div>
                 </div>
 
                 <div className="engine-output-3d">
-                    <h3>THE SOLUTION: MediRAG-Eval</h3>
-                    <p>Calculates the Composite Hallucination Risk Score (0-100), provides clause-level annotations, and generates a fully explainable JSON audit report for AI Governance.</p>
+                    <h3>THE RESULT: Dataset-Grounded Safety</h3>
+                    <p>Real-time privacy, multi-model consensus, and a rigorous 3-layer audit focused on evidence from your clinical dataset.</p>
                 </div>
             </div>
             
