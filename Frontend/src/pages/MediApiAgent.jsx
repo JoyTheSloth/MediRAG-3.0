@@ -149,51 +149,194 @@ const MediApiAgent = () => {
                         </div>
                         <p className="section-desc">If-this-then-that automation for medical safety and governance.</p>
 
-                        <div className="rule-builder">
-                            <div className="builder-row">
-                                <div className="builder-field">
-                                    <label>WHEN (Trigger)</label>
-                                    <select value={trigger} onChange={e => setTrigger(e.target.value)}>
-                                        <option value="API_REQUEST_MADE">When API request is made</option>
-                                        <option value="PRESCRIPTION_ADDED">When prescription is added</option>
-                                        <option value="LAB_REPORT_FETCHED">When lab report is fetched</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div className="builder-row">
-                                <div className="builder-field">
-                                    <label>IF (Condition)</label>
-                                    <select value={condition} onChange={e => setCondition(e.target.value)}>
-                                        <option value="DRUG_INTERACTION">Drug interaction detected</option>
-                                        <option value="ABNORMAL_LAB">Abnormal lab value</option>
-                                        <option value="MISSING_CONSENT">Missing patient consent</option>
-                                        <option value="CUSTOM_RULE">Custom rule...</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div className="builder-row">
-                                <div className="builder-field">
-                                    <label>THEN (Action)</label>
-                                    <select value={action} onChange={e => setAction(e.target.value)}>
-                                        <option value="BLOCK_AND_ALERT">Block request & alert</option>
-                                        <option value="ADD_WARNING">Add warning to response</option>
-                                        <option value="NOTIFY_SYSTEM">Notify system</option>
-                                        <option value="LOG_AUDIT">Log for audit</option>
-                                    </select>
-                                </div>
-                                <button className="add-rule-btn" onClick={handleSaveRule}>Save Rule</button>
-                            </div>
-                        </div>
+                        <p className="section-desc">If-this-then-that automation for medical safety and governance.</p>
 
-                        <div className="builder-preview">
-                            <div className="preview-label">Rule Payload Preview</div>
-                            <pre className="code-content dark-bg">
-{`{
-  "trigger": "${trigger}",
-  "condition": "${condition}",
-  "action": "${action}"
-}`}
-                            </pre>
+                        <div className="premium-rule-builder">
+                            <style>{`
+                                .premium-rule-builder {
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: 16px;
+                                    margin-top: 24px;
+                                }
+                                .prb-node {
+                                    background: rgba(15, 23, 42, 0.6);
+                                    border: 1px solid rgba(255, 255, 255, 0.1);
+                                    border-radius: 12px;
+                                    padding: 16px;
+                                    display: flex;
+                                    align-items: center;
+                                    gap: 16px;
+                                    position: relative;
+                                    z-index: 1;
+                                    transition: all 0.2s ease;
+                                }
+                                .prb-node:hover {
+                                    border-color: rgba(0, 200, 150, 0.4);
+                                    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+                                    transform: translateX(4px);
+                                }
+                                .prb-connector {
+                                    position: absolute;
+                                    left: 36px;
+                                    top: 100%;
+                                    width: 2px;
+                                    height: 16px;
+                                    background: linear-gradient(to bottom, rgba(0, 200, 150, 0.5), rgba(0, 200, 150, 0.1));
+                                    z-index: 0;
+                                }
+                                .prb-icon {
+                                    width: 42px;
+                                    height: 42px;
+                                    border-radius: 10px;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    font-size: 18px;
+                                    font-weight: bold;
+                                    flex-shrink: 0;
+                                }
+                                .icon-when { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
+                                .icon-if   { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
+                                .icon-then { background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
+                                
+                                .prb-content { flex-grow: 1; }
+                                .prb-label {
+                                    font-size: 11px;
+                                    font-weight: 800;
+                                    color: rgba(255,255,255,0.4);
+                                    text-transform: uppercase;
+                                    letter-spacing: 1px;
+                                    margin-bottom: 6px;
+                                }
+                                .prb-select {
+                                    width: 100%;
+                                    background: rgba(0,0,0,0.3) !important;
+                                    border: 1px solid rgba(255,255,255,0.1) !important;
+                                    color: white !important;
+                                    font-size: 14px !important;
+                                    padding: 10px 14px !important;
+                                    border-radius: 8px !important;
+                                    cursor: pointer;
+                                    appearance: none;
+                                    outline: none;
+                                    transition: border-color 0.2s;
+                                }
+                                .prb-select:focus { border-color: #00c896 !important; }
+                                .prb-select option { background: #0f172a; color: white; }
+                                
+                                .monaco-preview {
+                                    background: #0d1117;
+                                    border: 1px solid #30363d;
+                                    border-radius: 8px;
+                                    padding: 16px;
+                                    font-family: 'Fira Code', 'Courier New', monospace;
+                                    font-size: 13px;
+                                    margin-top: 10px;
+                                    position: relative;
+                                    box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
+                                    overflow: hidden;
+                                }
+                                .monaco-header {
+                                    position: absolute;
+                                    top: 0; left: 0; right: 0;
+                                    background: #161b22;
+                                    padding: 6px 16px;
+                                    font-size: 11px;
+                                    color: #8b949e;
+                                    border-bottom: 1px solid #30363d;
+                                    display: flex;
+                                    justify-content: space-between;
+                                    align-items: center;
+                                }
+                                .monaco-body {
+                                    margin-top: 18px;
+                                    margin-bottom: 0;
+                                    color: #c9d1d9;
+                                    white-space: pre-wrap;
+                                    line-height: 1.6;
+                                }
+                                .syntax-key { color: #7ee787; }
+                                .syntax-val { color: #a5d6ff; }
+                                .syntax-punct { color: #8b949e; }
+                            `}</style>
+
+                            <div className="prb-node">
+                                <div className="prb-icon icon-when">⚡</div>
+                                <div className="prb-content">
+                                    <div className="prb-label">Trigger Event</div>
+                                    <select className="prb-select" value={trigger} onChange={e => setTrigger(e.target.value)}>
+                                        <option value="API_REQUEST_MADE">API Request Initiated</option>
+                                        <option value="PRESCRIPTION_ADDED">Prescription Added</option>
+                                        <option value="LAB_REPORT_FETCHED">Lab Report Fetched</option>
+                                    </select>
+                                </div>
+                                <div className="prb-connector"></div>
+                            </div>
+                            
+                            <div className="prb-node">
+                                <div className="prb-icon icon-if">❓</div>
+                                <div className="prb-content">
+                                    <div className="prb-label">Condition Context</div>
+                                    <select className="prb-select" value={condition} onChange={e => setCondition(e.target.value)}>
+                                        <option value="DRUG_INTERACTION">Drug-Drug Interaction Detected</option>
+                                        <option value="PHI_DETECTED">PHI/PII Detected in Payload</option>
+                                        <option value="ABNORMAL_LAB">Abnormal Lab Value Outside Range</option>
+                                        <option value="MISSING_CONSENT">Missing Patient Consent Token</option>
+                                    </select>
+                                </div>
+                                <div className="prb-connector"></div>
+                            </div>
+                            
+                            <div className="prb-node">
+                                <div className="prb-icon icon-then">🛡️</div>
+                                <div className="prb-content">
+                                    <div className="prb-label">Automated Action</div>
+                                    <select className="prb-select" value={action} onChange={e => setAction(e.target.value)}>
+                                        <option value="BLOCK_AND_ALERT">Intercept Request & Alert Clinician</option>
+                                        <option value="REDACT_DATA">Auto-Redact Sensitive Fields</option>
+                                        <option value="ADD_WARNING">Append Warning Metadata to Header</option>
+                                        <option value="LOG_AUDIT">Forward to Audit Log Database</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '8px' }}>
+                                <button className="add-rule-btn" style={{ 
+                                    background: 'linear-gradient(135deg, #00C896, #008765)', 
+                                    padding: '12px 28px', 
+                                    borderRadius: '8px', 
+                                    border: 'none', 
+                                    color: 'white', 
+                                    fontWeight: 'bold', 
+                                    cursor: 'pointer', 
+                                    boxShadow: '0 4px 15px rgba(0, 200, 150, 0.3)',
+                                    transition: 'all 0.2s',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '8px'
+                                }} onClick={handleSaveRule}
+                                onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
+                                onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
+                                >
+                                    <span>Deploy Rule</span> 🚀
+                                </button>
+                            </div>
+
+                            <div className="monaco-preview reveal-up">
+                                <div className="monaco-header">
+                                    <span>rule_definition.json</span>
+                                    <span>JSON</span>
+                                </div>
+                                <pre className="monaco-body">
+{<span className="syntax-punct">{`{\n`}</span>}
+{`  `}<span className="syntax-key">"id"</span><span className="syntax-punct">: </span><span className="syntax-val">"rule_safeguard_v2"</span><span className="syntax-punct">,</span>{`\n`}
+{`  `}<span className="syntax-key">"trigger"</span><span className="syntax-punct">: </span><span className="syntax-val">"{trigger}"</span><span className="syntax-punct">,</span>{`\n`}
+{`  `}<span className="syntax-key">"condition"</span><span className="syntax-punct">: </span><span className="syntax-val">"{condition}"</span><span className="syntax-punct">,</span>{`\n`}
+{`  `}<span className="syntax-key">"action"</span><span className="syntax-punct">: </span><span className="syntax-val">"{action}"</span>{`\n`}
+{<span className="syntax-punct">{`}`}</span>}
+                                </pre>
+                            </div>
                         </div>
                     </section>
                 </div>
