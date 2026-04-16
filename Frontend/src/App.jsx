@@ -2,6 +2,15 @@ import React from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import './index.css';
+// Force all page CSS into the main bundle for Vercel production build
+import './pages/Console.css';
+import './pages/ApiDocs.css';
+import './pages/MediApiAgent.css';
+import './pages/MediChat.css';
+import './pages/Evaluate.css';
+import './pages/Dashboard.css';
+import './pages/Governance.css';
+import './pages/PatientExperience.css';
 import Home from './pages/Home';
 import ApiDocs from './pages/ApiDocs';
 import About from './pages/About';
