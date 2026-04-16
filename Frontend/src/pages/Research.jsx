@@ -182,59 +182,49 @@ const Research = () => {
 
                 <div className="ablation-grid reveal-up">
                     <div className="ablation-card">
-                        <h3 style={{ marginBottom: '8px' }}>Accuracy Ablation</h3>
-                        <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '13px', marginBottom: '24px' }}>Clinical accuracy across pipeline iterations.</p>
+                        <h3 style={{ marginBottom: '8px' }}>Accuracy Benchmarks (MedQA)</h3>
+                        <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '13px', marginBottom: '24px' }}>Clinical accuracy across base models and pipeline iterations.</p>
                         
-                        <div className="bar-row">
-                            <div className="bar-label">Base Llama 3 8B</div>
-                            <div className="bar-track">
-                                <div className="bar-fill" style={{ width: '45%', background: '#ef4444' }}></div>
-                            </div>
-                            <div className="bar-val" style={{ color: '#ef4444' }}>45%</div>
-                        </div>
-                        <div className="bar-row">
-                            <div className="bar-label">Naive RAG</div>
-                            <div className="bar-track">
-                                <div className="bar-fill" style={{ width: '72%', background: '#f59e0b' }}></div>
-                            </div>
-                            <div className="bar-val" style={{ color: '#f59e0b' }}>72%</div>
-                        </div>
-                        <div className="bar-row">
-                            <div className="bar-label">MediRAG Stack</div>
-                            <div className="bar-track">
-                                <div className="bar-fill" style={{ width: '94%', background: 'linear-gradient(90deg, #00C896, #00A37A)' }}>
-                                    <div style={{position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(255,255,255,0.2)', animation: 'pulse 2s infinite'}}></div>
+                        {[
+                            { name: 'Base Llama-3 8B', val: 45, color: '#ef4444' },
+                            { name: 'GPT-3.5-Turbo', val: 62, color: '#ef4444' },
+                            { name: 'BioMISTRAL 7B', val: 70, color: '#f59e0b' },
+                            { name: 'Naive RAG (Llama-3)', val: 72, color: '#f59e0b' },
+                            { name: 'Advanced RAG (w/ Re-rank)', val: 84, color: '#38bdf8' },
+                            { name: 'MediRAG Safety Stack', val: 94, color: 'linear-gradient(90deg, #00C896, #00A37A)', textColor: '#00C896', pulse: true }
+                        ].map((m, i) => (
+                            <div className="bar-row" key={'acc'+i}>
+                                <div className="bar-label">{m.name}</div>
+                                <div className="bar-track">
+                                    <div className="bar-fill" style={{ width: `${m.val}%`, background: m.color }}>
+                                        {m.pulse && <div style={{position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(255,255,255,0.2)', animation: 'pulse 2s infinite'}}></div>}
+                                    </div>
                                 </div>
+                                <div className="bar-val" style={{ color: m.textColor || m.color }}>{m.val}%</div>
                             </div>
-                            <div className="bar-val" style={{ color: '#00C896' }}>94%</div>
-                        </div>
+                        ))}
                     </div>
 
                     <div className="ablation-card">
-                        <h3 style={{ marginBottom: '8px' }}>Hallucination Mitigation</h3>
-                        <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '13px', marginBottom: '24px' }}>Unflagged hallucinations slipping into user response.</p>
+                        <h3 style={{ marginBottom: '8px' }}>Unflagged Hallucinations</h3>
+                        <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '13px', marginBottom: '24px' }}>Percentage of medically dangerous inaccuracies slipping into final response.</p>
                         
-                        <div className="bar-row">
-                            <div className="bar-label">Base Llama 3 8B</div>
-                            <div className="bar-track">
-                                <div className="bar-fill" style={{ width: '38%', background: '#ef4444' }}></div>
+                        {[
+                            { name: 'Base Llama-3 8B', val: 38, color: '#ef4444' },
+                            { name: 'GPT-3.5-Turbo', val: 22, color: '#ef4444' },
+                            { name: 'BioMISTRAL 7B', val: 18, color: '#f59e0b' },
+                            { name: 'Naive RAG (Llama-3)', val: 15, color: '#f59e0b' },
+                            { name: 'Advanced RAG (w/ Re-rank)', val: 8, color: '#38bdf8' },
+                            { name: 'MediRAG Safety Stack', val: 2, color: '#00C896', pulse: false }
+                        ].map((m, i) => (
+                            <div className="bar-row" key={'hal'+i}>
+                                <div className="bar-label">{m.name}</div>
+                                <div className="bar-track">
+                                    <div className="bar-fill" style={{ width: `${m.val}%`, background: m.color }}></div>
+                                </div>
+                                <div className="bar-val" style={{ color: m.color }}>{m.val}%</div>
                             </div>
-                            <div className="bar-val" style={{ color: '#ef4444' }}>38%</div>
-                        </div>
-                        <div className="bar-row">
-                            <div className="bar-label">Naive RAG</div>
-                            <div className="bar-track">
-                                <div className="bar-fill" style={{ width: '15%', background: '#f59e0b' }}></div>
-                            </div>
-                            <div className="bar-val" style={{ color: '#f59e0b' }}>15%</div>
-                        </div>
-                        <div className="bar-row">
-                            <div className="bar-label">MediRAG Stack</div>
-                            <div className="bar-track">
-                                <div className="bar-fill" style={{ width: '2%', background: '#00C896' }}></div>
-                            </div>
-                            <div className="bar-val" style={{ color: '#00C896' }}>2%</div>
-                        </div>
+                        ))}
                     </div>
                 </div>
 
