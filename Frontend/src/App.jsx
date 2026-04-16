@@ -11,10 +11,15 @@ import MediChat from './pages/MediChat';
 import MediApiAgent from './pages/MediApiAgent';
 import Research from './pages/Research';
 
+import Footer from './components/Footer';
+
 const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 const App = () => {
     const location = useLocation();
+    
+    // Only show footer on Home and About pages
+    const showFooter = ['/', '/about'].includes(location.pathname);
 
     React.useEffect(() => {
         if (!apiUrl) {
@@ -71,6 +76,7 @@ const App = () => {
                     <Route path="*" element={<Home />} />
                 </Routes>
             </main>
+            {showFooter && <Footer />}
         </>
     );
 };
