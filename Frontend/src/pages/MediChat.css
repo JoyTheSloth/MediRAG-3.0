@@ -717,3 +717,70 @@
 
 [data-theme="light"] .mc-send-btn { background: #1A1F36; color: #FFFFFF; box-shadow: none; }
 [data-theme="light"] .mc-send-btn:disabled { background: #F3F4F6; color: #9CA3AF; }
+/* Persona Toggle */
+.persona-toggle-container {
+    display: flex;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 30px;
+    padding: 3px;
+    height: 38px;
+    position: relative;
+    box-sizing: border-box;
+    width: 220px;
+    margin-left: auto;
+}
+
+.persona-option {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    z-index: 1;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.persona-option.active {
+    color: #0a0d14;
+}
+
+.persona-slider {
+    position: absolute;
+    width: calc(50% - 3px);
+    height: calc(100% - 6px);
+    background: #00C896;
+    border-radius: 26px;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 4px 12px rgba(0, 200, 150, 0.2);
+}
+
+.persona-slider.patient {
+    transform: translateX(100%);
+    background: #00C896;
+}
+
+/* Light Theme Persona Toggle */
+[data-theme="light"] .persona-toggle-container {
+    background: rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .persona-option {
+    color: #6B7280;
+}
+
+[data-theme="light"] .persona-option.active {
+    color: #FFFFFF;
+}
+
+[data-theme="light"] .persona-slider {
+    background: #10B981;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+}

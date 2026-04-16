@@ -34,6 +34,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 
 import threading
+from src.api.schemas import (
+    HealthResponse,
+    EvaluateResponse,
+    QueryRequest,
+    QueryResponse,
+    RetrievedChunk,
     IngestRequest,
     ChatRequest,
 )
@@ -426,6 +432,8 @@ def query(req: QueryRequest) -> QueryResponse:
         llm_overrides["ollama_url"] = req.ollama_url
     if req.system_prompt:
         llm_overrides["system_prompt"] = req.system_prompt
+    if req.persona:
+        llm_overrides["persona"] = req.persona
 
     # =========================================================================
     # Step 2a: PRIVACY SHIELD — MediRAG redacts PHI (Option 1)

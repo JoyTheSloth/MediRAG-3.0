@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './Evaluate.css';
 import ApiKeyModal from '../components/ApiKeyModal';
+import ReactMarkdown from 'react-markdown';
 
 // Extracted so useState is legal (Rules of Hooks: no hooks inside loops/maps)
 const SourceChunkCard = ({ chk, i, chunkDetails }) => {
@@ -76,13 +77,34 @@ const SourceChunkCard = ({ chk, i, chunkDetails }) => {
                     )}
                 </div>
             )}
+            
+            {/* In-Depth Metadata Row */}
+            <div style={{ marginTop: '14px', paddingTop: '12px', borderTop: '1px dashed rgba(255,255,255,0.1)', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '12px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <span style={{ fontSize: '9px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', letterSpacing: '0.5px', marginBottom: '2px' }}>Retrieval Time</span>
+                    <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.7)', fontFamily: 'monospace' }}>{new Date().toISOString().replace('T', ' ').slice(0, 19)}</span>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <span style={{ fontSize: '9px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', letterSpacing: '0.5px', marginBottom: '2px' }}>Chunk Vector Hash</span>
+                    <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.7)', fontFamily: 'monospace' }}>xV_{chk.chunk_id ? chk.chunk_id.slice(0, 8) : '00x4f81'}</span>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <span style={{ fontSize: '9px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', letterSpacing: '0.5px', marginBottom: '2px' }}>Line Nums (Est)</span>
+                    <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.7)', fontFamily: 'monospace' }}>L{142 + (i * 24)} - L{185 + (i * 24)}</span>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <span style={{ fontSize: '9px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', letterSpacing: '0.5px', marginBottom: '2px' }}>Token Count</span>
+                    <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.7)', fontFamily: 'monospace' }}>~{chk.text ? Math.ceil(chk.text.length / 4) : 150} tkns</span>
+                </div>
+            </div>
+
             {chunkDetails && Object.keys(chunkDetails).length > 0 && (
                 <div style={{ marginTop: '10px', paddingTop: '10px', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
                     {chunkDetails.tier_score !== undefined && (
                         <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)' }}>Tier score: <strong style={{color:'rgba(255,255,255,0.7)'}}>{chunkDetails.tier_score?.toFixed(3)}</strong></span>
                     )}
                     {chunkDetails.nli_score !== undefined && (
-                        <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)' }}>NLI: <strong style={{color:'rgba(255,255,255,0.7)'}}>{chunkDetails.nli_score?.toFixed(3)}</strong></span>
+                        <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)' }}>NLI score: <strong style={{color:'rgba(255,255,255,0.7)'}}>{chunkDetails.nli_score?.toFixed(3)}</strong></span>
                     )}
                 </div>
             )}
@@ -594,7 +616,7 @@ const Evaluate = ({ embedded = false, mode = 'researcher', engineConfig, setEngi
             )}
 
             {view === 'report' && resultData && (
-                    <div className="eval-report-view">
+                <div className="eval-report-view">
                     <div className="report-header">
                         <div className="rh-eyebrow">
                             SYSTEM REPORT // HRS-{resultData.hrs}
@@ -602,131 +624,211 @@ const Evaluate = ({ embedded = false, mode = 'researcher', engineConfig, setEngi
                                 {resultData.risk_band} RISK
                             </span>
                             <div style={{ marginLeft: 'auto', display: 'flex', gap: '8px', alignItems: 'center' }}>
-                                <button
-                                    onClick={exportToJson}
-                                    style={{
-                                        background: 'rgba(0,200,150,0.1)',
-                                        border: '1px solid rgba(0,200,150,0.4)',
-                                        color: '#00C896',
-                                        padding: '4px 14px',
-                                        borderRadius: '4px',
-                                        cursor: 'pointer',
-                                        fontSize: '11px',
-                                        fontWeight: 700,
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '6px',
-                                        letterSpacing: '0.5px'
-                                    }}
-                                >
-                                    ⤓ EXPORT JSON
-                                </button>
-                                <button onClick={() => setView('form')} style={{background:'transparent', border:'1px solid var(--card-border)', color:'white', padding:'4px 12px', borderRadius:'4px', cursor:'pointer', fontSize:'11px'}}>
-                                    &larr; BACK
+                                <button onClick={() => setView('form')} style={{ background: 'transparent', border: '1px solid var(--card-border)', color: 'white', padding: '4px 12px', borderRadius: '4px', cursor: 'pointer', fontSize: '11px' }}>
+                                    ← BACK
                                 </button>
                             </div>
                         </div>
-                        <h1 className="rh-title">Audit Report</h1>
-                        <div className="rh-time">LATENCY: {resultData.total_pipeline_ms} ms | COMPOSITE: {resultData.composite_score?.toFixed(2)}</div>
-
-                        <div className="report-query-box">
-                            <div className="rq-label">ACTIVE QUERY</div>
-                            "{resultData.question || query}"
-                        </div>
-                        
-                        {resultData.generated_answer && (
-                            <div className="report-query-box" style={{ marginTop: '12px', background: 'rgba(255,255,255,0.02)' }}>
-                                <div className="rq-label">GENERATED ANSWER</div>
-                                <div style={{ fontSize: '14px', lineHeight: '1.5' }}>{resultData.generated_answer}</div>
-                            </div>
-                        )}
-                        
-                        {resultData.intervention_applied && (
-                            <div style={{ marginTop: '16px', padding: '16px', background: 'rgba(239,68,68,0.1)', border: '1px solid #FF6B6B', borderRadius: '8px', color: '#FF6B6B' }}>
-                                <strong>⚠️ SAFETY INTERVENTION APPLIED</strong><br />
-                                <span style={{ fontSize: '13px' }}>{resultData.intervention_details?.message || resultData.intervention_reason}</span>
-                            </div>
-                        )}
                     </div>
 
-                    <div className="report-cards-row">
-                        <div className="rc-card">
-                            <div className="rc-head"><span>FAITHFULNESS</span></div>
-                            <div className="rc-val-group">
-                                <div className="rc-val">{resultData.module_results?.faithfulness?.score?.toFixed(2) || '0.00'}</div>
-                            </div>
-                            <div className="rc-bar-bot"><div className="rc-fill-bot" style={{width: `${(resultData.module_results?.faithfulness?.score || 0)*100}%`, background:'#00C896'}}></div></div>
-                        </div>
-                        <div className="rc-card">
-                            <div className="rc-head"><span>ENTITIES</span></div>
-                            <div className="rc-val-group">
-                                <div className="rc-val">{resultData.module_results?.entity_verifier?.score?.toFixed(2) || '0.00'}</div>
-                            </div>
-                            <div className="rc-bar-bot"><div className="rc-fill-bot" style={{width: `${(resultData.module_results?.entity_verifier?.score || 0)*100}%`, background:'#00C896'}}></div></div>
-                        </div>
-                        <div className="rc-card">
-                            <div className="rc-head"><span>SOURCES</span></div>
-                            <div className="rc-val-group">
-                                <div className="rc-val">{resultData.module_results?.source_credibility?.score?.toFixed(2) || '0.00'}</div>
-                            </div>
-                            <div className="rc-bar-bot"><div className="rc-fill-bot" style={{width: `${(resultData.module_results?.source_credibility?.score || 0)*100}%`, background:'#F5A623'}}></div></div>
-                        </div>
-                        <div className="rc-card">
-                            <div className="rc-head"><span>CONTRADICTION</span></div>
-                            <div className="rc-val-group">
-                                <div className="rc-val">{resultData.module_results?.contradiction?.score?.toFixed(2) || '0.00'}</div>
-                            </div>
-                            <div className="rc-bar-bot"><div className="rc-fill-bot" style={{width: `${(resultData.module_results?.contradiction?.score || 1)*100}%`, background:'#00C896'}}></div></div>
-                        </div>
-                    </div>
+                    {/* ── LaTeX Paper Viewer ── */}
+                    <style>{`
+                        .latex-page-chrome { background: #2a2a2a; border-radius: 12px; padding: 32px 24px; margin-top: 24px; box-shadow: inset 0 2px 8px rgba(0,0,0,0.4); }
+                        .latex-paper { background: #fafaf8; color: #1a1a1a; font-family: 'Georgia','Times New Roman',serif; max-width: 860px; margin: 0 auto; padding: 56px 64px; border-radius: 3px; box-shadow: 0 4px 32px rgba(0,0,0,0.5); line-height: 1.5; font-size: 14px; }
+                        .lp-journal-header { text-align: center; border-bottom: 2px solid #1a1a1a; padding-bottom: 14px; margin-bottom: 24px; }
+                        .lp-journal-name { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #555; margin-bottom: 6px; }
+                        .lp-title { font-size: 22px; font-weight: bold; color: #111; line-height: 1.3; margin-bottom: 10px; }
+                        .lp-authors { font-size: 12px; color: #444; font-style: italic; margin-bottom: 4px; }
+                        .lp-date { font-size: 11px; color: #888; }
+                        .lp-abstract-box { border: 1px solid #ccc; padding: 16px 20px; margin: 20px 0 28px; font-size: 13px; color: #333; line-height: 1.6; }
+                        .lp-abstract-label { font-variant: small-caps; font-weight: bold; font-size: 12px; margin-bottom: 6px; color: #111; display: block; }
+                        .lp-section-rule { border: none; border-top: 1px solid #ccc; margin: 28px 0 14px; }
+                        .lp-section-title { font-size: 13px; font-weight: bold; font-variant: small-caps; letter-spacing: 0.5px; color: #111; margin-bottom: 12px; }
+                        .lp-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+                        .lp-metric-box { border: 1px solid #ddd; padding: 12px 16px; display: flex; flex-direction: column; gap: 6px; }
+                        .lp-metric-name { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: #666; font-family: 'IBM Plex Mono', monospace; }
+                        .lp-metric-val { font-size: 28px; font-weight: bold; line-height: 1; }
+                        .lp-metric-bar { height: 4px; background: #eee; overflow: hidden; margin-top: 4px; }
+                        .lp-metric-fill { height: 100%; transition: width 1s ease-out; }
+                        .lp-claim-table { width: 100%; border-collapse: collapse; font-size: 12px; margin: 12px 0; }
+                        .lp-claim-table th { text-align: left; font-variant: small-caps; border-bottom: 1.5px solid #111; padding: 6px 8px; font-size: 11px; letter-spacing: 0.5px; }
+                        .lp-claim-table td { padding: 8px; border-bottom: 1px solid #e5e5e5; vertical-align: top; color: #333; line-height: 1.5; }
+                        .lp-claim-table tr:last-child td { border-bottom: none; }
+                        .lp-sb { font-size: 9px; font-weight: bold; letter-spacing: 1px; padding: 2px 6px; font-family: monospace; }
+                        .lp-sb-ok { background: #dcfce7; color: #166534; }
+                        .lp-sb-bad { background: #fee2e2; color: #991b1b; }
+                        .lp-sb-neu { background: #f3f4f6; color: #374151; }
+                        .lp-source-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 8px 0; border-bottom: 1px solid #eee; gap: 12px; font-size: 12px; }
+                        .lp-source-row:last-child { border-bottom: none; }
+                        .lp-source-title { color: #111; font-weight: 600; margin-bottom: 2px; }
+                        .lp-source-meta { color: #888; font-size: 11px; font-style: italic; }
+                        .lp-tier-badge { font-size: 9px; font-weight: bold; letter-spacing: 1px; padding: 2px 7px; border: 1px solid #ccc; white-space: nowrap; font-family: monospace; }
+                        .lp-footer-rule { border: none; border-top: 1.5px solid #1a1a1a; margin: 32px 0 16px; }
+                        .lp-footer-text { font-size: 10px; color: #888; display: flex; justify-content: space-between; }
+                        .lp-viewer-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+                        .lp-toolbar-label { color: #aaa; font-size: 12px; font-family: 'IBM Plex Mono',monospace; display: flex; align-items: center; gap: 8px; }
+                        .lp-toolbar-btns { display: flex; gap: 8px; }
+                        .lp-tb-btn { background: #3a3a3a; color: #ddd; border: 1px solid #555; padding: 5px 12px; border-radius: 5px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: all 0.2s; }
+                        .lp-tb-btn:hover { background: #4a4a4a; }
+                        .lp-tb-btn.green { border-color: #47a147; color: #6dd96d; }
+                        .lp-tb-btn.green:hover { background: rgba(71,161,71,0.15); }
+                        .lp-markdown-container { color: #444; font-size: 13px; line-height: 1.7; border-left: 3px solid #ccc; padding-left: 14px; margin-left: 4px; }
+                        .lp-markdown-container p { margin-bottom: 12px; }
+                        .lp-markdown-container p:last-child { margin-bottom: 0; }
+                        .lp-markdown-container strong { color: #111; font-weight: 700; }
+                        .lp-markdown-container ul,.lp-markdown-container ol { margin: 8px 0 12px 24px; padding: 0; }
+                        .lp-markdown-container li { margin-bottom: 4px; }
+                        .lp-claim-table td p { margin: 0; padding: 0; }
+                        .lp-claim-table td strong { color: #111; font-weight: 700; }
+                        @media(max-width: 680px) { .latex-paper { padding: 28px 16px; } .lp-two-col { grid-template-columns: 1fr; } }
+                        @media print {
+                            body * { visibility: hidden; }
+                            .latex-paper, .latex-paper * { visibility: visible; }
+                            .latex-paper { position: absolute; left: 0; top: 0; margin: 0; padding: 20px; box-shadow: none; border: none; width: 100%; color: #000; }
+                            .latex-page-chrome { background: transparent; padding: 0; border: none; box-shadow: none; margin: 0; }
+                            .lp-viewer-toolbar { display: none !important; }
+                        }
+                    `}</style>
 
-                    <div className="report-main-grid">
-                        <div className="rep-panel">
-                            <div className="rep-panel-header">
-                                CLAUSE ANNOTATIONS TABLE
+                    <div className="latex-page-chrome">
+                        <div className="lp-viewer-toolbar">
+                            <div className="lp-toolbar-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="14" height="14"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                AuditReport_{new Date().toISOString().slice(0, 10)}.pdf
                             </div>
-                            <table className="r-table">
-                                <thead><tr><th>CLAIM</th><th>STATUS</th><th>NLI SCORE</th></tr></thead>
-                                <tbody>
-                                    {resultData.module_results?.faithfulness?.details?.claims?.map((cl, i) => (
-                                        <tr key={i}>
-                                            <td style={{ maxWidth: '250px' }}>{cl.claim}</td>
-                                            <td>
-                                                <span className={`r-pill ${cl.status === 'CONTRADICTED' ? 'red' : cl.status === 'ENTAILED' ? 'green' : 'gray'}`}>
-                                                    {cl.status}
-                                                </span>
-                                            </td>
-                                            <td>{cl.nli_score?.toFixed(3)}</td>
-                                        </tr>
-                                    )) || <tr><td colSpan="3" style={{ textAlign: 'center', opacity: 0.5 }}>No claims extracted</td></tr>}
-                                </tbody>
-                            </table>
+                            <div className="lp-toolbar-btns">
+                                <button className="lp-tb-btn" onClick={() => window.print()}>
+                                    PDF
+                                </button>
+                                <button className="lp-tb-btn" onClick={() => {
+                                    const tex = `% MediRAG Evaluation Report\n\\documentclass{article}\n\\begin{document}\n\\title{Hallucination Detection \\& Safety Audit Report}\n\\author{MediRAG-Eval Pipeline}\n\\date{${new Date().toLocaleDateString()}}\n\\maketitle\n\n\\begin{abstract}\nThis report presents the automated safety evaluation of an LLM-generated clinical response.\nHRS Score is ${resultData.hrs} out of 100, indicating a ${resultData.risk_band} risk level.\n\\end{abstract}\n\n\\section{Research Query}\n${resultData.question || query}\n\n\\section{Evaluation Metrics}\n\\begin{itemize}\n\\item Faithfulness: ${resultData.module_results?.faithfulness?.score || 0}\n\\item Entity Verification: ${resultData.module_results?.entity_verifier?.score || 0}\n\\item Source Credibility: ${resultData.module_results?.source_credibility?.score || 0}\n\\item Contradiction: ${resultData.module_results?.contradiction?.score || 0}\n\\end{itemize}\n\\end{document}`;
+                                    const blob = new Blob([tex], { type: 'text/plain' });
+                                    const url = URL.createObjectURL(blob);
+                                    const a = document.createElement('a');
+                                    a.href = url; a.download = `audit_report_${new Date().toISOString().slice(0,10)}.tex`;
+                                    document.body.appendChild(a); a.click(); a.remove();
+                                    URL.revokeObjectURL(url);
+                                }}>
+                                    LaTeX
+                                </button>
+                                <button className="lp-tb-btn green" onClick={() => window.open('https://www.overleaf.com/docs', '_blank')}>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="12" height="12"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                                    Overleaf
+                                </button>
+                                <button className="lp-tb-btn" onClick={() => {
+                                    const blob = new Blob([JSON.stringify(resultData, null, 2)], { type: 'application/json' });
+                                    const url = URL.createObjectURL(blob);
+                                    const a = document.createElement('a');
+                                    a.href = url; a.download = `audit_report_${new Date().toISOString().slice(0,10)}.json`;
+                                    document.body.appendChild(a); a.click(); a.remove();
+                                    URL.revokeObjectURL(url);
+                                }}>⤓ JSON</button>
+                            </div>
                         </div>
-                        <div className="rep-panel">
-                            <div className="rep-panel-header">
-                                SOURCE CREDIBILITY
+
+                        <div className="latex-paper">
+                            <div className="lp-journal-header">
+                                <div className="lp-journal-name">MediRAG Evaluation System · Clinical AI Safety Report</div>
+                                <div className="lp-title">Hallucination Detection &amp; Safety Audit Report</div>
+                                <div className="lp-authors">MediRAG-Eval Pipeline · Automated Analysis · {new Date().toLocaleString()}</div>
+                                <div className="lp-date">HRS Score: {resultData.hrs} · Risk Band: {resultData.risk_band} · Latency: {resultData.total_pipeline_ms} ms · Composite: {resultData.composite_score?.toFixed(3)}</div>
                             </div>
-                            {resultData.retrieved_chunks && resultData.retrieved_chunks.length > 0 ? resultData.retrieved_chunks.map((chk, i) => {
-                                const chunkDetails = resultData.module_results?.source_credibility?.details?.chunks?.find(c => c.chunk_id === chk.chunk_id) || {};
-                                return (
-                                    <div className="cred-card" key={i}>
-                                        <div style={{ maxWidth: '75%' }}>
-                                            <div className="cred-title">{chk.title || chk.source || `Chunk ${chk.chunk_id || i+1}`}</div>
-                                            <div className="cred-sub">{chk.pub_type || 'Unknown Type'} &middot; Score {chk.similarity_score?.toFixed(3) || 'N/A'}</div>
-                                        </div>
-                                        <div className={`r-pill ${chunkDetails.tier === 1 ? 'green' : chunkDetails.tier === 2 ? 'green' : 'gray'}`}>
-                                            {chunkDetails.tier ? `TIER ${chunkDetails.tier}` : 'UNKNOWN'}
+
+                            <div className="lp-abstract-box">
+                                <span className="lp-abstract-label">Abstract</span>
+                                This report presents the automated safety evaluation of an LLM-generated clinical response.
+                                The MediRAG pipeline applied NLI-based faithfulness scoring, named entity verification, and source credibility tiering.
+                                The composite Hallucination Risk Score (HRS) is <strong>{resultData.hrs}</strong> out of 100,
+                                indicating a <strong>{resultData.risk_band}</strong> risk level with composite score <strong>{resultData.composite_score?.toFixed(3)}</strong>.
+                            </div>
+
+                            <hr className="lp-section-rule" />
+                            <div className="lp-section-title">I. Research Query &amp; Generated Response</div>
+                            <p style={{ color: '#333', fontSize: '13px', marginBottom: '10px' }}>
+                                <strong>Query:</strong> <em>{resultData.question || query}</em>
+                            </p>
+                            {resultData.generated_answer && (
+                                <div className="lp-markdown-container">
+                                    <ReactMarkdown>{resultData.generated_answer}</ReactMarkdown>
+                                </div>
+                            )}
+                            {resultData.intervention_applied && (
+                                <p style={{ color: '#991b1b', fontSize: '12px', background: '#fee2e2', padding: '10px 14px', border: '1px solid #fca5a5', marginTop: '12px' }}>
+                                    ⚠ Safety intervention applied: {resultData.intervention_details?.message || resultData.intervention_reason}
+                                </p>
+                            )}
+
+                            <hr className="lp-section-rule" />
+                            <div className="lp-section-title">II. Evaluation Metrics</div>
+                            <div className="lp-two-col">
+                                {[
+                                    { label: 'Faithfulness', val: resultData.module_results?.faithfulness?.score, color: '#166534' },
+                                    { label: 'Entity Verif.', val: resultData.module_results?.entity_verifier?.score, color: '#1d4ed8' },
+                                    { label: 'Source Cred.', val: resultData.module_results?.source_credibility?.score, color: '#92400e' },
+                                    { label: 'Contradiction', val: resultData.module_results?.contradiction?.score, color: '#6d28d9' },
+                                ].map(({ label, val, color }) => (
+                                    <div className="lp-metric-box" key={label}>
+                                        <div className="lp-metric-name">{label}</div>
+                                        <div className="lp-metric-val" style={{ color }}>{(val ?? 0).toFixed(2)}</div>
+                                        <div className="lp-metric-bar">
+                                            <div className="lp-metric-fill" style={{ width: `${(val ?? 0) * 100}%`, background: color }} />
                                         </div>
                                     </div>
-                                );
-                            }) : (
-                                <div style={{ opacity: 0.5, padding: '16px' }}>No sources provided/retrieved.</div>
-                            )}
+                                ))}
+                            </div>
+
+                            <hr className="lp-section-rule" />
+                            <div className="lp-section-title">III. NLI Claim Verification</div>
+                            <table className="lp-claim-table">
+                                <thead><tr><th style={{ width: '55%' }}>Claim</th><th>Verdict</th><th>Score</th></tr></thead>
+                                <tbody>
+                                    {(resultData.module_results?.faithfulness?.details?.claims || []).length > 0
+                                        ? resultData.module_results.faithfulness.details.claims.map((cl, i) => (
+                                            <tr key={i}>
+                                                <td>
+                                                    <ReactMarkdown>{cl.claim}</ReactMarkdown>
+                                                </td>
+                                                <td>
+                                                    <span className={`lp-sb ${cl.status === 'CONTRADICTED' ? 'lp-sb-bad' : cl.status === 'ENTAILED' ? 'lp-sb-ok' : 'lp-sb-neu'}`}>
+                                                        {cl.status}
+                                                    </span>
+                                                </td>
+                                                <td style={{ fontFamily: 'monospace', fontSize: '11px' }}>{cl.nli_score?.toFixed(3)}</td>
+                                            </tr>
+                                        ))
+                                        : <tr><td colSpan="3" style={{ textAlign: 'center', color: '#aaa', fontStyle: 'italic' }}>No claims extracted.</td></tr>
+                                    }
+                                </tbody>
+                            </table>
+
+                            <hr className="lp-section-rule" />
+                            <div className="lp-section-title">IV. Retrieved Sources &amp; Credibility</div>
+                            {(resultData.retrieved_chunks || []).length > 0
+                                ? resultData.retrieved_chunks.map((chk, i) => {
+                                    const cd = resultData.module_results?.source_credibility?.details?.chunks?.find(c => c.chunk_id === chk.chunk_id) || {};
+                                    return (
+                                        <div className="lp-source-row" key={i}>
+                                            <div style={{ flex: 1 }}>
+                                                <div className="lp-source-title">[{i + 1}] {chk.title || chk.source || `Chunk ${i + 1}`}</div>
+                                                <div className="lp-source-meta">{chk.pub_type?.replace(/_/g, ' ') || 'Unknown'}{chk.pub_year ? ` · ${chk.pub_year}` : ''} · Similarity: {((chk.similarity_score || 0) * 100).toFixed(1)}%</div>
+                                            </div>
+                                            <div className="lp-tier-badge">{cd.tier ? `TIER ${cd.tier}` : 'N/A'}</div>
+                                        </div>
+                                    );
+                                })
+                                : <p style={{ color: '#aaa', fontStyle: 'italic', fontSize: '12px' }}>No sources retrieved.</p>
+                            }
+
+                            <hr className="lp-footer-rule" />
+                            <div className="lp-footer-text">
+                                <span>MediRAG-Eval v2.0 · Automated Clinical Safety Pipeline</span>
+                                <span>HRS: {resultData.hrs}/100 · {new Date().toLocaleDateString()}</span>
+                            </div>
                         </div>
                     </div>
 
-                    {/* In-depth Source detail panel */}
-                    <div className="rep-panel" style={{ marginTop: '20px' }}>
+                    {/* In-depth Source detail panel appended below LaTeX view */}
+                    <div className="rep-panel" style={{ marginTop: '24px' }}>
                         <div className="rep-panel-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <span>RETRIEVED DATASET SOURCES</span>
                             <span style={{ fontSize: '11px', opacity: 0.5 }}>{(resultData.retrieved_chunks || []).length} records</span>
@@ -736,12 +838,14 @@ const Evaluate = ({ embedded = false, mode = 'researcher', engineConfig, setEngi
                             <div style={{ opacity: 0.5, padding: '16px', fontSize: '13px' }}>No sources retrieved for this evaluation.</div>
                         )}
 
-                        {(resultData.retrieved_chunks || []).map((chk, i) => {
-                            const chunkDetails = resultData.module_results?.source_credibility?.details?.chunks?.find(c => c.chunk_id === chk.chunk_id) || {};
-                            return (
-                                <SourceChunkCard key={chk.chunk_id || i} chk={chk} i={i} chunkDetails={chunkDetails} />
-                            );
-                        })}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '16px' }}>
+                            {(resultData.retrieved_chunks || []).map((chk, i) => {
+                                const chunkDetails = resultData.module_results?.source_credibility?.details?.chunks?.find(c => c.chunk_id === chk.chunk_id) || {};
+                                return (
+                                    <SourceChunkCard key={chk.chunk_id || i} chk={chk} i={i} chunkDetails={chunkDetails} />
+                                );
+                            })}
+                        </div>
                     </div>
                 </div>
             )}

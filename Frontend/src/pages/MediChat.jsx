@@ -438,6 +438,7 @@ const MediChat = ({ engineConfig }) => {
     const [uploadedDocText, setUploadedDocText] = useState('');
     const [uploadedDocName, setUploadedDocName] = useState('');
     const [isUploadingDoc, setIsUploadingDoc] = useState(false);
+    const [persona, setPersona] = useState('physician'); // 'physician' or 'patient'
     const bottomRef = useRef(null);
     const inputRef = useRef(null);
     const pasteFileRef = useRef(null);
@@ -511,7 +512,8 @@ const MediChat = ({ engineConfig }) => {
                     run_ragas: localConfig.runRagas,
                     llm_provider: localConfig.provider.toLowerCase(),
                     llm_model: localConfig.model,
-                    llm_api_key: activeKey
+                    llm_api_key: activeKey,
+                    persona: persona
                 })
             });
 
@@ -745,6 +747,37 @@ const MediChat = ({ engineConfig }) => {
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
                     </button>
                     <div className="mc-mobile-title">MediRAG-Eval Assistant</div>
+                </div>
+
+                {/* ─── Chat Header with Persona Toggle ─── */}
+                <div style={{ 
+                    padding: '16px 40px', 
+                    borderBottom: '1px solid rgba(255,255,255,0.05)',
+                    background: 'rgba(10, 13, 20, 0.4)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between'
+                }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <div style={{ width: '8px', height: '8px', background: '#00C896', borderRadius: '50%', boxShadow: '0 0 10px #00C896' }} />
+                        <span style={{ fontSize: '12px', fontWeight: 700, color: 'rgba(255,255,255,0.7)', letterSpacing: '1px' }}>SYSTEM ACTIVE</span>
+                    </div>
+
+                    <div className="persona-toggle-container">
+                        <div className={`persona-slider ${persona}`} />
+                        <div 
+                            className={`persona-option ${persona === 'physician' ? 'active' : ''}`}
+                            onClick={() => setPersona('physician')}
+                        >
+                            👨‍⚕️ Physician
+                        </div>
+                        <div 
+                            className={`persona-option ${persona === 'patient' ? 'active' : ''}`}
+                            onClick={() => setPersona('patient')}
+                        >
+                            👤 Patient
+                        </div>
+                    </div>
                 </div>
 
                 <div className="mc-chat-window">

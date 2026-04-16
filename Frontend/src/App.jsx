@@ -30,6 +30,9 @@ const App = () => {
     
     // Only show footer on Home and About pages
     const showFooter = ['/', '/about'].includes(location.pathname);
+    
+    // Only show Project Guide (?) button on specific pages
+    const showProjectGuide = ['/', '/about', '/api-docs'].includes(location.pathname);
 
     React.useEffect(() => {
         if (!apiUrl) {
@@ -74,7 +77,7 @@ const App = () => {
         <>
             <EcgCanvasBg />
             <Navbar />
-            <ProjectGuide />
+            {showProjectGuide && <ProjectGuide />}
             <main>
                 <Routes>
                     <Route path="/" element={<Home />} />

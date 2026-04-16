@@ -59,18 +59,29 @@ def _load_config() -> dict:
 # Prompt builder (shared by both providers)
 # ---------------------------------------------------------------------------
 
-_SYSTEM_PROMPT = (
-    "You are MediRAG, a medical AI assistant. "
+_PHYSICIAN_PROMPT = (
+    "You are MediRAG, a medical AI assistant tailored for clinicians and researchers. "
     "Try to answer the question using the provided context first. "
-    "If the context contains the answer, be concise, accurate, and cite specific details from it. "
+    "Use professional medical terminology, be concise, and cite specific details. "
     "After each claim drawn from a retrieved source, you MUST cite it inline as [Source: <document title>]. "
     "If the context does NOT contain enough information, YOU MUST STILL ANSWER THE QUESTION based on your general medical knowledge. "
     "When using general knowledge, you MUST start your answer EXACTLY with: 'The retrieved context does not contain this information, but based on general medical knowledge: ' "
-    "NEVER just reply 'The context does not contain information'. Always provide the medical answer."
 )
 
+_PATIENT_PROMPT = (
+    "You are MediRAG, a medical AI assistant tailored for patients and non-experts. "
+    "Your goal is to explain medical information in a clear, accessible, and empathetic way. "
+    "Avoid unnecessary jargon. If you must use a technical term, explain it simply. "
+    "Answer using the provided context. Use analogies to make things easier to understand. "
+    "After each claim drawn from a retrieved source, you MUST cite it inline as [Source: <document title>]. "
+    "If the context does NOT contain enough information, YOU MUST STILL ANSWER THE QUESTION based on your general medical knowledge. "
+    "When using general knowledge, you MUST start your answer EXACTLY with: 'The retrieved context does not contain this information, but based on general medical knowledge: ' "
+)
 
-def _build_prompt(question: str, context_chunks: list[dict], system_prompt: Optional[str] = None) -> str:
+_SYSTEM_PROMPT = _PHYSICIAN_PROMPT # Default fallback
+
+
+def _build_prompt(question: str, context_chunks: list[dict], system_prompt: Optional[str] = None, persona: str = "physician") -> str:
     """Build the RAG prompt from the question + retrieved chunks.
     
     Explicitly surfaces title and source for each chunk in the header so the LLM
@@ -94,7 +105,13 @@ def _build_prompt(question: str, context_chunks: list[dict], system_prompt: Opti
         context_parts.append(f"{header}\n{text.strip()}")
 
     context_block = "\n\n".join(context_parts)
-    effective_system = system_prompt if system_prompt else _SYSTEM_PROMPT
+    
+    # Determine effective system prompt based on persona if no manual override
+    if system_prompt:
+        effective_system = system_prompt
+    else:
+        effective_system = _PATIENT_PROMPT if persona == "patient" else _PHYSICIAN_PROMPT
+
     return (
         f"{effective_system}\n\n"
         f"CONTEXT:\n{context_block}\n\n"
@@ -481,7 +498,14 @@ def generate_answer(
     effective_config = {**config, "llm": effective_llm}
     provider = effective_llm.get("provider", "gemini").lower()
     system_prompt_override = overrides.get("system_prompt") if overrides else None
-    prompt = _build_prompt(question, context_chunks, system_prompt=system_prompt_override)
+    persona = overrides.get("persona", "physician") if overrides else "physician"
+    
+    prompt = _build_prompt(
+        question, 
+        context_chunks, 
+        system_prompt=system_prompt_override,
+        persona=persona
+    )
 
     if provider == "gemini":
         return _generate_gemini(prompt, effective_config)

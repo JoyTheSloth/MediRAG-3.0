@@ -139,6 +139,7 @@ class ChatMessage(BaseModel):
 class ChatRequest(BaseModel):
     messages: List[ChatMessage]
     system_prompt: Optional[str] = None
+    persona: Optional[str] = "physician"
 
 
 class HealthResponse(BaseModel):
@@ -208,6 +209,10 @@ class QueryRequest(BaseModel):
     system_prompt: Optional[str] = Field(
         default=None,
         description="Custom system prompt to override the default clinical persona."
+    )
+    persona: Optional[str] = Field(
+        default="physician",
+        description="The target audience for the response: 'physician' or 'patient'."
     )
 
 
