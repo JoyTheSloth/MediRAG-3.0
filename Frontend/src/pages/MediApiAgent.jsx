@@ -6,6 +6,7 @@ const MediApiAgent = () => {
     const [condition, setCondition] = useState('DRUG_INTERACTION');
     const [action, setAction] = useState('BLOCK_AND_ALERT');
     const [consensusEnabled, setConsensusEnabled] = useState(true);
+    const [privacyEnabled, setPrivacyEnabled] = useState(true);
 
     const [activeRules, setActiveRules] = useState([
         { id: 1, name: 'Block unsafe prescriptions', trigger: 'Prescription added', action: 'Block & alert', active: true },
@@ -118,9 +119,25 @@ const MediApiAgent = () => {
                                 </label>
                             </div>
                         </div>
-                        {consensusEnabled && (
+
+                        <div className="rule-card is-active" style={{marginTop: '10px'}}>
+                            <div className="rule-info">
+                                <div className="rule-name">PHI Privacy Shield</div>
+                                <div className="rule-summary">
+                                    <span>Redact patient names/IDs before cloud API calls</span>
+                                </div>
+                            </div>
+                            <div className="rule-toggle">
+                                <label className="switch">
+                                    <input type="checkbox" checked={privacyEnabled} onChange={() => setPrivacyEnabled(!privacyEnabled)} />
+                                    <span className="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        {(consensusEnabled || privacyEnabled) && (
                             <div className="log-meta" style={{marginTop: '12px', color: '#00C896', fontSize: '11px', display: 'flex', alignItems: 'center', gap: '6px'}}>
-                                <span>✔</span> Active Providers: Gemini 1.5, Claude 3.5, Med-Llama
+                                <span>✔</span> Active: {consensusEnabled ? 'Consensus' : ''} {consensusEnabled && privacyEnabled ? '&' : ''} {privacyEnabled ? 'Privacy Sanitizer' : ''}
                             </div>
                         )}
                     </section>
@@ -208,6 +225,16 @@ const MediApiAgent = () => {
                                 </div>
                             </div>
 
+                            {privacyEnabled && (
+                                <div className="pipeline-node">
+                                    <div className="node-icon bg-gray" style={{background: 'rgba(100, 116, 139, 0.1)', borderColor: '#64748B'}}>🔒</div>
+                                    <div className="node-text">
+                                        <div className="node-title enhanced-text">Privacy Gate</div>
+                                        <div className="node-sub">PHI Redacted</div>
+                                    </div>
+                                </div>
+                            )}
+
                             {consensusEnabled && (
                                 <div className="pipeline-node">
                                     <div className="node-icon bg-blue" style={{background: 'rgba(56, 189, 248, 0.2)', borderColor: '#38BDF8'}}>⚖️</div>
@@ -269,6 +296,12 @@ const MediApiAgent = () => {
                             <span className="sc-icon">📋</span> Middleware Activity Log
                         </div>
                         <div className="activity-log">
+                            {privacyEnabled && (
+                                <div className="log-item success">
+                                    <span className="log-icon" style={{color: '#64748B'}}>🔒</span>
+                                    <span className="log-text">Privacy Sanitized: <span style={{color: '#64748B'}}>3 PHI Items Found</span> <span className="log-meta">(Redacted • 1s ago)</span></span>
+                                </div>
+                            )}
                             {consensusEnabled && (
                                 <div className="log-item success">
                                     <span className="log-icon" style={{color: '#38BDF8'}}>⚖️</span>

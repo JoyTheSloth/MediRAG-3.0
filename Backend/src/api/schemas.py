@@ -191,6 +191,11 @@ class QueryRequest(BaseModel):
         default=False,
         description="Run multiple models and compare for clinical agreement."
     )
+    # Privacy Shield (Option 1)
+    use_privacy_shield: bool = Field(
+        default=False,
+        description="Automatically redact PHI/PII (names, IDs) before external API calls."
+    )
 
 
 class RetrievedChunk(BaseModel):
@@ -238,4 +243,7 @@ class QueryResponse(BaseModel):
         default=None,
         description="Results from the multi-model agreement check."
     )
+    # Privacy Shield fields
+    privacy_applied: bool = Field(default=False)
+    privacy_details: Optional[Dict[str, Any]] = Field(default=None)
 

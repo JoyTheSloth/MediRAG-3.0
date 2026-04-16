@@ -392,12 +392,33 @@ def query(req: QueryRequest) -> QueryResponse:
     if req.ollama_url:
         llm_overrides["ollama_url"] = req.ollama_url
 
+    # =========================================================================
+    # Step 2a: PRIVACY SHIELD — MediRAG redacts PHI (Option 1)
+    # =========================================================================
+    p_mapping = {}
+    privacy_applied = False
+    question_to_gen = req.question
+    
+    if req.use_privacy_shield:
+        from src.pipeline.privacy import shield
+        question_to_gen, p_mapping = shield.redact(req.question)
+        if p_mapping:
+            privacy_applied = True
+            logger.info("PRIVACY INTERVENTION: Redacted %d items from question.", len(p_mapping))
+
     # Step 2: Generate answer via LLM (Gemini or Ollama)
     try:
-        answer = generate_answer(req.question, context_chunks, _cfg, overrides=llm_overrides)
+        # Use the potentially redacted question for generation
+        answer = generate_answer(question_to_gen, context_chunks, _cfg, overrides=llm_overrides)
     except RuntimeError as exc:
         raise HTTPException(status_code=503,
             detail=f"LLM generation failed: {exc}") from exc
+
+    # Restore the PHI for the final display so the user sees the actual names
+    if privacy_applied:
+        from src.pipeline.privacy import shield
+        answer = shield.restore(answer, p_mapping)
+    # =========================================================================
 
     # =========================================================================
     # Step 2b: CONSENSUS CHECK — MediRAG compares multiple models (Option 2)
@@ -549,6 +570,8 @@ def query(req: QueryRequest) -> QueryResponse:
         original_answer=original_answer,
         intervention_details=intervention_details,
         consensus_results=consensus_results,
+        privacy_applied=privacy_applied,
+        privacy_details={"redacted_count": len(p_mapping)} if privacy_applied else None,
     )
 
 # ---------------------------------------------------------------------------
