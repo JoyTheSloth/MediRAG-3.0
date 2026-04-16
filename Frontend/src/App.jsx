@@ -30,29 +30,11 @@ const App = () => {
     // Only show footer on Home and About pages
     const showFooter = ['/', '/about'].includes(location.pathname);
 
-    // Global engine settings
-    const [engineConfig, setEngineConfig] = React.useState(() => ({
-        apiUrl: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000',
-        provider: 'Mistral',
-        apiKey: sessionStorage.getItem('medirag_api_key') || import.meta.env.VITE_MISTRAL_API_KEY || '',
-        model: 'mistral-large-latest',
-        topK: 5,
-        runRagas: false
-    }));
-
-    React.useEffect(() => {
-        if (engineConfig.apiKey) {
-            sessionStorage.setItem('medirag_api_key', engineConfig.apiKey);
-        } else {
-            sessionStorage.removeItem('medirag_api_key');
-        }
-    }, [engineConfig.apiKey]);
-
     React.useEffect(() => {
         if (!apiUrl) {
             console.warn('VITE_API_URL is not configured');
         }
-    }, [apiUrl]);
+    }, []);
 
     React.useEffect(() => {
         // Observer for reveal animations
@@ -96,10 +78,10 @@ const App = () => {
                     <Route path="/" element={<Home />} />
                     <Route path="/api-docs" element={<ApiDocs />} />
                     <Route path="/about" element={<About />} />
-                    <Route path="/console" element={<Console engineConfig={engineConfig} setEngineConfig={setEngineConfig} />} />
-                    <Route path="/chat" element={<MediChat engineConfig={engineConfig} setEngineConfig={setEngineConfig} />} />
-                    <Route path="/api-agent" element={<MediApiAgent engineConfig={engineConfig} setEngineConfig={setEngineConfig} />} />
-                    <Route path="/research" element={<Research engineConfig={engineConfig} setEngineConfig={setEngineConfig} />} />
+                    <Route path="/console" element={<Console />} />
+                    <Route path="/chat" element={<MediChat />} />
+                    <Route path="/api-agent" element={<MediApiAgent />} />
+                    <Route path="/research" element={<Research />} />
                     <Route path="*" element={<Home />} />
                 </Routes>
             </main>

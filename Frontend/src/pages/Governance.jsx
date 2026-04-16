@@ -339,7 +339,6 @@ const Governance = () => {
                     {[
                         { id: 'dashboard', label: 'Dashboard', icon: '📊' },
                         { id: 'audit', label: 'Audit Log', icon: '📋' },
-                        { id: 'policy', label: 'Policy Builder', icon: '🧠' },
                         { id: 'compliance', label: 'Compliance Report', icon: '📄' },
                     ].map(tab => (
                         <button key={tab.id} className={`gov-tab-pill ${activeTab === tab.id ? 'active' : ''}`} onClick={() => setActiveTab(tab.id)}>
@@ -358,48 +357,6 @@ const Governance = () => {
                 {activeTab === 'dashboard' && renderDashboard()}
                 {activeTab === 'audit' && renderAuditLog()}
                 {activeTab === 'compliance' && renderComplianceReport()}
-                {activeTab === 'policy' && (
-                    <div className="fade-up">
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 400px', gap: '30px' }}>
-                            <div className="gov-card">
-                                <h3 className="chart-title" style={{ marginBottom: '24px' }}>Medical Policy Builder</h3>
-                                <p style={{ fontSize: '13px', color: 'var(--gov-text-dim)', marginBottom: '30px' }}>
-                                    Construct automated safety protocols. These rules are injected into the MediRAG pipeline during evaluation.
-                                </p>
-
-                                <div className="policy-node-stack" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                                    {[
-                                        { lbl: 'WHEN', val: 'PRESCRIPTION_ADDED', icon: '⚡' },
-                                        { lbl: 'IF', val: 'DRUG_INTERACTION_DETECTED', icon: '❓' },
-                                        { lbl: 'THEN', val: 'BLOCK_AND_ALERT', icon: '🛡️' }
-                                    ].map((p, i) => (
-                                        <div key={i} style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
-                                            <div style={{ width: '40px', height: '40px', background: 'rgba(0, 200, 150, 0.1)', color: '#00C896', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{p.icon}</div>
-                                            <div style={{ flex: 1 }}>
-                                                <div style={{ fontSize: '10px', color: 'var(--gov-text-dim)', fontWeight: 800 }}>{p.lbl}</div>
-                                                <div style={{ fontSize: '14px', fontWeight: 600 }}>{p.val.replace(/_/g, ' ')}</div>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-
-                                <button className="gen-btn" style={{ marginTop: '40px', background: '#00C896', color: '#0a0d14' }}>DEPLOY ACTIVE POLICY</button>
-                            </div>
-                            
-                            <div className="gov-card">
-                                <h3 className="chart-title">Policy JSON</h3>
-                                <pre style={{ background: '#000', padding: '20px', borderRadius: '12px', fontSize: '12px', color: '#00C896', marginTop: '20px', opacity: 0.7 }}>
-{`{
-  "policy_name": "Safety_v1",
-  "trigger": "PRESCRIPTION_ADDED",
-  "filters": ["INTERACTION"],
-  "action": "BLOCK"
-}`}
-                                </pre>
-                            </div>
-                        </div>
-                    </div>
-                )}
             </div>
 
             {/* DETAIL DRAWER */}

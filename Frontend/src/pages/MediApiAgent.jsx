@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import PatientExperience from './PatientExperience';
 
-const MediApiAgent = ({ engineConfig, setEngineConfig }) => {
+const MediApiAgent = () => {
     const [testPrompt, setTestPrompt] = useState("Apply 25mg of Metoprolol daily for hypertension.");
     const [isTesting, setIsTesting] = useState(false);
     const [activeTab, setActiveTab] = useState('sandbox');
@@ -198,10 +197,10 @@ const MediApiAgent = ({ engineConfig, setEngineConfig }) => {
                 <div className="trainer-title-area">
                     <h2>AI SAFETY TRAINING HUB</h2>
                     <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                        Healthcare Model Optimization Suite
+                        Healthcare Model Optimization Console
                     </span>
                 </div>
-                <div className="trainer-badge">TRAINER HUB V4.2</div>
+                <div className="trainer-badge">TRAINER CONSOLE V4.2</div>
             </div>
 
             <div className="trainer-layout">
@@ -242,14 +241,45 @@ const MediApiAgent = ({ engineConfig, setEngineConfig }) => {
                     </div>
 
                     {activeTab === 'sandbox' && (
-                        <div style={{ padding: '20px 0' }}>
-                            <div className="card-glass" style={{ marginBottom: '30px' }}>
-                                <span className="card-title">🧪 Safety Stress Test (Live)</span>
-                                <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.5)', marginBottom: '24px' }}>
-                                    Challenge the RAG pipeline with adversarial patient documents and queries to identify boundary failures.
-                                </p>
-                                <PatientExperience engineConfig={engineConfig} setEngineConfig={setEngineConfig} />
-                            </div>
+                        <div className="card-glass" style={{ flex: 1 }}>
+                            <span className="card-title">🧪 Safety Stress Test</span>
+                            <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.5)', marginBottom: '16px' }}>
+                                Challenge the NLI engine with adversarial medical prompts to identify boundary failures.
+                            </p>
+                            
+                            <textarea 
+                                className="sandbox-textarea" 
+                                value={testPrompt}
+                                onChange={(e) => setTestPrompt(e.target.value)}
+                                placeholder="Paste a potentially unsafe medical claim here..."
+                            />
+
+                            <button 
+                                className="primary-btn"
+                                style={{ width: '100%', padding: '16px', fontWeight: 800 }}
+                                onClick={runStressTest}
+                                disabled={isTesting}
+                            >
+                                {isTesting ? 'CALCULATING CONTRADICTION VECTORS...' : 'RUN SAFETY INTERCEPTION'}
+                            </button>
+
+                            {isTesting ? (
+                                <div style={{ marginTop: '30px', padding: '30px', borderRadius: '12px', background: 'rgba(0, 200, 150, 0.05)', textAlign: 'center' }}>
+                                    <div className="loading-dots"><span></span><span></span><span></span></div>
+                                    <p style={{ fontSize: '12px', marginTop: '15px', color: '#00C896' }}>Checking cross-model agreement... validating entities...</p>
+                                </div>
+                            ) : (
+                                <div style={{ marginTop: '30px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                                    <div style={{ padding: '20px', borderRadius: '12px', background: 'rgba(0, 200, 150, 0.05)', border: '1px solid rgba(0, 200, 150, 0.2)' }}>
+                                        <div style={{fontSize: '11px', fontWeight: 800, color: '#00C896', marginBottom: '8px', letterSpacing: '1px'}}>RESULT: SAFE</div>
+                                        <span style={{fontSize: '13px', lineHeight: 1.5, opacity: 0.8}}>The claim is grounded in the source corpus. No contradictions detected by the NLI judge.</span>
+                                    </div>
+                                    <div style={{ padding: '20px', borderRadius: '12px', background: 'rgba(30, 41, 59, 0.3)', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
+                                        <div style={{fontSize: '11px', fontWeight: 800, color: '#38bdf8', marginBottom: '8px', letterSpacing: '1px'}}>LOG ID: EVAL-2024-88K</div>
+                                        <span style={{fontSize: '13px', lineHeight: 1.5, opacity: 0.8}}>Metoprolol linked to existing Hypertension diagnosis in Patient File #12.</span>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     )}
 
