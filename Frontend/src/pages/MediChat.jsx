@@ -848,13 +848,83 @@ const MediChat = ({ engineConfig }) => {
                         </div>
                     ))}
 
-                    {/* Thinking dots */}
+                    {/* Pre-flight Checklist (Thinking mode) */}
                     {isThinking && (
-                        <div className="mc-thinking">
-                            <div className="mc-thinking-dots">
-                                <span /><span /><span />
+                        <div className="mc-thinking" style={{ 
+                            flexDirection: 'column', 
+                            alignItems: 'flex-start', 
+                            padding: '20px 24px', 
+                            backgroundColor: 'rgba(15, 23, 42, 0.95)', 
+                            border: '1px solid rgba(0, 200, 150, 0.3)', 
+                            borderRadius: '16px', 
+                            maxWidth: '450px',
+                            boxShadow: '0 10px 30px rgba(0,0,0,0.5), inset 0 1px 2px rgba(255,255,255,0.1)'
+                        }}>
+                            <div style={{ fontSize: '12px', fontWeight: 800, color: '#00C896', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '10px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                                <div className="mc-thinking-dots" style={{ margin: 0 }}><span /><span /><span /></div>
+                                MEDIRAG SAFETY PIPELINE ACTIVE
                             </div>
-                            MediRAG is analyzing...
+                            
+                            <style>
+                            {`
+                                .checklist-item {
+                                    font-size: 13.5px;
+                                    color: rgba(255,255,255,0.4);
+                                    margin-bottom: 10px;
+                                    display: flex;
+                                    align-items: center;
+                                    gap: 12px;
+                                    animation: checklistPopIn 0.1s ease forwards, checklistFadeText 0.3s ease forwards;
+                                    opacity: 0;
+                                    transform: translateX(-10px);
+                                }
+                                .checklist-item .icon {
+                                    font-size: 14px;
+                                    width: 18px;
+                                    display: inline-block;
+                                    text-align: center;
+                                }
+                                
+                                /* Simulate the sequential steps using animation-delay */
+                                .step-1 { animation-delay: 0.2s, 0.2s; }
+                                .step-1 > .icon { animation: checkmarkChange 0.1s forwards; animation-delay: 1.5s; }
+                                
+                                .step-2 { animation-delay: 1.5s, 1.5s; }
+                                .step-2 > .icon { animation: checkmarkChange 0.1s forwards; animation-delay: 2.8s; }
+                                
+                                .step-3 { animation-delay: 2.8s, 2.8s; }
+                                .step-3 > .icon { animation: checkmarkChange 0.1s forwards; animation-delay: 5.5s; }
+                                
+                                .step-4 { animation-delay: 5.5s, 5.5s; }
+                                .step-5 { animation-delay: 6.0s, 6.0s; }
+
+                                @keyframes checklistPopIn {
+                                    to { opacity: 1; transform: translateX(0); }
+                                }
+                                @keyframes checklistFadeText {
+                                    to { color: rgba(255,255,255,0.9); }
+                                }
+                                @keyframes checkmarkChange {
+                                    to { content: '✓'; color: #00C896; font-weight: bold; }
+                                }
+                            `}
+                            </style>
+                            
+                            <div className="checklist-item step-1">
+                                <span className="icon">⏳</span> <span>Applying PHI Privacy Shield & Redaction</span>
+                            </div>
+                            <div className="checklist-item step-2">
+                                <span className="icon">⏳</span> <span>Retrieving context from Med-Dataset</span>
+                            </div>
+                            <div className="checklist-item step-3">
+                                <span className="icon">⏳</span> <span>Generating baseline clinical response</span>
+                            </div>
+                            <div className="checklist-item step-4">
+                                <span className="icon" style={{ color: '#60a5fa' }}>⚙️</span> <span>Running DeBERTa Faithfulness evaluation</span>
+                            </div>
+                            <div className="checklist-item step-5">
+                                <span className="icon" style={{ color: '#60a5fa' }}>⚙️</span> <span>Consulting Consensus Judge engine</span>
+                            </div>
                         </div>
                     )}
 
