@@ -3146,9 +3146,7 @@ button {
         display: none !important;
     }
 
-    .mobile-menu-btn {
-        display: none !important;
-    }
+    /* mobile-menu-btn is intentionally shown here — see hamburger CSS below */
 
     /* Problem section */
     .problem-cards-row {
