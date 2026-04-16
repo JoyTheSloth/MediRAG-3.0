@@ -399,6 +399,29 @@ def query(req: QueryRequest) -> QueryResponse:
         raise HTTPException(status_code=503,
             detail=f"LLM generation failed: {exc}") from exc
 
+    # =========================================================================
+    # Step 2b: CONSENSUS CHECK — MediRAG compares multiple models (Option 2)
+    # =========================================================================
+    consensus_results = None
+    if req.use_consensus:
+        from src.pipeline.consensus import run_consensus_check
+        # Determine which providers to use based on available config/overrides
+        providers = ["gemini"]
+        if os.environ.get("GROQ_API_KEY"):
+            providers.append("groq")
+        elif os.environ.get("MISTRAL_API_KEY"):
+            providers.append("mistral")
+        else:
+            providers.append("ollama") # fallback to local if no second key
+
+        logger.info("Running Consensus Layer with %s", providers)
+        consensus_results = run_consensus_check(req.question, context_chunks, _cfg, providers=providers)
+        
+        # If consensus finds a safer merged answer, we promote it
+        # and update the primary answer for the evaluation loop
+        answer = consensus_results.get("consensus_answer", answer)
+    # =========================================================================
+
     # [DEMO MODE] Inject a false claim to demonstrate the intervention system
     if req.inject_hallucination:
         logger.warning("DEMO MODE: Injecting hallucinated claim into answer: '%s'",
@@ -525,6 +548,7 @@ def query(req: QueryRequest) -> QueryResponse:
         intervention_reason=intervention_reason,
         original_answer=original_answer,
         intervention_details=intervention_details,
+        consensus_results=consensus_results,
     )
 
 # ---------------------------------------------------------------------------

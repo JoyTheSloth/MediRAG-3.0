@@ -132,3 +132,16 @@
     cursor: not-allowed;
     transform: none;
 }
+
+/* =========================================================================
+   LIGHT THEME OVERRIDES
+   ========================================================================= */
+[data-theme="light"] .api-modal-box { background: #FFFFFF; border-color: rgba(0,0,0,0.1); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.1); }
+[data-theme="light"] .api-modal-header h3 { color: #111827; }
+[data-theme="light"] .api-modal-desc { color: #6B7280; }
+[data-theme="light"] .api-modal-input { background: #FFFFFF; border-color: rgba(0,0,0,0.15); color: #111827; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
+[data-theme="light"] .api-modal-input:focus { border-color: #00C896; box-shadow: 0 0 0 2px rgba(0, 200, 150, 0.2); }
+[data-theme="light"] .api-btn-cancel { border-color: rgba(0,0,0,0.15); color: #4B5563; }
+[data-theme="light"] .api-btn-cancel:hover { background: #F3F4F6; color: #111827; }
+[data-theme="light"] .api-btn-save { background: #1A1F36; color: #FFFFFF; }
+[data-theme="light"] .api-btn-save:hover { background: #111827; }

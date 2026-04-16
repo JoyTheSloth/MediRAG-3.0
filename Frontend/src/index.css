@@ -48,6 +48,614 @@
     --glow-green-lg: 0 0 40px rgba(0, 200, 150, 0.2);
 }
 
+[data-theme="light"] {
+    /* Page background — very light blue-gray like the reference */
+    --bg-dark: #EAECF2;
+    --card-bg: #FFFFFF;
+    --card-border: transparent;
+
+    /* Brand accents — keep MediRAG green */
+    --green-accent: #10B981;
+    --amber-accent: #D97706;
+    --orange-accent: #F97316;
+    --red-accent: #DC2626;
+
+    /* Gradients */
+    --gradient-danger: linear-gradient(135deg, #EF4444, #F97316);
+    --gradient-green: linear-gradient(135deg, #10B981, #059669);
+    --gradient-ecosystem: linear-gradient(90deg, #FFFFFF, #EAECF2);
+
+    /* Typography — deep navy hierarchy like reference */
+    --text-white: #1A1F36;
+    --text-gray-light: #2D3561;
+    --text-gray: #6B7280;
+    --text-gray-dark: #9CA3AF;
+
+    /* Shadow-based elevation (no glows, clean shadows) */
+    --glow-green-sm: 0 4px 16px rgba(16, 185, 129, 0.12);
+    --glow-green-md: 0 8px 32px rgba(16, 185, 129, 0.16);
+    --glow-green-lg: 0 16px 48px rgba(16, 185, 129, 0.2);
+
+    /* Card elevation shadows — mimics the reference's soft layered look */
+    --shadow-card: 0 1px 3px rgba(26, 31, 54, 0.06), 0 4px 16px rgba(26, 31, 54, 0.06);
+    --shadow-card-hover: 0 4px 12px rgba(26, 31, 54, 0.08), 0 16px 40px rgba(26, 31, 54, 0.1);
+    --shadow-navbar: 0 1px 0 rgba(26, 31, 54, 0.06), 0 4px 24px rgba(26, 31, 54, 0.06);
+}
+
+/* =========================================================================
+   LIGHT THEME — BASE
+   ========================================================================= */
+[data-theme="light"] body {
+    background-color: #EAECF2;
+}
+
+/* =========================================================================
+   LIGHT THEME — NAVBAR
+   ========================================================================= */
+[data-theme="light"] .navbar {
+    background: #FFFFFF;
+    border-bottom: none;
+    box-shadow: var(--shadow-navbar);
+    backdrop-filter: none;
+}
+
+[data-theme="light"] .navbar.mobile-open {
+    background: #FFFFFF;
+}
+
+[data-theme="light"] .nav-link {
+    color: #4B5563;
+    font-weight: 500;
+}
+
+[data-theme="light"] .nav-link:hover {
+    color: #1A1F36;
+}
+
+[data-theme="light"] .nav-link.active {
+    color: #10B981;
+    font-weight: 600;
+}
+
+[data-theme="light"] .nav-link.active::after {
+    background-color: #10B981;
+}
+
+[data-theme="light"] .logo-white {
+    color: #1A1F36;
+}
+
+[data-theme="light"] .tagline {
+    color: #9CA3AF;
+}
+
+[data-theme="light"] .github-btn {
+    color: #4B5563;
+    border-color: rgba(26, 31, 54, 0.15);
+    background: rgba(26, 31, 54, 0.03);
+    box-shadow: none;
+}
+
+[data-theme="light"] .github-btn:hover {
+    background: rgba(26, 31, 54, 0.06);
+    border-color: rgba(26, 31, 54, 0.25);
+    color: #1A1F36;
+}
+
+[data-theme="light"] .mobile-nav-dropdown {
+    background: #FFFFFF;
+    border-top: none;
+    box-shadow: 0 8px 32px rgba(26, 31, 54, 0.1);
+}
+
+[data-theme="light"] .mobile-floating-nav {
+    background: #FFFFFF;
+    border: none;
+    box-shadow: 0 -2px 0 rgba(26, 31, 54, 0.05), 0 -8px 24px rgba(26, 31, 54, 0.08);
+}
+
+[data-theme="light"] .m-nav-item {
+    color: #6B7280;
+}
+
+[data-theme="light"] .m-nav-item.active {
+    background: rgba(16, 185, 129, 0.08);
+    color: #059669;
+}
+
+[data-theme="light"] .m-nav-item:hover {
+    background: rgba(26, 31, 54, 0.04);
+    color: #1A1F36;
+}
+
+/* =========================================================================
+   LIGHT THEME — HERO
+   ========================================================================= */
+[data-theme="light"] .hero-section {
+    background-color: #EAECF2;
+}
+
+[data-theme="light"] .floating-card {
+    background: #FFFFFF;
+    border: none;
+    box-shadow: var(--shadow-card);
+}
+
+[data-theme="light"] .floating-card:hover {
+    box-shadow: var(--shadow-card-hover);
+}
+
+[data-theme="light"] .card-header {
+    background: #F9FAFB;
+    border-bottom: 1px solid rgba(26, 31, 54, 0.05);
+}
+
+[data-theme="light"] .gauge-number {
+    color: #1A1F36;
+    text-shadow: none;
+}
+
+[data-theme="light"] .score-bar-container {
+    background-color: #E5E7EB;
+}
+
+/* =========================================================================
+   LIGHT THEME — STATS BAND
+   ========================================================================= */
+[data-theme="light"] .stats-band,
+[data-theme="light"] .section-wrapper {
+    background-color: #FFFFFF;
+    border-top: none;
+    border-bottom: none;
+    box-shadow: var(--shadow-card);
+}
+
+[data-theme="light"] .stats-shimmer {
+    background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.04), transparent);
+}
+
+/* =========================================================================
+   LIGHT THEME — PIPELINE / STEP CARDS
+   ========================================================================= */
+[data-theme="light"] .step-card {
+    background: linear-gradient(135deg, #FFFFFF 0%, #F0FDF4 100%);
+    border: 1px solid rgba(16, 185, 129, 0.1);
+    box-shadow: var(--shadow-card);
+    transition: all 0.3s ease;
+}
+
+[data-theme="light"] .step-card:hover {
+    background: linear-gradient(135deg, #FFFFFF 0%, #D1FAE5 100%);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    box-shadow: var(--shadow-card-hover), 0 0 24px rgba(16, 185, 129, 0.15);
+    transform: translateY(-4px);
+}
+
+[data-theme="light"] .step-number {
+    background: rgba(16, 185, 129, 0.1);
+    color: #059669;
+}
+
+[data-theme="light"] .step-tag {
+    background: #F3F4F6;
+    color: #6B7280;
+    border: none;
+}
+
+[data-theme="light"] .final-card {
+    background: linear-gradient(135deg, #F0FDF9, #ECFDF5);
+    border: none;
+    box-shadow: 0 4px 20px rgba(16, 185, 129, 0.1);
+}
+
+[data-theme="light"] .pipeline-arrow {
+    color: #D1D5DB;
+}
+
+/* =========================================================================
+   LIGHT THEME — RISK CARDS
+   ========================================================================= */
+/* Risk cards explicitly removed from light theme per user request, defaulting back to main dark theme styling */
+
+/* =========================================================================
+   LIGHT THEME — AUDIT CARD
+   ========================================================================= */
+[data-theme="light"] .audit-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(238, 242, 255, 0.95) 100%);
+    border: 1px solid rgba(79, 70, 229, 0.15);
+    box-shadow: var(--shadow-card), 0 8px 32px rgba(79, 70, 229, 0.08);
+    backdrop-filter: blur(12px);
+}
+
+[data-theme="light"] .audit-card .card-header {
+    background: #F9FAFB;
+    border-bottom: 1px solid rgba(26, 31, 54, 0.05);
+}
+
+[data-theme="light"] .telemetry-box {
+    background: #F3F4F6;
+    border: none;
+}
+
+[data-theme="light"] .audit-trace {
+    background: #F9FAFB;
+    border: 1px solid rgba(26, 31, 54, 0.06);
+}
+
+[data-theme="light"] .status-bit {
+    background: #F3F4F6;
+    border: none;
+    color: #6B7280;
+}
+
+/* =========================================================================
+   LIGHT THEME — TECH CARDS
+   ========================================================================= */
+[data-theme="light"] .tech-card {
+    background: linear-gradient(145deg, #FFFFFF 0%, #F8FAFC 100%);
+    border: 1px solid rgba(59, 130, 246, 0.1);
+    box-shadow: var(--shadow-card);
+    transition: all 0.3s ease;
+}
+
+[data-theme="light"] .tech-card::before {
+    background: radial-gradient(ellipse at 50% 0%, rgba(59, 130, 246, 0.08) 0%, transparent 60%);
+}
+
+[data-theme="light"] .tech-card:hover {
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    background: linear-gradient(145deg, #FFFFFF 0%, #EFF6FF 100%);
+    box-shadow: var(--shadow-card-hover), 0 0 20px rgba(59, 130, 246, 0.12);
+    transform: translateY(-4px);
+}
+
+[data-theme="light"] .tech-icon {
+    background: #F3F4F6;
+    border: none;
+}
+
+[data-theme="light"] .tech-card:hover .tech-icon {
+    background: rgba(16, 185, 129, 0.08);
+    border: none;
+}
+
+/* =========================================================================
+   LIGHT THEME — PERSONA / USE CASE CARDS
+   ========================================================================= */
+[data-theme="light"] .persona-card {
+    background: linear-gradient(145deg, #FFFFFF 0%, #FFF7ED 100%);
+    border: 1px solid rgba(249, 115, 22, 0.15);
+    box-shadow: var(--shadow-card);
+    transition: all 0.3s ease;
+}
+
+[data-theme="light"] .persona-card:hover {
+    background: linear-gradient(145deg, #FFFFFF 0%, #FFEDD5 100%);
+    border: 1px solid rgba(249, 115, 22, 0.4);
+    box-shadow: var(--shadow-card-hover), 0 0 24px rgba(249, 115, 22, 0.12);
+    transform: translateY(-5px);
+}
+
+[data-theme="light"] .persona-icon {
+    background: rgba(16, 185, 129, 0.08);
+    border: none;
+    color: #10B981;
+}
+
+/* =========================================================================
+   LIGHT THEME — FORMULA CARD
+   ========================================================================= */
+[data-theme="light"] .formula-card {
+    background: #FFFFFF;
+    border: none;
+    box-shadow: var(--shadow-card);
+}
+
+[data-theme="light"] .formula-block {
+    background: #F9FAFB;
+    border: 1px solid rgba(26, 31, 54, 0.06);
+    color: #059669;
+}
+
+[data-theme="light"] .weight-tag {
+    background: rgba(16, 185, 129, 0.08);
+    border: none;
+    color: #059669;
+}
+
+/* =========================================================================
+   LIGHT THEME — ECOSYSTEM BANNER
+   ========================================================================= */
+[data-theme="light"] .ecosystem-bg-overlay {
+    background: linear-gradient(to left, rgba(234, 236, 242, 0.97) 20%, transparent 65%);
+}
+
+[data-theme="light"] .ecosystem-banner {
+    border: none;
+    box-shadow: var(--shadow-card);
+}
+
+/* =========================================================================
+   LIGHT THEME — FOOTER
+   ========================================================================= */
+[data-theme="light"] .footer {
+    background-color: #FFFFFF;
+    border-top: 1px solid rgba(26, 31, 54, 0.06);
+    box-shadow: none;
+}
+
+/* =========================================================================
+   LIGHT THEME — CODE BLOCKS
+   ========================================================================= */
+[data-theme="light"] .code-block,
+[data-theme="light"] code {
+    background-color: #F3F4F6 !important;
+    border: 1px solid rgba(26, 31, 54, 0.07) !important;
+    color: #1A1F36 !important;
+    box-shadow: none !important;
+}
+
+/* =========================================================================
+   LIGHT THEME — BUTTONS
+   ========================================================================= */
+[data-theme="light"] .secondary-btn {
+    color: #2D3561;
+    border-color: rgba(26, 31, 54, 0.2);
+    background: #FFFFFF;
+    box-shadow: var(--shadow-card);
+}
+
+[data-theme="light"] .secondary-btn:hover {
+    background-color: #F9FAFB;
+    border-color: rgba(26, 31, 54, 0.3);
+    box-shadow: var(--shadow-card-hover);
+}
+
+/* =========================================================================
+   LIGHT THEME — MEDICHAT PAGE
+   ========================================================================= */
+[data-theme="light"] .medichat-layout {
+    background: #EAECF2 !important;
+}
+
+[data-theme="light"] .mc-sidebar {
+    background: #FFFFFF !important;
+    border-right: none !important;
+    box-shadow: 2px 0 8px rgba(26, 31, 54, 0.06) !important;
+}
+
+[data-theme="light"] .mc-mobile-header {
+    background: #FFFFFF !important;
+    border-bottom: none !important;
+    box-shadow: 0 2px 8px rgba(26, 31, 54, 0.06) !important;
+}
+
+[data-theme="light"] .mc-chat-item {
+    color: #4B5563 !important;
+}
+
+[data-theme="light"] .mc-chat-item:hover {
+    background: #F3F4F6 !important;
+    color: #1A1F36 !important;
+}
+
+[data-theme="light"] .mc-chat-item.active {
+    background: rgba(16, 185, 129, 0.08) !important;
+    color: #059669 !important;
+}
+
+[data-theme="light"] .mc-input-area {
+    background: #FFFFFF !important;
+    border-top: none !important;
+    box-shadow: 0 -2px 8px rgba(26, 31, 54, 0.05) !important;
+}
+
+[data-theme="light"] .mc-input-row {
+    background: #F3F4F6 !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+[data-theme="light"] .mc-input-field {
+    color: #1A1F36 !important;
+    background: transparent !important;
+}
+
+[data-theme="light"] .mc-input-field::placeholder {
+    color: #9CA3AF !important;
+}
+
+[data-theme="light"] .mc-msg-bubble {
+    border: none !important;
+    color: #1E293B !important;
+}
+
+[data-theme="light"] .mc-msg-row.bot .mc-msg-bubble {
+    background: #FFFFFF !important;
+    box-shadow: var(--shadow-card) !important;
+}
+
+[data-theme="light"] .mc-msg-row.user .mc-msg-bubble {
+    background: #10B981 !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2) !important;
+}
+
+[data-theme="light"] .mc-thinking {
+    background: #F3F4F6 !important;
+    color: #6B7280 !important;
+    border: none !important;
+}
+
+[data-theme="light"] .mc-ai-card {
+    background: #FFFFFF !important;
+    border: none !important;
+    box-shadow: var(--shadow-card) !important;
+}
+
+[data-theme="light"] .mc-welcome h1,
+[data-theme="light"] .mc-confidence-value {
+    color: #1A1F36 !important;
+}
+
+[data-theme="light"] .mc-welcome p {
+    color: #6B7280 !important;
+}
+
+/* =========================================================================
+   LIGHT THEME — CONSOLE PAGE
+   ========================================================================= */
+[data-theme="light"] .console-page {
+    background: #EAECF2 !important;
+}
+
+[data-theme="light"] .console-sidebar {
+    background: #FFFFFF !important;
+    border-right: none !important;
+    box-shadow: 2px 0 8px rgba(26, 31, 54, 0.06) !important;
+}
+
+[data-theme="light"] .con-mobile-title {
+    color: #1A1F36 !important;
+}
+
+[data-theme="light"] .console-nav-link {
+    color: #4B5563 !important;
+}
+
+[data-theme="light"] .console-nav-link:hover {
+    background: #F3F4F6 !important;
+    color: #1A1F36 !important;
+}
+
+[data-theme="light"] .console-nav-link.active {
+    background: rgba(16, 185, 129, 0.08) !important;
+    color: #059669 !important;
+}
+
+/* =========================================================================
+   LIGHT THEME — API PAGE
+   ========================================================================= */
+[data-theme="light"] .api-page {
+    background: #EAECF2 !important;
+}
+
+[data-theme="light"] .api-param-card,
+[data-theme="light"] .api-code-window,
+[data-theme="light"] .api-dl-card {
+    background: #FFFFFF !important;
+    border: none !important;
+    box-shadow: var(--shadow-card) !important;
+    color: #1E293B !important;
+}
+
+[data-theme="light"] .ac-header {
+    background: #F9FAFB !important;
+    border-bottom: 1px solid rgba(26, 31, 54, 0.05) !important;
+}
+
+/* =========================================================================
+   LIGHT THEME — MOBILE BOTTOM NAV
+   ========================================================================= */
+[data-theme="light"] .mobile-floating-nav {
+    background: #FFFFFF !important;
+    border: none !important;
+    box-shadow: 0 -2px 0 rgba(26, 31, 54, 0.04), 0 -8px 24px rgba(26, 31, 54, 0.08) !important;
+}
+
+/* =========================================================================
+   LIGHT THEME — SECTION HEADERS
+   ========================================================================= */
+[data-theme="light"] .section-header {
+    text-align: center;
+}
+
+[data-theme="light"] .section-title {
+    color: #1A1F36;
+    text-align: center;
+}
+
+[data-theme="light"] .section-subtitle {
+    color: #6B7280;
+    text-align: center;
+}
+
+[data-theme="light"] .home-section-label {
+    color: #10B981;
+    justify-content: center;
+}
+
+[data-theme="light"] .about-section-label {
+    color: #10B981;
+    justify-content: center;
+}
+
+[data-theme="light"] .sl-dash {
+    color: #10B981;
+    opacity: 0.4;
+}
+
+/* =========================================================================
+   LIGHT THEME — DATASET CARDS
+   ========================================================================= */
+[data-theme="light"] .dataset-card {
+    background: linear-gradient(145deg, #FFFFFF 0%, #F0FDF4 100%) !important;
+    border: 1px solid rgba(16, 185, 129, 0.1) !important;
+    box-shadow: var(--shadow-card) !important;
+    border-top: 3px solid rgba(16, 185, 129, 0.4) !important;
+    transition: all 0.3s ease !important;
+}
+
+[data-theme="light"] .dataset-card:hover {
+    background: linear-gradient(145deg, #FFFFFF 0%, #D1FAE5 100%) !important;
+    transform: translateY(-6px) !important;
+    box-shadow: var(--shadow-card-hover), 0 0 24px rgba(16, 185, 129, 0.15) !important;
+    border-top-color: rgba(16, 185, 129, 0.8) !important;
+}
+
+[data-theme="light"] .ds-title {
+    color: #1A1F36 !important;
+}
+
+[data-theme="light"] .ds-desc {
+    color: #6B7280 !important;
+}
+
+[data-theme="light"] .ds-meta {
+    border-top: 1px solid rgba(26, 31, 54, 0.06) !important;
+}
+
+[data-theme="light"] .ds-source {
+    color: #9CA3AF !important;
+}
+
+/* =========================================================================
+   LIGHT THEME — CTA SECTION
+   ========================================================================= */
+[data-theme="light"] .cta-headline {
+    color: #1A1F36;
+}
+
+[data-theme="light"] .cta-subtext {
+    color: #6B7280;
+}
+
+[data-theme="light"] .cta-footer-note {
+    color: #9CA3AF;
+}
+
+
+
+[data-theme="light"] .m-nav-item.active {
+    background: rgba(16, 185, 129, 0.1);
+    color: #059669;
+}
+
+[data-theme="light"] .m-nav-item:hover {
+    background: rgba(30, 41, 59, 0.06);
+    color: #0F172A;
+}
+
 /* =========================================================================
    RESET & BASE STYLES
    ========================================================================= */
@@ -199,12 +807,21 @@ button {
     letter-spacing: 0;
 }
 
+.section-header {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
 .section-title {
     font-size: clamp(28px, 4vw, 36px);
     font-weight: 700;
     line-height: 1.2;
     margin-bottom: 16px;
     letter-spacing: -0.01em;
+    text-align: center;
 }
 
 .section-subtitle {
@@ -212,6 +829,7 @@ button {
     font-size: 18px;
     max-width: 700px;
     margin: 0 auto 48px;
+    text-align: center;
 }
 
 /* =========================================================================
@@ -1747,18 +2365,7 @@ button {
         justify-content: center;
     }
     
-    .pipeline-container {
-        flex-direction: column;
-    }
-    
-    .pipeline-arrow {
-        transform: rotate(90deg);
-        margin: 10px auto;
-    }
-    
-    .pipeline-step, .pipeline-final {
-        width: 100%;
-    }
+    /* Pipeline stays row on tablets, moves to 768px */
     
     .risk-grid, .tech-grid, .use-cases-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -1780,6 +2387,19 @@ button {
     
     .stats-container {
         grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .pipeline-container {
+        flex-direction: column;
+    }
+    
+    .pipeline-arrow {
+        transform: rotate(90deg);
+        margin: 10px auto;
+    }
+    
+    .pipeline-step, .pipeline-final {
+        width: 100%;
     }
     
     .stat-divider {
@@ -3158,45 +3778,6 @@ button {
     .m-nav-action-btn:hover {
         transform: scale(1.1) rotate(5deg);
         box-shadow: 0 6px 20px rgba(0, 200, 150, 0.5);
-    }
-
-    /* Icon image styling */
-    .m-nav-icon {
-        width: 22px;
-        height: 22px;
-        object-fit: contain;
-        /* Make icons white-ish at low opacity by default */
-        filter: brightness(0) invert(1) opacity(0.4);
-        transition: filter 0.3s ease, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-
-    .m-nav-item.active .m-nav-icon {
-        /* Dark icon on white active background */
-        filter: brightness(0) opacity(1);
-        transform: scale(1.1);
-    }
-
-    /* Center action button: override active white bg — it has its own green visual */
-    .m-nav-item.active:has(.m-nav-action-btn) {
-        background: transparent !important;
-        box-shadow: none !important;
-    }
-
-    /* Action icon inside center button stays white on green */
-    .m-nav-item.active .m-nav-action-btn .m-nav-icon {
-        filter: brightness(0) invert(1) opacity(1) !important;
-    }
-
-    .m-nav-item:hover .m-nav-icon {
-        filter: brightness(0) invert(1) opacity(0.7);
-        transform: scale(1.05);
-    }
-
-    /* Chat action button icon override - dark icon on light bg */
-    .action-icon {
-        width: 20px;
-        height: 20px;
-        filter: brightness(0) invert(1) opacity(1) !important;
     }
 }
 

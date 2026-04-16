@@ -1,0 +1,52 @@
+MediRAG-Eval 3.0: Key Feature Explanations (Simple English)
+=========================================================
+
+1. AI RESEARCH (The "Smart Library")
+------------------------------------
+Think of this as an expert researcher who has read over 100,000 medical 
+books and papers. When you ask a question, the AI scans this huge 
+"Smart Library" (PubMed and MedQA) to find the exact page or paragraph 
+that answers your query. This ensures the answer is based on real 
+science, not just a guess.
+
+2. AI GOVERNANCE (The "Digital Auditor")
+----------------------------------------
+AI Governance is like having a strict supervisor watching the AI. 
+It checks every answer to make sure it follows safety rules. If the 
+AI tries to "hallucinate" (make stuff up), the Auditor catches it, 
+blocks the answer, or forces it to try again using only verified 
+facts. It keeps the AI honest and safe for doctors.
+
+3. DASHBOARD (The "Control Tower")
+----------------------------------
+This is a visual screen where you can see all the "health stats" of the 
+AI. It shows how many questions were asked, how many times the AI 
+was almost wrong, and how high the "Health Risk Scores" are. It’s like 
+a cockpit for hospital managers to monitor AI safety.
+
+4. UPLOAD FEATURE (The "Personal Knowledge")
+--------------------------------------------
+You can drag and drop your own medical reports, lab results, or PDFs 
+into the app. The AI "reads" these documents instantly and lets you 
+ask questions about your specific data. It’s like giving the AI 
+temporary access to your personal file so it can help you understand 
+your reports better.
+
+5. CHATS (The "Safe Conversation")
+----------------------------------
+The Chat section is where you talk to the AI. It looks like a normal 
+chat app, but it has "superpowers":
+- It shows you a "Safety Score" (HRS) for every answer.
+- It gives you "Citation Cards" (links to the actual books it read).
+- It warns you if it’s unsure about something.
+
+6. API SECTION (The "Connector")
+--------------------------------
+The API is a way for other apps—like hospital software or pharmacy 
+apps (e.g., Apollo or Tata 1mg)—to use our "Truth-Checking" system. 
+It allows different medical platforms to connect to MediRAG and 
+get safe, audited AI answers inside their own systems.
+
+---
+Simplified by: The MediRAG Team
+For: India Innovates 2026

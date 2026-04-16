@@ -398,5 +398,41 @@
 }
 
 @keyframes spin {
+@keyframes spin {
     to { transform: rotate(360deg); }
+}
+
+/* =========================================================================
+   LIGHT THEME OVERRIDES
+   ========================================================================= */
+[data-theme="light"] .px-upload-zone { background: #FFFFFF; border: 2px dashed rgba(0,0,0,0.15); }
+[data-theme="light"] .px-upload-zone:hover { background: #F8FAFC; border-color: #4dabf7; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+[data-theme="light"] .px-upload-title { color: #111827; }
+
+[data-theme="light"] .px-chip { background: #FFFFFF; border: 1px solid rgba(0,0,0,0.1); color: #4B5563; }
+[data-theme="light"] .px-chip:hover { background: #F3F4F6; border-color: rgba(0,0,0,0.15); }
+[data-theme="light"] .px-chip.active { background: rgba(43, 89, 255, 0.1); border-color: #4dabf7; color: #2B59FF; }
+
+[data-theme="light"] .px-select, [data-theme="light"] .px-textarea, [data-theme="light"] .px-question-box { background: #FFFFFF; border: 1px solid rgba(0,0,0,0.1); color: #111827; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
+[data-theme="light"] .px-select:focus, [data-theme="light"] .px-textarea:focus { border-color: #4dabf7; box-shadow: 0 0 0 3px rgba(77,171,247,0.15); }
+
+[data-theme="light"] .px-action-btn { background: #FFFFFF; border: 1px solid rgba(0,0,0,0.15); color: #111827; }
+[data-theme="light"] .px-action-btn:hover:not(:disabled) { background: #F3F4F6; }
+[data-theme="light"] .px-action-btn.primary { background: #1A1F36; color: #FFFFFF; border: none; }
+[data-theme="light"] .px-action-btn.primary:hover:not(:disabled) { box-shadow: 0 4px 12px rgba(26,31,54,0.2); }
+
+[data-theme="light"] .px-report-col { background: #F8FAFC; border-color: rgba(0,0,0,0.15); }
+[data-theme="light"] .px-report-col.has-results { background: #FFFFFF; border-style: solid; border-color: rgba(0,0,0,0.1); box-shadow: var(--shadow-card); }
+
+[data-theme="light"] .px-empty-title { color: #111827; }
+
+@media (max-width: 768px) {
+    [data-theme="light"] .patient-experience { background-color: #EAECF2; }
+    [data-theme="light"] .px-upload-zone, [data-theme="light"] .px-question-box { background: #FFFFFF; border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
+    [data-theme="light"] .px-section-label { color: #6B7280; }
+    [data-theme="light"] .px-chip { background: transparent; border-color: rgba(0,0,0,0.15); color: #4B5563; }
+    [data-theme="light"] .px-chip.active { background: #1A1F36; color: #FFFFFF; border-color: #1A1F36; }
+    [data-theme="light"] .px-textarea { color: #111827; }
+    [data-theme="light"] .px-report-col { background: transparent; }
+    [data-theme="light"] .px-report-col.has-results { background: #FFFFFF; }
 }

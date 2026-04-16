@@ -186,6 +186,11 @@ class QueryRequest(BaseModel):
         default=None,
         description="[DEMO ONLY] Appends a false medical claim to the answer before evaluation."
     )
+    # Consensus Engine (Option 2)
+    use_consensus: bool = Field(
+        default=False,
+        description="Run multiple models and compare for clinical agreement."
+    )
 
 
 class RetrievedChunk(BaseModel):
@@ -227,5 +232,10 @@ class QueryResponse(BaseModel):
     intervention_details: Optional[Dict[str, Any]] = Field(
         default=None,
         description="Which modules triggered the intervention and their scores.",
+    )
+    # Consensus fields
+    consensus_results: Optional[Dict[str, Any]] = Field(
+        default=None,
+        description="Results from the multi-model agreement check."
     )
 

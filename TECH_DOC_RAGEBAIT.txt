@@ -1,0 +1,80 @@
+MediRAG-Eval 3.0: The Only Technical Documentation You’ll Actually Read
+========================================================================
+
+"If your RAG pipeline doesn't have a forensic audit layer, you're just a glorified 
+wrapper for a hallucinating LLM. Stop pretending your AI is 'accurate' and 
+start admitting it's a liability."
+
+---
+
+FRONTEND: THE "ANTI-MEDIOCRE" UI
+-------------------------------
+Why is our frontend better than yours? Because we actually care about the 
+physician's dopamine levels, not just 'Material UI' defaults.
+
+1. React 19 (Bleeding Edge):
+   We use React 19 not because it's stable, but because React 18 is for 
+   legacy developers who are afraid of the future. The "Actions" and 
+   "useOptimistic" hook are the only things keeping this app from 
+   feeling like a 2015 WordPress site.
+
+2. GSAP (Motion > Static):
+   If your UI doesn't breathe, it's dead. We use GSAP to animate every 
+   molecule of the interface. If you think CSS transitions are enough, 
+   please go back to building todo lists.
+
+3. Glassmorphism & Translucency:
+   We spent more time on backdrop-filter: blur(15px) than you spent on your 
+   entire product's logic. Our UI looks like it's from 2030 because 
+   solid backgrounds are for people who can't handle transparency.
+
+4. The Targeting Cursor:
+   Normal cursors are for shopping apps. Our cursor is a medical sensor. 
+   It's got spinning crosshairs and physical snaps. It targets hallucinations 
+   with military precision. If your cursor doesn't feel like a cockpit, 
+   you're doing it wrong.
+
+---
+
+BACKEND: THE HALLUCINATION HOMICIDE ENGINE
+------------------------------------------
+Your backend probably just sends a prompt to OpenAI and hopes for the best. 
+We actually built a forensic lab.
+
+1. FastAPI + Uvicorn:
+   Python is slow, but we used FastAPI because we aren't masochists who 
+   enjoy Node.js callback hell. Our endpoints respond faster than an LLM 
+   can make up a fake citation.
+
+2. 107,425 Clinical Vectors:
+   Most people use a generic 'all-MiniLM' embedding and wonder why their 
+   medical AI thinks 'Cold' is a temperature instead of a virus. We use 
+   BioBERT with 100k+ clinical vectors. If your vector database is 
+   smaller than our 'trash' folder, don't talk to us about 'Domain Specificity'.
+
+3. The 4-Layer Execution (The "Forensic Audit"):
+   - Faithfulness Scorer: Because "Trust me bro" isn't a medical standard.
+   - DeBERTa-v3 Grounding: Checking for truth like a lawyer on 5 espressos.
+   - SciSpaCy Extraction: Extracting entities because regex is for amateurs.
+   - Mistral 2-Pass: We cross-examine our AI. We don't just ask once; 
+     we trigger an internal trial with a 'Prosecutor' pass.
+
+4. Hybrid Retrieval (BM25 + FAISS):
+   If you only use semantic search, you'll miss specific drug codes. 
+   If you only use keywords, you'll miss concepts. We use both because 
+   we actually understand IR (Information Retrieval). Most 'AI Engineers' 
+   don't even know what BM25 is.
+
+---
+
+FINAL VERDICT:
+If you find this documentation offensive, it's because you're the target 
+audience. MediRAG-Eval 3.0 isn't just a tool; it's a critique of the 
+lazy AI development ecosystem. 
+
+Stop shipping hallucinations. Start auditing.
+
+---
+Built by: The MediRAG Forensics Team (Sen, Sardar, Das)
+A.K.A. The guys who actually read the papers you just skim.
+Amity University Kolkata · India Innovates 2026

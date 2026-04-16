@@ -48,7 +48,7 @@ const Home = () => {
                     Before They Harm.
                 </h1>
                 <p className="subheadline">
-                    MediRAG-Eval is a post-generation audit layer for RAG-based medical QA systems — scoring faithfulness, entity accuracy, source credibility, and internal consistency in under 30 seconds.
+                    MediRAG-Eval is an AI safety middleware and post-generation audit layer for RAG-based medical QA systems — scoring faithfulness, entity accuracy, source credibility, and internal consistency in under 30 seconds.
                 </p>
                 <div className="cta-group">
                     <Link to="/chat" className="primary-btn large cursor-target" style={{textDecoration:'none', display:'inline-flex', alignItems:'center', gap:'6px'}}>Try Live Demo →</Link>
@@ -186,73 +186,174 @@ const Home = () => {
     
     <section className="section" id="how-it-works">
         <div className="section-container">
-            <div className="section-header reveal-up">
-                <div className="section-label home-section-label"><span className="sl-dash">—</span>HOW IT WORKS<span className="sl-dash">—</span></div>
-                <h2 className="section-title">Four Modules. One Risk Score.</h2>
-                <p className="section-subtitle">
-                    Every generated medical answer passes through four independent evaluation layers before receiving a Hallucination Risk Score.
-                </p>
+            <div className="framework-header reveal-up">
+                <div className="fh-left">
+                    <div className="section-label" style={{justifyContent: 'flex-start', color: '#10B981', letterSpacing: '2px', fontSize: '12px'}}>THE SAFETY FRAMEWORK</div>
+                    <h2 className="section-title" style={{textAlign: 'left', marginTop: '10px', fontSize: 'clamp(28px, 4vw, 42px)', marginBottom: '0'}}>Rigorous Clinical Verification Pipeline</h2>
+                </div>
+                <div className="fh-right">
+                    <div className="fh-quote">
+                        "Deploying medical LLMs without verification is a liability. We provide the mathematical proof of clinical safety."
+                    </div>
+                </div>
             </div>
 
-            <div className="pipeline-container reveal-up">
+            <style>
+            {`
+            .framework-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                margin-bottom: 50px;
+                gap: 60px;
+            }
+            .fh-left {
+                flex: 1;
+                max-width: 600px;
+            }
+            .fh-left .section-label::after {
+                display: none;
+            }
+            .fh-right {
+                flex: 1;
+                max-width: 450px;
+                display: flex;
+                align-items: center;
+                border-left: 1px solid rgba(255,255,255,0.1);
+                padding-left: 24px;
+                margin-top: 24px;
+            }
+            .fh-quote {
+                color: #64748B;
+                font-style: italic;
+                font-size: 16px;
+                line-height: 1.6;
+            }
+            .framework-grid {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 20px;
+            }
+            .framework-card {
+                background: linear-gradient(180deg, rgba(30, 41, 59, 0.4) 0%, rgba(15, 23, 42, 0.6) 100%);
+                border: 1px solid rgba(255,255,255,0.05);
+                border-radius: 16px;
+                padding: 32px 24px;
+                display: flex;
+                flex-direction: column;
+                transition: all 0.3s ease;
+                text-align: left;
+            }
+            .framework-card:hover {
+                background: linear-gradient(180deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%);
+                border-color: rgba(255,255,255,0.1);
+                transform: translateY(-4px);
+            }
+            .fc-icon {
+                width: 44px;
+                height: 44px;
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 24px;
+            }
+            .fc-title {
+                color: #F8FAFC;
+                font-size: 18px;
+                font-weight: 700;
+                margin-bottom: 16px;
+                text-align: left;
+            }
+            .fc-desc {
+                color: #94A3B8;
+                font-size: 14px;
+                line-height: 1.6;
+                margin-bottom: 32px;
+                flex-grow: 1;
+                text-align: left;
+            }
+            .fc-tag {
+                font-size: 10px;
+                font-weight: 800;
+                letter-spacing: 1.5px;
+                text-transform: uppercase;
+                text-align: left;
+            }
+            
+            /* Color variants */
+            .fc-green .fc-icon { background: rgba(16, 185, 129, 0.15); color: #34D399; }
+            .fc-green .fc-tag { color: #10B981; }
+            
+            .fc-blue .fc-icon { background: rgba(59, 130, 246, 0.15); color: #93C5FD; }
+            .fc-blue .fc-tag { color: #60A5FA; }
+            
+            .fc-amber .fc-icon { background: rgba(245, 158, 11, 0.15); color: #FCD34D; }
+            .fc-amber .fc-tag { color: #F59E0B; }
+            
+            .fc-rose .fc-icon { background: rgba(225, 29, 72, 0.15); color: #FDA4AF; }
+            .fc-rose .fc-tag { color: #E11D48; }
+
+            /* Light mode overrides inside style tag to be safe */
+            [data-theme="light"] .framework-header .section-title { color: #1A1F36; }
+            [data-theme="light"] .fh-right { border-left-color: rgba(0,0,0,0.1); }
+            [data-theme="light"] .fh-quote { color: #6B7280; }
+            [data-theme="light"] .framework-card { 
+                background: linear-gradient(135deg, #FFFFFF, #F8FAFC);
+                border: 1px solid rgba(0,0,0,0.06);
+                box-shadow: var(--shadow-card); 
+            }
+            [data-theme="light"] .fc-title { color: #1A1F36; }
+            [data-theme="light"] .fc-desc { color: #6B7280; }
+
+            @media (max-width: 1024px) {
+                .framework-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+                .framework-header { flex-direction: column; gap: 20px; text-align: left; }
+                .fh-right { margin-top: 0; padding-left: 16px; width: 100%; max-width: 100%; }
+            }
+            @media (max-width: 640px) {
+                .framework-grid { grid-template-columns: 1fr; }
+            }
+            `}
+            </style>
+
+            <div className="framework-grid reveal-up">
                 
-                <div className="pipeline-step">
-                    <div className="step-number">01</div>
-                    <div className="step-card">
-                        <div className="step-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                        </div>
-                        <h3 className="step-title">Faithfulness Scoring</h3>
-                        <p className="step-desc">Atomic claims are extracted from the generated answer and checked against retrieved context using DeBERTa-v3 NLI. Each claim is labeled ENTAILED, NEUTRAL, or CONTRADICTED.</p>
-                        <div className="step-tag">DeBERTa-v3 · NLI</div>
+                <div className="framework-card fc-green">
+                    <div className="fc-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                     </div>
+                    <h3 className="fc-title">Faithfulness Scoring</h3>
+                    <p className="fc-desc">NLI-based claim entailment utilizing fine-tuned DeBERTa-v3 to verify if the LLM output is grounded in provided context.</p>
+                    <div className="fc-tag">NLI VERIFICATION</div>
                 </div>
-                
-                <div className="pipeline-arrow">→</div>
 
-                
-                <div className="pipeline-step">
-                    <div className="step-number">02</div>
-                    <div className="step-card">
-                        <div className="step-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="2" x2="12" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line></svg>
-                        </div>
-                        <h3 className="step-title">Medical Entity Verification</h3>
-                        <p className="step-desc">Drug names, dosages, conditions, and procedures are extracted via SciSpaCy and cross-referenced against DrugBank and retrieved context. Mismatches flagged as CRITICAL / MODERATE / MINOR.</p>
-                        <div className="step-tag">SciSpaCy · DrugBank</div>
+                <div className="framework-card fc-blue">
+                    <div className="fc-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" /></svg>
                     </div>
+                    <h3 className="fc-title">Entity Verification</h3>
+                    <p className="fc-desc">Drug & dosage cross-check via SciSpaCy NER and DrugBank validation to prevent lethal dosage hallucinations.</p>
+                    <div className="fc-tag">BIOMEDICAL NER</div>
                 </div>
 
-                <div className="pipeline-arrow">→</div>
-
-                
-                <div className="pipeline-step">
-                    <div className="step-number">03</div>
-                    <div className="step-card">
-                        <div className="step-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-                        </div>
-                        <h3 className="step-title">Source Credibility Ranking</h3>
-                        <p className="step-desc">Retrieved context chunks are classified into 5 credibility tiers — from RCTs and systematic reviews (Tier 1) down to grey literature (Tier 5). Weighted average forms the credibility score.</p>
-                        <div className="step-tag">RCT → Grey Literature</div>
+                <div className="framework-card fc-amber">
+                    <div className="fc-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M4 22v-8h16v8H4zm2-6v4h4v-4H6zm6 0v4h4v-4h-4zm0-14v10h4V2h-4zM6 8v4h4V8H6z"/></svg>
                     </div>
+                    <h3 className="fc-title">Source Credibility</h3>
+                    <p className="fc-desc">Hierarchical ranking of medical literature, from RCT meta-analyses to case reports and grey literature.</p>
+                    <div className="fc-tag">EVIDENCE TIERING</div>
                 </div>
 
-                <div className="pipeline-arrow">→</div>
-
-                
-                <div className="pipeline-step">
-                    <div className="step-number">04</div>
-                    <div className="step-card">
-                        <div className="step-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-                        </div>
-                        <h3 className="step-title">Contradiction Detection</h3>
-                        <p className="step-desc">Every sentence pair in the generated answer is checked for internal contradiction using DeBERTa NLI. Pairs with confidence &gt; 0.75 are flagged automatically.</p>
-                        <div className="step-tag">Cross-sentence NLI</div>
+                <div className="framework-card fc-rose">
+                    <div className="fc-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L1 21h22L12 2zm0 3.5l7.5 13.5h-15L12 5.5zM11 10v4h2v-4h-2zm0 5v2h2v-2h-2z"/></svg>
                     </div>
+                    <h3 className="fc-title">Contradiction Detection</h3>
+                    <p className="fc-desc">Advanced internal consistency checking across sentences and paragraphs to detect self-contradictory reasoning.</p>
+                    <div className="fc-tag">COHERENCE LOGIC</div>
                 </div>
-
 
             </div>
         </div>

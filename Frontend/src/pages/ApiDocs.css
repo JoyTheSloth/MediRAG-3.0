@@ -439,3 +439,40 @@
     .api-sidebar { display: none; }
     .api-main { padding: 40px 24px; }
 }
+
+/* =========================================================================
+   LIGHT THEME OVERRIDES
+   ========================================================================= */
+[data-theme="light"] .api-page { background: #EAECF2; color: #111827; }
+[data-theme="light"] .api-sidebar, [data-theme="light"] .api-config { background: #FFFFFF; border-color: rgba(0,0,0,0.05); }
+
+[data-theme="light"] .api-nav-label { color: #9CA3AF; }
+[data-theme="light"] .api-nav-link { color: #4B5563; }
+[data-theme="light"] .api-nav-link:hover { background: rgba(0,0,0,0.04); color: #111827; }
+[data-theme="light"] .api-nav-link.active { background: rgba(0,200,150,0.1); color: #059669; }
+
+[data-theme="light"] .api-header-pill { background: rgba(0,200,150,0.1); color: #059669; border-color: rgba(0,200,150,0.2); }
+[data-theme="light"] .api-doc-block { background: #FFFFFF; border-color: rgba(0,0,0,0.08); box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
+[data-theme="light"] .api-doc-header { border-bottom-color: rgba(0,0,0,0.05); }
+[data-theme="light"] .end-pill { background: #F8FAFC; color: #334155; border: 1px solid rgba(0,0,0,0.1); }
+[data-theme="light"] .doc-desc { color: #6B7280; }
+
+[data-theme="light"] .prop { border-bottom-color: rgba(0,0,0,0.05); }
+[data-theme="light"] .p-name { color: #111827; }
+[data-theme="light"] .p-desc { color: #6B7280; }
+
+[data-theme="light"] .code-box, [data-theme="light"] .resp-box { background: #F8FAFC; border: 1px solid rgba(0,0,0,0.05); }
+[data-theme="light"] .cb-head, [data-theme="light"] .rb-head { background: #FFFFFF; border-bottom-color: rgba(0,0,0,0.05); color: #111827; }
+[data-theme="light"] .cb-raw { color: #E11D48; }
+[data-theme="light"] .rb-raw { color: #059669; }
+
+[data-theme="light"] .ac-section { border-bottom-color: rgba(0,0,0,0.05); }
+[data-theme="light"] .ac-label { color: #111827; }
+[data-theme="light"] .ac-desc { color: #6B7280; }
+[data-theme="light"] .ac-val-box { background: #FFFFFF; border-color: rgba(0,0,0,0.1); color: #111827; }
+
+[data-theme="light"] .tl-line { background: rgba(0,0,0,0.1); }
+[data-theme="light"] .tl-item::before { background: #FFFFFF; border-color: #9CA3AF; }
+[data-theme="light"] .tl-item.active::before { background: #059669; border-color: #059669; }
+[data-theme="light"] .tl-title { color: #111827; }
+[data-theme="light"] .tl-desc { color: #6B7280; }

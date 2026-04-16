@@ -507,3 +507,30 @@
         font-size: 28px;
     }
 }
+
+/* =========================================================================
+   LIGHT THEME OVERRIDES
+   ========================================================================= */
+[data-theme="light"] .eval-page, [data-theme="light"] .batch-desc { color: #111827; }
+[data-theme="light"] .res-tabs { background: #FFFFFF; border: 1px solid rgba(0,0,0,0.08); box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
+[data-theme="light"] .res-tab-btn { color: #6B7280; }
+[data-theme="light"] .res-tab-btn.active { background: #EAECF2; color: #111827; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+
+[data-theme="light"] .sample-lbl, [data-theme="light"] .w-lbl { color: #6B7280; }
+[data-theme="light"] .sample-btn { background: #FFFFFF; border: 1px solid rgba(0,0,0,0.1); color: #4B5563; }
+[data-theme="light"] .sample-btn:hover:not(.active) { background: #F3F4F6; border-color: rgba(0,0,0,0.15); }
+[data-theme="light"] .sample-btn.active { background: rgba(43, 89, 255, 0.1); border-color: #4dabf7; color: #2B59FF; }
+
+[data-theme="light"] .form-textarea, [data-theme="light"] .t-input-res { background: #FFFFFF; border: 1px solid rgba(0,0,0,0.1); color: #111827; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
+[data-theme="light"] .form-textarea:focus, [data-theme="light"] .t-input-res:focus { background: #FFFFFF; border-color: #4dabf7; box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.15); }
+
+[data-theme="light"] .eval-btn-primary { background: #1A1F36; color: #FFFFFF; }
+[data-theme="light"] .eval-btn-primary:hover { box-shadow: 0 4px 12px rgba(26, 31, 54, 0.2); }
+[data-theme="light"] .eval-btn-secondary, [data-theme="light"] .run-all-btn, [data-theme="light"] .guide-btn-res { background: #FFFFFF; border: 1px solid rgba(0,0,0,0.15); color: #111827; }
+
+[data-theme="light"] .realtime-panel-res, [data-theme="light"] .px-report-col { border-color: rgba(0,0,0,0.15); }
+[data-theme="light"] .batch-queue-box, [data-theme="light"] .rc-card, [data-theme="light"] .rep-panel { background: #FFFFFF; border: 1px solid rgba(0,0,0,0.06); box-shadow: var(--shadow-card); }
+
+[data-theme="light"] .empty-state-res p, [data-theme="light"] .form-hint, [data-theme="light"] .config-desc, [data-theme="light"] .api-endpoint, [data-theme="light"] .api-content-type { color: #6B7280; }
+[data-theme="light"] .w-track { background: rgba(0,0,0,0.1); }
+[data-theme="light"] .code-pre-res { background: #F8FAFC; color: #1E293B; border: 1px solid rgba(0,0,0,0.05); }

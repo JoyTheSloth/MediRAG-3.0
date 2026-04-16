@@ -1,0 +1,74 @@
+🛡️ MediRAG-Eval 3.0: Technical Architecture Documentation
+======================================================
+
+### 📜 Executive Summary
+**MediRAG-Eval 3.0** is an advanced, high-fidelity Forensic Audit Layer designed to mitigate medical AI hallucinations. 💊 By sitting between a Retrieval-Augmented Generation (RAG) pipeline and the end-user, it ensures every clinical claim is verified against trusted literature (PubMed, PMC, MedQA). This system is engineered for the "India Innovates 2026" challenge, prioritizing accuracy, transparency, and immersive user experience.
+
+---
+
+### 🏛️ System Architecture Overview
+The system follows a decoupled Microservices architecture, bridged by high-performance APIs and specialized NLP pipelines.
+
+1.  **Immersive Frontend**: A React-based command center focused on high-engagement data visualization. 🖥️
+2.  **Audit Backend**: A FastAPI-driven core that manages orchestration, retrieval, and verification. ⚙️
+3.  **Knowledge Base**: A hybrid vector-graph database containing 107,425 clinical vectors. 🗃️
+4.  **Forensic Layer**: A 4-phase validation engine running locally to ensure privacy and speed. 🕵️‍♂️
+
+---
+
+### 🎨 Frontend Deep Dive: The Clinical Command Center
+The frontend is designed to feel like a "Medical Sensor," providing real-time feedback on AI trust levels.
+
+*   **Framework**: **React 19** ⚛️ utilizes the latest "Server Components" and "Actions" for seamless state management.
+*   **Motion & UX**: Powered by **GSAP (GreenSock Animation Platform)** 🪄 to create fluid, non-distractive transitions that guide the clinician's eye to critical data.
+*   **Visual Language**: **Glassmorphism 🧊** and translucent layers prioritize content hierarchy. It uses custom CSS variables for a "Bio-Dark" mode.
+*   **Precision Cursor**: A custom SVG targeting system with idle "crosshair" animations and haptic-like "snapping" to interactive buttons, signaling a "Ready for Audit" state. 🎯
+
+---
+
+### ⚙️ Backend Deep Dive: The Logic Backbone
+The backend orchestrates the complex dance between retrieval and verification.
+
+*   **API Framework**: **FastAPI** ⚡ provides asynchronous execution, ensuring that multi-pass LLM verifications do not block user interactions.
+*   **Agentic Orchestration**: **LangChain** 🦜 is used to manage conversation memory and structured output parsing.
+*   **Concurrency**: Utilizes **Uvicorn** for low-latency request handling, essential for real-time medical auditing.
+
+---
+
+### 🧠 Retrieval & Knowledge Infrastructure
+Unlike standard RAG, we utilize a **Hybrid Retrieval Strategy** to ensure both conceptual and exact-match accuracy.
+
+1.  **FAISS Vector Index**: Semantic search using **BioBERT (dmis-lab/biobert-v1.1)** 🧬 embeddings. This captures the "meaning" of clinical queries.
+2.  **BM25 (Best Match 25)**: A probabilistic ranking function for keyword matching. Essential for specific drug codes or rare disease terminology. 🔍
+3.  **Data Volume**: Indexed with **107,425 clinical entries** sourced from PubMed and MedQA datasets.
+
+---
+
+### 🕵️‍♂️ The Forensic Audit Engine (Core Innovation)
+Every answer is passed through a multi-stage audit before reaching the user:
+
+1.  **Faithfulness Scoring**: Using **DeBERTa-v3-base NLI** ⚖️ to calculate a mathematical grounding score. If the answer isn't in the source, it's flagged.
+2.  **2-Pass Verification**:
+    *   *Pass 1*: Generates a draft answer from the retrieved context.
+    *   *Pass 2 (The Authority)*: An independent Mistral-Large agent cross-examines the draft against the raw data to detect drift. 🛡️
+3.  **Entity Verification**: **SciSpaCy en_core_sci_lg** 🧪 extracts medical entities (drugs, dosages). These are cross-referenced with the **DrugBank CSV** to catch dosing errors.
+4.  **Evidence Tiering**: Sources are ranked by credibility (e.g., Tier 1: Randomized Controlled Trials → Tier 5: Expert Opinions). 📊
+
+---
+
+### 🚀 Deployment & Integrity
+*   **Environment**: Optimized for Python 3.10+ environments.
+*   **Scalability**: Container-ready with **Docker Compose**, allowing for distributed retrieval and inference. 🐳
+*   **Governance**: The "AI Governance Dashboard" provides full audit trails for compliance with medical data standards.
+
+---
+
+### 🤝 The Team
+Built with precision and commitment to patient safety:
+*   **Alapan Sen** - System Architecture
+*   **Bikram Sardar** - NLP & Ethics
+*   **Joydeep Das** - UX & Frontend Infrastructure
+
+**Institution**: Amity University Kolkata (B.Tech CSE, 2026) 🎓
+**Competition**: India Innovates 2026 🇮🇳
+**Status**: Production Ready 🚀

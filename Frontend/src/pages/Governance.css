@@ -563,3 +563,28 @@
     width: 0%;
     transition: width 1.5s linear;
 }
+
+/* =========================================================================
+   LIGHT THEME OVERRIDES
+   ========================================================================= */
+[data-theme="light"] .gov-page {
+    --gov-bg: #EAECF2; /* Optional: rely on console wrapper too */
+    --gov-card: #FFFFFF;
+    --gov-teal: #059669;
+    --gov-amber: #D97706;
+    --gov-red: #DC2626;
+    --gov-text-white: #111827;
+    --gov-text-gray: #4B5563;
+    --gov-text-dim: #6B7280;
+    --gov-border: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .gov-page { background: transparent; }
+
+[data-theme="light"] .gov-tabs-pills { background: #FFFFFF; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+[data-theme="light"] .gov-tab-pill.active { color: #FFFFFF; }
+[data-theme="light"] .filter-input, [data-theme="light"] .filter-select, [data-theme="light"] .csv-btn { background: #FFFFFF; color: #111827; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
+[data-theme="light"] .filter-input:focus { border-color: var(--gov-teal); outline: none; }
+[data-theme="light"] .audit-drawer-overlay { box-shadow: -10px 0 50px rgba(0,0,0,0.1); }
+[data-theme="light"] .gov-table-wrap, [data-theme="light"] .gov-card { box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+[data-theme="light"] .threshold-label { background: #FFFFFF; }
