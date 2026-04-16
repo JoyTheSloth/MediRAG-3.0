@@ -3811,6 +3811,21 @@ button {
         text-decoration: none;
         letter-spacing: 0.02em;
     }
+
+    /* Force theme toggle to top right on phones */
+    .mobile-theme-toggle {
+        margin-right: 12px !important;
+        padding: 8px !important;
+        border-radius: 50% !important;
+        background: rgba(255, 255, 255, 0.05) !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    [data-theme="light"] .mobile-theme-toggle {
+        background: rgba(0, 0, 0, 0.05) !important;
+    }
 }
 
 /* Light theme dropdown */

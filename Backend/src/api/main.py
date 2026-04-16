@@ -17,6 +17,7 @@ To run:
 """
 from __future__ import annotations
 
+import os
 import logging
 import time
 from contextlib import asynccontextmanager
@@ -33,17 +34,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 
 import threading
-from src.api.schemas import (
-    ContextChunk,
-    EvaluateRequest,
-    EvaluateResponse,
-    HealthResponse,
-    ModuleResults,
-    ModuleScore,
-    QueryRequest,
-    QueryResponse,
-    RetrievedChunk,
     IngestRequest,
+    ChatRequest,
 )
 from src.evaluate import run_evaluation
 from src.pipeline.generator import generate_answer
@@ -204,6 +196,47 @@ def _module_score(module_results: dict, key: str) -> Optional[ModuleScore]:
 # ---------------------------------------------------------------------------
 # GET / → redirect to /docs
 # ---------------------------------------------------------------------------
+@app.post("/project-guide")
+def project_guide(req: ChatRequest):
+    """
+    Proxy endpoint for the Project Guide chatbot.
+    Routes requests to Groq API using the local GROQ_API_KEY.
+    """
+    groq_url = "https://api.groq.com/openai/v1/chat/completions"
+    api_key = os.getenv("GROQ_API_KEY")
+
+    if not api_key:
+        raise HTTPException(status_code=500, detail="GROQ_API_KEY not found in server environment")
+
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json"
+    }
+
+    # Format messages for Groq
+    messages = []
+    if req.system_prompt:
+        messages.append({"role": "system", "content": req.system_prompt})
+    
+    for m in req.messages:
+        messages.append({"role": m.role, "content": m.content})
+
+    payload = {
+        "model": "mixtral-8x7b-32768",
+        "messages": messages,
+        "temperature": 0.5,
+        "max_tokens": 1024
+    }
+
+    try:
+        resp = requests.post(groq_url, headers=headers, json=payload, timeout=30)
+        resp.raise_for_status()
+        return resp.json()
+    except Exception as e:
+        logger.error(f"Groq Proxy Error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.get("/", include_in_schema=False)
 def root():
     return RedirectResponse(url="/docs")
@@ -391,6 +424,8 @@ def query(req: QueryRequest) -> QueryResponse:
         llm_overrides["model"] = req.llm_model
     if req.ollama_url:
         llm_overrides["ollama_url"] = req.ollama_url
+    if req.system_prompt:
+        llm_overrides["system_prompt"] = req.system_prompt
 
     # =========================================================================
     # Step 2a: PRIVACY SHIELD — MediRAG redacts PHI (Option 1)

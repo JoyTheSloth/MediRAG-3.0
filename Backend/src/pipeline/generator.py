@@ -70,7 +70,7 @@ _SYSTEM_PROMPT = (
 )
 
 
-def _build_prompt(question: str, context_chunks: list[dict]) -> str:
+def _build_prompt(question: str, context_chunks: list[dict], system_prompt: Optional[str] = None) -> str:
     """Build the RAG prompt from the question + retrieved chunks.
     
     Explicitly surfaces title and source for each chunk in the header so the LLM
@@ -94,8 +94,9 @@ def _build_prompt(question: str, context_chunks: list[dict]) -> str:
         context_parts.append(f"{header}\n{text.strip()}")
 
     context_block = "\n\n".join(context_parts)
+    effective_system = system_prompt if system_prompt else _SYSTEM_PROMPT
     return (
-        f"{_SYSTEM_PROMPT}\n\n"
+        f"{effective_system}\n\n"
         f"CONTEXT:\n{context_block}\n\n"
         f"QUESTION: {question}\n\n"
         f"ANSWER (cite sources inline as [Source: document title]):"
@@ -479,7 +480,8 @@ def generate_answer(
 
     effective_config = {**config, "llm": effective_llm}
     provider = effective_llm.get("provider", "gemini").lower()
-    prompt = _build_prompt(question, context_chunks)
+    system_prompt_override = overrides.get("system_prompt") if overrides else None
+    prompt = _build_prompt(question, context_chunks, system_prompt=system_prompt_override)
 
     if provider == "gemini":
         return _generate_gemini(prompt, effective_config)

@@ -21,6 +21,7 @@ import MediApiAgent from './pages/MediApiAgent';
 import Research from './pages/Research';
 
 import Footer from './components/Footer';
+import ProjectGuide from './components/ProjectGuide';
 
 const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
@@ -73,6 +74,7 @@ const App = () => {
         <>
             <EcgCanvasBg />
             <Navbar />
+            <ProjectGuide />
             <main>
                 <Routes>
                     <Route path="/" element={<Home />} />

@@ -105,6 +105,13 @@ const Evaluate = ({ embedded = false, mode = 'researcher', engineConfig, setEngi
     const [context, setContext] = useState('');
     const [answer, setAnswer] = useState('');
 
+    // A/B Testing States
+    const [isABMode, setIsABMode] = useState(false);
+    const [promptA, setPromptA] = useState('You are a concise medical assistant. Answer ONLY using the context.');
+    const [promptB, setPromptB] = useState('You are an expert clinical oncologist. Provide a detailed analysis based on the context and cite all sources.');
+    const [resultA, setResultA] = useState(null);
+    const [resultB, setResultB] = useState(null);
+
     const SAMPLES = {
         nsclc: {
             q: "What are the standard treatment protocols for stage II non-small cell lung cancer?",
@@ -154,7 +161,60 @@ const Evaluate = ({ embedded = false, mode = 'researcher', engineConfig, setEngi
             setIsApiModalOpen(true);
             return;
         }
-        executeEvaluationJob();
+        if (isABMode) {
+            executeABTest();
+        } else {
+            executeEvaluationJob();
+        }
+    };
+
+    const executeABTest = async () => {
+        setIsAnalyzing(true);
+        setErrorMsg('');
+        setResultA(null);
+        setResultB(null);
+        setView('ab-report');
+
+        try {
+            // Run both in parallel
+            const [dataA, dataB] = await Promise.all([
+                executeSingleQuery(promptA),
+                executeSingleQuery(promptB)
+            ]);
+            setResultA(dataA);
+            setResultB(dataB);
+        } catch (e) {
+            console.error(e);
+            setErrorMsg(e.message);
+            setView('form');
+        } finally {
+            setIsAnalyzing(false);
+        }
+    };
+
+    const executeSingleQuery = async (sysPrompt) => {
+        const endpoint = `${engineConfig?.apiUrl || import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}/query`;
+        const payload = {
+            question: query,
+            top_k: engineConfig?.topK || 5,
+            run_ragas: true, // Always run RAGAS for A/B tests to see quality
+            llm_provider: engineConfig?.provider ? engineConfig.provider.toLowerCase() : 'gemini',
+            llm_model: engineConfig?.model || 'gemini-2.0-flash',
+            llm_api_key: engineConfig?.apiKey || '',
+            system_prompt: sysPrompt
+        };
+
+        const res = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+            const errData = await res.json().catch(() => null);
+            throw new Error(errData?.detail || `API Error: ${res.status}`);
+        }
+        return await res.json();
     };
 
     const executeEvaluationJob = async (overrideKey = null) => {
@@ -278,6 +338,65 @@ const Evaluate = ({ embedded = false, mode = 'researcher', engineConfig, setEngi
             {view === 'form' && (
                 <>
                     {evalTab === 'single' && (
+                        <div className="ab-prompt-fullwidth" style={{ marginBottom: '30px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', background: 'rgba(255,255,255,0.02)', padding: '12px 20px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                    <label className="form-label" style={{ color: '#00C896', marginBottom: '4px' }}>Side-by-Side Prompt Engineering</label>
+                                    <p style={{ margin: 0, fontSize: '11px', opacity: 0.5 }}>Test different clinical personas or instructions against the same query</p>
+                                </div>
+                                <div 
+                                    onClick={() => setIsABMode(!isABMode)}
+                                    style={{
+                                        width: '44px',
+                                        height: '24px',
+                                        background: isABMode ? '#00C896' : 'rgba(255,255,255,0.1)',
+                                        borderRadius: '20px',
+                                        cursor: 'pointer',
+                                        position: 'relative',
+                                        transition: '0.3s'
+                                    }}
+                                >
+                                    <div style={{
+                                        width: '20px',
+                                        height: '20px',
+                                        background: 'white',
+                                        borderRadius: '50%',
+                                        position: 'absolute',
+                                        top: '2px',
+                                        left: isABMode ? '22px' : '2px',
+                                        transition: '0.3s',
+                                        boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+                                    }}></div>
+                                </div>
+                            </div>
+                            
+                            {isABMode && (
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px', animation: 'fadeIn 0.4s ease-out' }}>
+                                    <div>
+                                        <label className="form-label" style={{ fontSize: '10px', opacity: 0.6, marginBottom: '8px', display: 'block' }}>SYSTEM PROMPT A // EXPERIMENT CONTROL</label>
+                                        <textarea 
+                                            className="form-textarea" 
+                                            style={{ height: '120px', width: '100%', fontSize: '13px', padding: '16px', background: 'rgba(15, 23, 42, 0.4)' }}
+                                            value={promptA}
+                                            onChange={(e) => setPromptA(e.target.value)}
+                                            placeholder="Enter first persona instructions..."
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="form-label" style={{ fontSize: '10px', opacity: 0.6, marginBottom: '8px', display: 'block' }}>SYSTEM PROMPT B // EXPERIMENT VARIANT</label>
+                                        <textarea 
+                                            className="form-textarea" 
+                                            style={{ height: '120px', width: '100%', fontSize: '13px', padding: '16px', background: 'rgba(15, 23, 42, 0.4)' }}
+                                            value={promptB}
+                                            onChange={(e) => setPromptB(e.target.value)}
+                                            placeholder="Enter second persona instructions..."
+                                        />
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                    {evalTab === 'single' && (
                         <div className="eval-split">
                             <div className="eval-form-col">
                                 {mode === 'researcher' && (
@@ -300,6 +419,7 @@ const Evaluate = ({ embedded = false, mode = 'researcher', engineConfig, setEngi
                                         <strong>Error:</strong> {errorMsg}
                                     </div>
                                 )}
+
 
                                 <div className="form-group">
                                     <label className="form-label">USER QUERY</label>
@@ -326,16 +446,18 @@ const Evaluate = ({ embedded = false, mode = 'researcher', engineConfig, setEngi
                                     ></textarea>
                                 </div>
 
-                                <div className="form-group">
-                                    <label className="form-label">GENERATED ANSWER TO AUDIT (Optional)</label>
-                                    <textarea 
-                                        className="form-textarea med" 
-                                        placeholder="Leave empty to generate with LLM, or paste the AI's response..."
-                                        value={answer}
-                                        onChange={(e) => setAnswer(e.target.value)}
-                                        disabled={isAnalyzing}
-                                    ></textarea>
-                                </div>
+                                {!isABMode && (
+                                    <div className="form-group">
+                                        <label className="form-label">GENERATED ANSWER TO AUDIT (Optional)</label>
+                                        <textarea 
+                                            className="form-textarea med" 
+                                            placeholder="Leave empty to generate with LLM, or paste the AI's response..."
+                                            value={answer}
+                                            onChange={(e) => setAnswer(e.target.value)}
+                                            disabled={isAnalyzing}
+                                        ></textarea>
+                                    </div>
+                                )}
 
                                 <div className="form-actions-row">
                                     <div className="btn-group-row">
@@ -621,6 +743,168 @@ const Evaluate = ({ embedded = false, mode = 'researcher', engineConfig, setEngi
                             );
                         })}
                     </div>
+                </div>
+            )}
+
+            {view === 'ab-report' && (
+                <div className="eval-report-view ab-report-view">
+                    <style>{`
+                        .ab-report-view { 
+                            max-width: 1500px; 
+                            padding: 40px;
+                            margin: 0 auto;
+                        }
+                        .ab-grid { 
+                            display: grid; 
+                            grid-template-columns: 1fr 1fr; 
+                            gap: 40px; 
+                            margin-top: 30px; 
+                        }
+                        .ab-col { 
+                            background: rgba(255,255,255,0.02); 
+                            border: 1px solid rgba(255,255,255,0.08); 
+                            border-radius: 24px; 
+                            padding: 32px;
+                            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+                            transition: transform 0.3s ease;
+                        }
+                        .ab-col:hover { transform: translateY(-5px); border-color: rgba(0,200,150,0.2); }
+                        .ab-header { 
+                            display: flex; 
+                            justify-content: space-between; 
+                            align-items: center; 
+                            margin-bottom: 24px; 
+                            padding-bottom: 20px; 
+                            border-bottom: 1px solid rgba(255,255,255,0.05); 
+                        }
+                        .ab-prompt-summary { 
+                            font-size: 11px; 
+                            opacity: 0.4; 
+                            font-style: italic; 
+                            margin-bottom: 20px; 
+                            display: block; 
+                            line-height: 1.5;
+                        }
+                        .ab-answer-box {
+                            background: rgba(0,0,0,0.3); 
+                            padding: 24px; 
+                            border-radius: 16px; 
+                            marginBottom: 24px; 
+                            min-height: 200px;
+                            border: 1px solid rgba(255,255,255,0.03);
+                            line-height: 1.7;
+                            font-size: 14px;
+                            color: rgba(255,255,255,0.9);
+                        }
+                        .metric-comp { 
+                            display: flex; 
+                            justify-content: space-between; 
+                            margin-bottom: 12px; 
+                            font-size: 13px; 
+                            padding: 8px 0;
+                            border-bottom: 1px solid rgba(255,255,255,0.02);
+                        }
+                        .metric-label { opacity: 0.5; font-weight: 500; }
+                        .metric-val { font-weight: 800; font-family: 'Fira Code', monospace; }
+                    `}</style>
+
+                    <div className="report-header" style={{ marginBottom: '40px' }}>
+                        <div className="rh-eyebrow" style={{ marginBottom: '16px' }}>
+                            PROMPT A/B EXPERIMENT // CLINICAL STRESS TEST
+                            <div style={{ marginLeft: 'auto' }}>
+                                <button onClick={() => setView('form')} style={{
+                                    background: 'rgba(255,255,255,0.05)', 
+                                    border: '1px solid rgba(255,255,255,0.1)', 
+                                    color: 'white', 
+                                    padding: '8px 20px', 
+                                    borderRadius: '8px', 
+                                    cursor: 'pointer', 
+                                    fontSize: '12px',
+                                    fontWeight: 600,
+                                    transition: '0.2s'
+                                }}>
+                                    &larr; BACK TO LAB
+                                </button>
+                            </div>
+                        </div>
+                        <h1 className="rh-title" style={{ fontSize: '32px', marginBottom: '12px' }}>A/B Comparison Report</h1>
+                        <p style={{ opacity: 0.5, fontSize: '15px', maxWidth: '800px' }}>Testing model responses across different system personas for the query: <span style={{ color: 'white' }}>"{query}"</span></p>
+                    </div>
+
+                    {!resultA || !resultB ? (
+                        <div style={{ padding: '100px 0', textAlign: 'center' }}>
+                            <div className="telemetry-dot-res pulse" style={{ margin: '0 auto 24px', width: '20px', height: '20px' }}></div>
+                            <p style={{ letterSpacing: '2px', fontSize: '12px', opacity: 0.6 }}>CALCULATING CROSS-MODEL RAGAS SCORES...</p>
+                        </div>
+                    ) : (
+                        <div className="ab-grid">
+                            {/* PROMPT A */}
+                            <div className="ab-col" style={{ borderTop: `4px solid ${resultA.hrs < resultB.hrs ? '#00C896' : 'rgba(255,255,255,0.1)'}` }}>
+                                <div className="ab-header">
+                                    <h3 style={{ margin: 0, fontSize: '18px', letterSpacing: '1px' }}>PERSONA A</h3>
+                                    <span className="rh-pill" style={{ background: resultA.hrs > 40 ? 'rgba(239, 68, 68, 0.2)' : 'rgba(0, 200, 150, 0.2)', color: resultA.hrs > 40 ? '#ef4444' : '#00C896', border: `1px solid ${resultA.hrs > 40 ? '#ef444450' : '#00C89650'}` }}>
+                                        HRS {resultA.hrs}
+                                    </span>
+                                </div>
+                                <span className="ab-prompt-summary">Instruction: "{promptA}"</span>
+                                
+                                <div className="ab-answer-box">
+                                    <div className="rq-label" style={{ marginBottom: '12px', fontSize: '10px', opacity: 0.5 }}>GENERATED OUTPUT</div>
+                                    {resultA.generated_answer}
+                                </div>
+
+                                <div className="metrics-list" style={{ marginTop: '24px' }}>
+                                    <div className="metric-comp">
+                                        <span className="metric-label">Faithfulness (Groundedness)</span>
+                                        <span className="metric-val" style={{ color: resultA.module_results?.faithfulness?.score > 0.8 ? '#00C896' : '#FF6B6B' }}>
+                                            {(resultA.module_results?.faithfulness?.score * 100).toFixed(1)}%
+                                        </span>
+                                    </div>
+                                    <div className="metric-comp">
+                                        <span className="metric-label">Entity Precision</span>
+                                        <span className="metric-val">{(resultA.module_results?.entity_verifier?.score * 100).toFixed(1)}%</span>
+                                    </div>
+                                    <div className="metric-comp">
+                                        <span className="metric-label">Inference Latency</span>
+                                        <span className="metric-val">{resultA.total_pipeline_ms}ms</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* PROMPT B */}
+                            <div className="ab-col" style={{ borderTop: `4px solid ${resultB.hrs < resultA.hrs ? '#00C896' : 'rgba(255,255,255,0.1)'}` }}>
+                                <div className="ab-header">
+                                    <h3 style={{ margin: 0, fontSize: '18px', letterSpacing: '1px' }}>PERSONA B</h3>
+                                    <span className="rh-pill" style={{ background: resultB.hrs > 40 ? 'rgba(239, 68, 68, 0.2)' : 'rgba(0, 200, 150, 0.2)', color: resultB.hrs > 40 ? '#ef4444' : '#00C896', border: `1px solid ${resultB.hrs > 40 ? '#ef444450' : '#00C89650'}` }}>
+                                        HRS {resultB.hrs}
+                                    </span>
+                                </div>
+                                <span className="ab-prompt-summary">Instruction: "{promptB}"</span>
+
+                                <div className="ab-answer-box">
+                                    <div className="rq-label" style={{ marginBottom: '12px', fontSize: '10px', opacity: 0.5 }}>GENERATED OUTPUT</div>
+                                    {resultB.generated_answer}
+                                </div>
+
+                                <div className="metrics-list" style={{ marginTop: '24px' }}>
+                                    <div className="metric-comp">
+                                        <span className="metric-label">Faithfulness (Groundedness)</span>
+                                        <span className="metric-val" style={{ color: resultB.module_results?.faithfulness?.score > 0.8 ? '#00C896' : '#FF6B6B' }}>
+                                            {(resultB.module_results?.faithfulness?.score * 100).toFixed(1)}%
+                                        </span>
+                                    </div>
+                                    <div className="metric-comp">
+                                        <span className="metric-label">Entity Precision</span>
+                                        <span className="metric-val">{(resultB.module_results?.entity_verifier?.score * 100).toFixed(1)}%</span>
+                                    </div>
+                                    <div className="metric-comp">
+                                        <span className="metric-label">Inference Latency</span>
+                                        <span className="metric-val">{resultB.total_pipeline_ms}ms</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             )}
         </div>

@@ -59,7 +59,7 @@ const Navbar = () => {
                 </div>
 
                 <div className="nav-right">
-                    <button onClick={toggleTheme} className="theme-toggle-btn target-cursor" style={{ background: 'none', border: 'none', color: 'var(--text-white)', cursor: 'pointer', display: 'flex', alignItems: 'center', marginRight: '8px' }} title="Toggle Theme">
+                    <button onClick={toggleTheme} className="theme-toggle-btn mobile-theme-toggle target-cursor" style={{ background: 'none', border: 'none', color: 'var(--text-white)', cursor: 'pointer', display: 'flex', alignItems: 'center', marginRight: '8px' }} title="Toggle Theme">
                         {theme === 'dark' ? (
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="theme-icon" style={{width: '20px', height: '20px'}}>
                                 <circle cx="12" cy="12" r="5"></circle>

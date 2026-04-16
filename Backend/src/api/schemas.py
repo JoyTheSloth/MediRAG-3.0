@@ -132,6 +132,15 @@ class EvaluateResponse(BaseModel):
     total_pipeline_ms: int = Field(..., description="Total wall-clock time in ms")
 
 
+class ChatMessage(BaseModel):
+    role: str
+    content: str
+
+class ChatRequest(BaseModel):
+    messages: List[ChatMessage]
+    system_prompt: Optional[str] = None
+
+
 class HealthResponse(BaseModel):
     """GET /health — liveness and dependency status."""
     status: str = Field(default="ok")
@@ -194,7 +203,11 @@ class QueryRequest(BaseModel):
     # Privacy Shield (Option 1)
     use_privacy_shield: bool = Field(
         default=False,
-        description="Automatically redact PHI/PII (names, IDs) before external API calls."
+        description="Automatically redact PHI/PII (names, IDs) before external API calls.",
+    )
+    system_prompt: Optional[str] = Field(
+        default=None,
+        description="Custom system prompt to override the default clinical persona."
     )
 
 
