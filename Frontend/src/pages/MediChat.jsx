@@ -37,43 +37,52 @@ function HeatmapAnswer({ claims }) {
                 let bgColor = 'transparent';
                 let borderColor = 'transparent';
                 let label = '';
-                let icon = '';
 
                 if (status === 'ENTAILED') {
                     bgColor = 'rgba(0, 200, 150, 0.08)';
                     borderColor = 'rgba(0, 200, 150, 0.2)';
                     label = 'Verified';
-                    icon = '✓';
                 } else if (status === 'CONTRADICTED') {
                     bgColor = 'rgba(255, 100, 50, 0.15)';
                     borderColor = 'rgba(255, 100, 50, 0.4)';
                     label = 'Possible Hallucination';
-                    icon = '⚠️';
                 } else {
                     bgColor = 'rgba(255, 200, 50, 0.1)';
                     borderColor = 'rgba(255, 200, 50, 0.3)';
                     label = 'Uncertain / No Evidence';
-                    icon = '❓';
                 }
 
+                // Format markdown bold and italic
+                let htmlFormat = item.claim.replace(/\*\*(.*?)\*\*/g, '<strong style="color: white; font-weight: 700;">$1</strong>');
+                htmlFormat = htmlFormat.replace(/(?<!\*)\*(?!\*)(.*?)\*/g, '<em>$1</em>');
+                
+                // Fade out the "[not cited in context]" texts
+                htmlFormat = htmlFormat.replace(/(\[not cited.*?\])/gi, '<span style="opacity: 0.5; font-size: 12px; font-style: italic;">$1</span>');
+
+                // Detect if claim is the start of a list item or new section
+                const isListItem = /^\s*(?:\d+\.|-|\*)\s/.test(item.claim);
+                const isHeader = /^\s*#+\s|\bRecommendation(s)?:\b/i.test(item.claim);
+
                 return (
-                    <span 
-                        key={i} 
-                        className="heatmap-sentence"
-                        title={`${label} (Score: ${score})`}
-                        style={{
-                            display: 'inline',
-                            padding: '2px 0',
-                            backgroundColor: bgColor,
-                            borderBottom: `2px solid ${borderColor}`,
-                            marginRight: '4px',
-                            cursor: 'help',
-                            transition: 'all 0.2s',
-                            borderRadius: '2px'
-                        }}
-                    >
-                        {item.claim}{' '}
-                    </span>
+                    <React.Fragment key={i}>
+                        {(isListItem || isHeader) && i > 0 && <><br /><br /></>}
+                        <span 
+                            className="heatmap-sentence"
+                            title={`${label} (Score: ${score})`}
+                            style={{
+                                display: 'inline',
+                                padding: '3px 0',
+                                backgroundColor: bgColor,
+                                borderBottom: `2px solid ${borderColor}`,
+                                marginRight: '4px',
+                                cursor: 'help',
+                                transition: 'all 0.2s',
+                                borderRadius: '2px',
+                                paddingLeft: isListItem ? '12px' : '0' // Slight indent for lists
+                            }}
+                            dangerouslySetInnerHTML={{ __html: htmlFormat + ' ' }}
+                        />
+                    </React.Fragment>
                 );
             })}
             <div style={{ marginTop: '16px', display: 'flex', gap: '15px', fontSize: '10px', fontWeight: 700, opacity: 0.6, letterSpacing: '0.5px' }}>
