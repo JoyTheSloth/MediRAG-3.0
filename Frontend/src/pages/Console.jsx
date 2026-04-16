@@ -6,46 +6,22 @@ import Governance from './Governance';
 import PatientExperience from './PatientExperience';
 import './Console.css';
 
-const Console = () => {
+const Console = ({ engineConfig, setEngineConfig }) => {
     const location = useLocation();
     const [activeSection, setActiveSection] = useState('dashboard');
-    const [activeSubSection, setActiveSubSection] = useState(null);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-    // Global settings for Evaluate / Patient
-    const [engineConfig, setEngineConfig] = useState(() => ({
-        apiUrl: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000',
-        provider: 'Mistral',
-        apiKey: sessionStorage.getItem('medirag_api_key') || import.meta.env.VITE_MISTRAL_API_KEY || '',
-        model: 'mistral-large-latest',
-        topK: 5,
-        runRagas: false
-    }));
-
-    useEffect(() => {
-        if (engineConfig.apiKey) {
-            sessionStorage.setItem('medirag_api_key', engineConfig.apiKey);
-        } else {
-            sessionStorage.removeItem('medirag_api_key');
-        }
-    }, [engineConfig.apiKey]);
 
     // Initial section based on route or state
     useEffect(() => {
         if (location.pathname.includes('dashboard')) {
             setActiveSection('dashboard');
-        } else if (location.pathname.includes('evaluate')) {
-            setActiveSection('evaluate');
-            setActiveSubSection('researcher'); 
-        } else if (location.pathname === '/console') {
-            setActiveSection('evaluate');
-            setActiveSubSection('researcher');
+        } else if (location.pathname.includes('governance')) {
+            setActiveSection('governance');
         }
     }, [location]);
 
-    const handleNav = (section, sub = null) => {
+    const handleNav = (section) => {
         setActiveSection(section);
-        setActiveSubSection(sub);
         setIsSidebarOpen(false);
         window.scrollTo(0, 0);
     };
@@ -65,38 +41,20 @@ const Console = () => {
                     </div>
 
                     <div className="console-nav-group">
-                        <div className="console-nav-label">EVALUATE</div>
-                        <button 
-                            className={`console-nav-link ${activeSection === 'evaluate' && activeSubSection === 'researcher' ? 'active' : ''}`}
-                            onClick={() => handleNav('evaluate', 'researcher')}
-                        >
-                            <span className="console-nav-icon">🔬</span>
-                            Researcher / AI Trainer
-                        </button>
-                        <button 
-                            className={`console-nav-link ${activeSection === 'evaluate' && activeSubSection === 'patient' ? 'active' : ''}`}
-                            onClick={() => handleNav('evaluate', 'patient')}
-                        >
-                            <span className="console-nav-icon">📤</span>
-                            Upload Data &amp; Analyse
-                        </button>
-                        <button 
-                            className={`console-nav-link ${activeSection === 'evaluate' && activeSubSection === 'governance' ? 'active' : ''}`}
-                            onClick={() => handleNav('evaluate', 'governance')}
-                        >
-                            <span className="console-nav-icon">🛡️</span>
-                            AI Governance System
-                        </button>
-                    </div>
-
-                    <div className="console-nav-group">
-                        <div className="console-nav-label">ANALYTICS</div>
+                        <div className="console-nav-label">SYSTEM</div>
                         <button 
                             className={`console-nav-link ${activeSection === 'dashboard' ? 'active' : ''}`}
                             onClick={() => handleNav('dashboard')}
                         >
                             <span className="console-nav-icon">📊</span>
                             System Dashboard
+                        </button>
+                        <button 
+                            className={`console-nav-link ${activeSection === 'governance' ? 'active' : ''}`}
+                            onClick={() => handleNav('governance')}
+                        >
+                            <span className="console-nav-icon">🛡️</span>
+                            AI Governance System
                         </button>
                     </div>
 
@@ -127,7 +85,7 @@ const Console = () => {
                                     setEngineConfig({
                                         ...engineConfig, 
                                         provider: p,
-                                        model: p === 'OpenAI' ? 'gpt-4o' : p === 'Mistral' ? 'mistral-large-latest' : 'gemini-2.0-flash'
+                                        model: p === 'OpenAI' ? 'gpt-4o' : p === 'Mistral' ? 'mistral-large-latest' : 'gemini-1.5-flash'
                                     });
                                 }}
                                 style={{ width: '100%', background: '#121620', border: '1px solid #1c253b', borderRadius: '6px', padding: '8px 12px', color: 'white', fontSize: '12px' }}
@@ -169,6 +127,7 @@ const Console = () => {
                                             <>
                                                 <option value="gemini-2.0-flash">gemini-2.0-flash</option>
                                                 <option value="gemini-1.5-pro">gemini-1.5-pro</option>
+                                                <option value="gemini-1.5-flash">gemini-1.5-flash</option>
                                             </>
                                         ) : engineConfig.provider === 'Mistral' ? (
                                             <>
@@ -224,24 +183,7 @@ const Console = () => {
                         <div className="con-mobile-title">Console</div>
                     </div>
 
-                    {activeSection === 'evaluate' && activeSubSection === 'researcher' && (
-                        <div className="console-view-wrapper">
-                            <Evaluate embedded={true} mode={activeSubSection} engineConfig={engineConfig} setEngineConfig={setEngineConfig} />
-                        </div>
-                    )}
-
-                    {activeSection === 'evaluate' && activeSubSection === 'patient' && (
-                        <div className="console-view-wrapper">
-                            <div className="console-view-header">
-                                <span className="res-mode-pill" style={{ background: 'rgba(0, 200, 150, 0.1)', color: '#00C896' }}>App Integration Mode</span>
-                                <h1 className="console-view-title">Upload Data &amp; Analyse</h1>
-                                <p style={{ color: 'var(--text-gray)', marginTop: '8px' }}>Test chatbot safety for healthcare apps like Apollo 247, Tata 1mg — upload patient docs and verify AI responses against medical sources</p>
-                            </div>
-                            <PatientExperience engineConfig={engineConfig} setEngineConfig={setEngineConfig} />
-                        </div>
-                    )}
-
-                    {activeSection === 'evaluate' && activeSubSection === 'governance' && (
+                    {activeSection === 'governance' && (
                         <div className="console-view-wrapper">
                             <Governance />
                         </div>

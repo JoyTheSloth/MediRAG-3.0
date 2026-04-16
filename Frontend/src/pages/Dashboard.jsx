@@ -157,6 +157,7 @@ const Dashboard = ({ embedded = false }) => {
 
             {/* BOTTOM GRID */}
             <div className="bot-grid">
+                {/* 1. MODULE SCORES */}
                 <div className="dash-panel-new" style={{gap: '12px'}}>
                     <div className="dp-title" style={{marginBottom:'16px'}}>MODULE SCORE COMPARISON</div>
 
@@ -173,7 +174,44 @@ const Dashboard = ({ embedded = false }) => {
                     ))}
                 </div>
 
-                <div className="dash-panel-new">
+                {/* 2. ACCURACY & HALLUCINATION BENCHMARKS (TRANSFERRED FROM RESEARCH) */}
+                <div className="dash-panel-new" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
+                    <div className="bench-sub-panel">
+                        <div className="dp-title" style={{marginBottom:'16px', fontSize: '11px'}}>ACCURACY (MEDQA)</div>
+                        {[
+                            { name: 'Base Llama-3', val: 45, color: '#ef4444' },
+                            { name: 'BioMISTRAL', val: 70, color: '#f59e0b' },
+                            { name: 'MediRAG Stack', val: 94, color: '#00C896' }
+                        ].map((m, i) => (
+                            <div key={'acc'+i} style={{ marginBottom: '12px' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', marginBottom: '4px' }}>
+                                    <span>{m.name}</span>
+                                    <span>{m.val}%</span>
+                                </div>
+                                <div className="ms-track" style={{ height: '6px' }}><div className="ms-fill" style={{ width: `${m.val}%`, background: m.color }} /></div>
+                            </div>
+                        ))}
+                    </div>
+                    <div className="bench-sub-panel">
+                        <div className="dp-title" style={{marginBottom:'16px', fontSize: '11px'}}>HALLUCINATION RATE</div>
+                        {[
+                            { name: 'Base Llama-3', val: 38, color: '#ef4444' },
+                            { name: 'BioMISTRAL', val: 18, color: '#f59e0b' },
+                            { name: 'MediRAG Stack', val: 2, color: '#00C896' }
+                        ].map((m, i) => (
+                            <div key={'hal'+i} style={{ marginBottom: '12px' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', marginBottom: '4px' }}>
+                                    <span>{m.name}</span>
+                                    <span>{m.val}%</span>
+                                </div>
+                                <div className="ms-track" style={{ height: '6px' }}><div className="ms-fill" style={{ width: `${m.val}%`, background: m.color }} /></div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* 3. RECENT EVALS */}
+                <div className="dash-panel-new" style={{ gridColumn: '1 / -1' }}>
                     <div className="dp-title" style={{marginBottom:'24px'}}>
                         RECENT EVALUATIONS
                         <span style={{color:'var(--green-accent)', textDecoration:'none', letterSpacing:'0.05em', fontSize:'10px', float: 'right'}}>LIVE UPDATES &rarr;</span>

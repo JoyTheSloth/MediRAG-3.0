@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import Evaluate from './Evaluate';
 
-const Research = () => {
+const Research = ({ engineConfig, setEngineConfig }) => {
     const [activeTab, setActiveTab] = useState('explorer');
     const [selectedStudy, setSelectedStudy] = useState(null);
     const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -312,41 +313,9 @@ const Research = () => {
 
                     <div className="lab-view-content">
                         {activeTab === 'explorer' && (
-                            <div className="explorer-view">
-                                <div className="explorer-chat">
-                                    <div className="explorer-card">
-                                        <h3><span style={{color: '#00C896'}}>💬</span> Evidence Query</h3>
-                                        <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '13px' }}>
-                                            Querying multiple clinical trials for contradicting methodologies...
-                                        </p>
-                                        <div style={{ marginTop: '20px', padding: '15px', background: 'rgba(0,0,0,0.2)', borderRadius: '8px', borderLeft: '3px solid #00C896' }}>
-                                            <strong style={{ display: 'block', fontSize: '12px', marginBottom: '5px', color: '#00C896' }}>SYNTHESIZED FINDING (V2.4):</strong>
-                                            <span style={{ fontSize: '14px', lineHeight: '1.6' }}>
-                                                Across the SGLT2 and GLP-1 datasets, we found a 14% variance in renal outcome reporting. 
-                                                Evidence suggests a correlated risk factor in elderly cohorts (n=1200+) not present in early phase trials.
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-                                        <div className="explorer-card">
-                                            <h3>📚 Key Citations</h3>
-                                            <ul style={{ paddingLeft: '18px', fontSize: '13px', color: 'rgba(255,255,255,0.7)', lineHeight: '2' }}>
-                                                <li>BMJ Case Reports #4421</li>
-                                                <li>NEJM Clinical Evaluation (2024)</li>
-                                                <li>Lancet Diabetes & Endo Vol 12</li>
-                                            </ul>
-                                        </div>
-                                        <div className="explorer-card">
-                                            <h3>⚖️ Bias Check</h3>
-                                            <div style={{ textAlign: 'center', padding: '10px' }}>
-                                                <div style={{ fontSize: '24px', fontWeight: 900, color: '#00C896' }}>NEUTRAL</div>
-                                                <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)' }}>Conflict of Interest: LOW</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                             <div className="explorer-view" style={{ display: 'block' }}>
+                                 <Evaluate embedded={true} mode="researcher" engineConfig={engineConfig} setEngineConfig={setEngineConfig} />
+                             </div>
                         )}
 
                         {activeTab === 'review' && (
