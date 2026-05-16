@@ -28,6 +28,7 @@ We've consolidated everything into a single, high-fidelity command center:
 - **🚦 Traffic Control Visualization**: A real-time developer simulation showing the medical safety pipeline as it sanitizes, authorizes, or blocks API requests.
 - **🛡️ AI Governance Dashboard**: A complete audit log and compliance reporting system for medical AI oversight.
 - **🧭 MediRAG Project Guide**: A Groq-powered interactive chatbot providing on-demand technical documentation and platform walkthroughs.
+- **💻 Developer CLI Engine**: A built-in Python CLI (`medirag start` / `medirag api`) allowing researchers and IT admins to deploy and interface with the pipeline directly from local terminal environments.
 
 ---
 

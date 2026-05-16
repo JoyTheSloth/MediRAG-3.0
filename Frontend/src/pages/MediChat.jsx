@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import html2pdf from 'html2pdf.js';
 import './MediChat.css';
 import ApiKeyModal from '../components/ApiKeyModal';
 
@@ -438,9 +439,32 @@ const MediChat = ({ engineConfig }) => {
     const [uploadedDocText, setUploadedDocText] = useState('');
     const [uploadedDocName, setUploadedDocName] = useState('');
     const [isUploadingDoc, setIsUploadingDoc] = useState(false);
+    const [persona, setPersona] = useState('physician'); // 'physician' or 'patient'
     const bottomRef = useRef(null);
     const inputRef = useRef(null);
     const pasteFileRef = useRef(null);
+    const chatContainerRef = useRef(null);
+    const [isExporting, setIsExporting] = useState(false);
+
+    const exportToPDF = () => {
+        if (!chatContainerRef.current) return;
+        setIsExporting(true);
+        const element = chatContainerRef.current;
+        const opt = {
+            margin:       10,
+            filename:     `Clinical_Report_${activeSession || Date.now()}.pdf`,
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#0a0d14', windowWidth: element.scrollWidth },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        html2pdf().set(opt).from(element).save().then(() => {
+            setIsExporting(false);
+        }).catch(err => {
+            console.error("PDF Export Error:", err);
+            setIsExporting(false);
+        });
+    };
 
     useEffect(() => {
         bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -511,7 +535,8 @@ const MediChat = ({ engineConfig }) => {
                     run_ragas: localConfig.runRagas,
                     llm_provider: localConfig.provider.toLowerCase(),
                     llm_model: localConfig.model,
-                    llm_api_key: activeKey
+                    llm_api_key: activeKey,
+                    persona: persona
                 })
             });
 
@@ -747,7 +772,63 @@ const MediChat = ({ engineConfig }) => {
                     <div className="mc-mobile-title">MediRAG-Eval Assistant</div>
                 </div>
 
-                <div className="mc-chat-window">
+                {/* ─── Chat Header with Persona Toggle ─── */}
+                <div style={{ 
+                    padding: '16px 40px', 
+                    borderBottom: '1px solid rgba(255,255,255,0.05)',
+                    background: 'rgba(10, 13, 20, 0.4)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between'
+                }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <div style={{ width: '8px', height: '8px', background: '#00C896', borderRadius: '50%', boxShadow: '0 0 10px #00C896' }} />
+                        <span style={{ fontSize: '12px', fontWeight: 700, color: 'rgba(255,255,255,0.7)', letterSpacing: '1px' }}>SYSTEM ACTIVE</span>
+                    </div>
+
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                        <button 
+                            onClick={exportToPDF}
+                            disabled={isExporting || messages.length === 0}
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                                background: 'rgba(0, 200, 150, 0.1)',
+                                border: '1px solid rgba(0, 200, 150, 0.3)',
+                                borderRadius: '6px',
+                                color: '#00C896',
+                                padding: '6px 12px',
+                                fontSize: '11px',
+                                fontWeight: 700,
+                                cursor: (isExporting || messages.length === 0) ? 'not-allowed' : 'pointer',
+                                opacity: (isExporting || messages.length === 0) ? 0.5 : 1,
+                                letterSpacing: '0.5px',
+                                transition: 'all 0.2s'
+                            }}
+                        >
+                            {isExporting ? '⏳ GENERATING...' : '📄 EXPORT REPORT'}
+                        </button>
+
+                        <div className="persona-toggle-container">
+                            <div className={`persona-slider ${persona}`} />
+                            <div 
+                                className={`persona-option ${persona === 'physician' ? 'active' : ''}`}
+                                onClick={() => setPersona('physician')}
+                            >
+                                👨‍⚕️ Physician
+                            </div>
+                            <div 
+                                className={`persona-option ${persona === 'patient' ? 'active' : ''}`}
+                                onClick={() => setPersona('patient')}
+                            >
+                                👤 Patient
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="mc-chat-window" ref={chatContainerRef}>
 
                     {/* Welcome Screen */}
                     {activeSession === null && messages.length === 0 && (

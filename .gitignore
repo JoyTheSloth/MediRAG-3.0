@@ -23,6 +23,7 @@ Backend/.git/
 # Ignore large datasets and indexes for Github
 datafinal/
 Backend/data/
+updated/data/
 *.index
 *.pkl
 *.csv

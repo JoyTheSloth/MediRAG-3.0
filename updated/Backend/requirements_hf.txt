@@ -1,0 +1,45 @@
+# MediRAG Backend - Hugging Face Spaces Requirements
+# Optimized for faster builds - relaxed version constraints
+
+# Core dependencies
+langchain>=0.1.0
+langchain-community>=0.0.30
+
+# Vector search
+faiss-cpu>=1.9.0
+
+# ML/DL frameworks
+torch>=2.0.0
+transformers>=4.40.0
+sentence-transformers>=2.5.0
+
+# Medical NLP - installed in Dockerfile instead
+# scispacy>=0.5.4
+# https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.4/en_core_sci_lg-0.5.4.tar.gz
+
+# Evaluation
+ragas>=0.1.0
+
+# API framework
+fastapi>=0.110.0
+uvicorn>=0.27.0
+
+# Hugging Face Spaces - Gradio for API wrapper
+gradio>=4.0.0,<5.0.0
+
+# Utilities
+pyyaml>=6.0.0
+pydantic>=2.0.0
+datasets>=2.18.0
+pandas>=2.0.0
+numpy>=1.26.0,<2
+requests>=2.30.0
+google-genai>=0.5.0
+pysbd>=0.3.0
+pymupdf>=1.24.0
+python-docx>=1.1.0
+rank-bm25>=0.2.0
+python-multipart>=0.0.12
+
+# Additional for Hugging Face
+huggingface-hub>=0.20.0
