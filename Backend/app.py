@@ -52,6 +52,7 @@ os.makedirs(index_dir, exist_ok=True)
 
 faiss_path = os.path.join(index_dir, "faiss.index")
 metadata_path = os.path.join(index_dir, "metadata_store.pkl")
+bm25_path = os.path.join(index_dir, "bm25_cache.pkl")
 vocab_path = os.path.join(data_dir, "drugbank vocabulary.csv")
 rxnorm_path = os.path.join(data_dir, "rxnorm_cache.csv")
 
@@ -64,19 +65,22 @@ def download_dataset_files():
 
     try:
         if not os.path.exists(faiss_path):
-            logger.info("Downloading faiss.index...")
-            hf_hub_download(repo_id=repo_id, filename="faiss.index", local_dir=index_dir, repo_type="dataset", token=token)
+            logger.info("Downloading faiss.index from HF dataset...")
+            hf_hub_download(repo_id=repo_id, filename="index/faiss.index", local_dir=data_dir, repo_type="dataset", token=token)
         if not os.path.exists(metadata_path):
-            logger.info("Downloading metadata_store.pkl...")
-            hf_hub_download(repo_id=repo_id, filename="metadata_store.pkl", local_dir=index_dir, repo_type="dataset", token=token)
+            logger.info("Downloading metadata_store.pkl from HF dataset...")
+            hf_hub_download(repo_id=repo_id, filename="index/metadata_store.pkl", local_dir=data_dir, repo_type="dataset", token=token)
+        if not os.path.exists(bm25_path):
+            logger.info("Downloading bm25_cache.pkl from HF dataset...")
+            hf_hub_download(repo_id=repo_id, filename="index/bm25_cache.pkl", local_dir=data_dir, repo_type="dataset", token=token)
         if not os.path.exists(vocab_path):
-            logger.info("Downloading drugbank vocabulary.csv...")
+            logger.info("Downloading drugbank vocabulary.csv from HF dataset...")
             hf_hub_download(repo_id=repo_id, filename="drugbank vocabulary.csv", local_dir=data_dir, repo_type="dataset", token=token)
         if not os.path.exists(rxnorm_path):
-            logger.info("Downloading rxnorm_cache.csv...")
+            logger.info("Downloading rxnorm_cache.csv from HF dataset...")
             hf_hub_download(repo_id=repo_id, filename="rxnorm_cache.csv", local_dir=data_dir, repo_type="dataset", token=token)
     except Exception as e:
-        logger.error(f"Failed to download repository files: {e}")
+        logger.error(f"Failed to download dataset files: {e}")
         logger.warning("Backend may not start correctly or queries may fail.")
 
 # Trigger download at startup
