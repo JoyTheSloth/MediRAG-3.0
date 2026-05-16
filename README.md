@@ -66,15 +66,16 @@ Every answer passes through our forensic pipeline (running locally on CPU/GPU):
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/JoyTheSloth/MediRAG-3.0.git
-cd MediRAG-3.0
+git clone https://github.com/JoyTheSloth/MediRAG-.git
+cd MediRAG-
 ```
 
 ### 2. Ignite the Backend (Python 3.10+)
 ```bash
 cd Backend
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
+python -m venv .venv
+# Windows: .venv\Scripts\activate
+# Mac/Linux: source .venv/bin/activate
 pip install -r requirements.txt
 python -m uvicorn src.api.main:app --reload --port 8000
 ```
@@ -95,6 +96,16 @@ npm run dev
 - **NLP Models**: DeBERTa-v3 (grounding), SciSpaCy (biomedical NER), BioBERT (embeddings), Mistral-Large-Latest (Generation & Verification) 🤖
 - **Vector DB**: FAISS indexed with **107,425 clinical entries** 🗃️
 - **Retrieval**: Hybrid BioBERT + BM25 ranking 🧱
+
+---
+
+## 📂 Project Structure
+
+- **`Frontend/`**: React 19 application (Vite-powered).
+- **`Backend/`**: FastAPI engine + medical audit pipeline.
+- **`dev_tools/`**: Automation scripts for dataset/HF Space deployment.
+- **`launchers/`**: Quick-start batch/shell scripts for various environments.
+- **`docker-compose.yml`**: Full stack orchestration.
 
 ---
 
