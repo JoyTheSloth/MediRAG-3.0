@@ -5,6 +5,6 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   build: {
-    cssMinify: 'esbuild' // Force esbuild to prevent lightningcss compiler crashes on Vercel
+    cssMinify: false // Disable CSS minification to bypass lightningcss and missing esbuild dependency crashes on Vercel
   }
 })
