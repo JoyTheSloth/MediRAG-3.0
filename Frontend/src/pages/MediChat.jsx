@@ -575,7 +575,6 @@ const MediChat = ({ engineConfig }) => {
 
                 <div className="mc-sidebar-spacer" />
 
-                {/* ── Evaluation Engine Controls ── */}
                 <div className="mc-sidebar-engine">
                     <div className="mc-section-label">Evaluation Engine</div>
                     
@@ -589,6 +588,36 @@ const MediChat = ({ engineConfig }) => {
                             <option value="OpenAI">OpenAI</option>
                             <option value="Mistral">Mistral AI</option>
                         </select>
+                    </div>
+
+                    <div className="mc-engine-row">
+                        <label>API Key</label>
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                            <input
+                                type="password"
+                                className="mc-engine-key-input"
+                                placeholder={localApiKey ? "••••••••••••••••" : "Enter API Key..."}
+                                value={localApiKey}
+                                onChange={e => setLocalApiKey(e.target.value)}
+                            />
+                            {localApiKey && (
+                                <button
+                                    onClick={() => setLocalApiKey('')}
+                                    style={{
+                                        background: 'rgba(239, 68, 68, 0.15)',
+                                        border: '1px solid rgba(239, 68, 68, 0.3)',
+                                        borderRadius: '8px',
+                                        padding: '0 12px',
+                                        color: '#ef4444',
+                                        cursor: 'pointer',
+                                        fontSize: '11px',
+                                        fontWeight: '700'
+                                    }}
+                                >
+                                    Clear
+                                </button>
+                            )}
+                        </div>
                     </div>
 
                     <div className="mc-engine-row">
@@ -729,6 +758,12 @@ const MediChat = ({ engineConfig }) => {
                             }
                         }} />
                         <button className="mc-action-chip" onClick={() => pasteFileRef.current?.click()}>📎 UPLOAD PDF / LABS</button>
+                        <button 
+                            className={`mc-action-chip ${localApiKey ? 'key-active' : 'key-empty'}`} 
+                            onClick={() => setIsApiModalOpen(true)}
+                        >
+                            {localApiKey ? '🔐 API KEY SAVED' : '🔑 ENTER API KEY'}
+                        </button>
                     </div>
 
                     <div className="mc-input-row">

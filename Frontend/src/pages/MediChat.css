@@ -71,6 +71,24 @@
     background: #1a1f2e;
 }
 
+.mc-engine-key-input {
+    width: 100%;
+    background: #121620;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 8px 10px;
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.mc-engine-key-input:focus {
+    border-color: #10B981;
+    background: #1a1f2e;
+}
+
 .mc-engine-checkbox {
     display: flex;
     align-items: center;
@@ -571,6 +589,51 @@
     background: rgba(16, 185, 129, 0.12);
     border-color: #059669;
 }
+
+.mc-action-chip.key-active {
+    background: rgba(16, 185, 129, 0.15) !important;
+    border-color: #10B981 !important;
+    color: #10B981 !important;
+    border-style: solid !important;
+}
+
+.mc-action-chip.key-active:hover {
+    background: rgba(16, 185, 129, 0.25) !important;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.25) !important;
+}
+
+.mc-action-chip.key-empty {
+    background: rgba(255, 255, 255, 0.03) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    color: rgba(255, 255, 255, 0.55) !important;
+    border-style: dashed !important;
+}
+
+.mc-action-chip.key-empty:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(255, 255, 255, 0.25) !important;
+    color: #FFFFFF !important;
+}
+
+/* Light theme overrides for key states */
+[data-theme="light"] .mc-action-chip.key-active {
+    background: rgba(16, 185, 129, 0.12) !important;
+    border-color: #059669 !important;
+    color: #059669 !important;
+}
+
+[data-theme="light"] .mc-action-chip.key-empty {
+    background: rgba(0, 0, 0, 0.03) !important;
+    border-color: rgba(0, 0, 0, 0.08) !important;
+    color: rgba(0, 0, 0, 0.5) !important;
+}
+
+[data-theme="light"] .mc-action-chip.key-empty:hover {
+    background: rgba(0, 0, 0, 0.06) !important;
+    border-color: rgba(0, 0, 0, 0.15) !important;
+    color: rgba(0, 0, 0, 0.8) !important;
+}
+
 
 .mc-input-row {
     display: flex;
