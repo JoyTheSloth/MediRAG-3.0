@@ -1,0 +1,358 @@
+/* =========================================================================
+   PILL NAVBAR STYLES
+   ========================================================================= */
+
+.pill-nav-wrapper {
+    position: fixed;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 95%;
+    max-width: 1200px;
+    z-index: 2000;
+    pointer-events: none; /* Let clicks pass through outside the pill */
+}
+
+.pill-navbar {
+    pointer-events: auto;
+    background: rgba(10, 15, 30, 0.7);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 9999px;
+    padding: 10px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 
+        0 4px 20px rgba(0, 0, 0, 0.4),
+        inset 0 1px 1px rgba(255, 255, 255, 0.1);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.pill-navbar:hover {
+    background: rgba(10, 15, 30, 0.8);
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.5),
+        0 0 15px rgba(0, 200, 150, 0.1);
+}
+
+/* Left: Logo Section */
+.pill-nav-left {
+    display: flex;
+    align-items: center;
+}
+
+.pill-logo-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    margin-left: 10px;
+}
+
+.pill-logo-link:hover .pill-logo-img {
+    transform: scale(1.05);
+}
+
+.pill-logo-img {
+    height: 52px;
+    width: auto;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.pill-brand-name {
+    color: #FFFFFF;
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    font-family: var(--font-sans);
+}
+
+.pill-logo-icon {
+    width: 24px;
+    height: 24px;
+    color: #015AA9; /* Blue flame color from reference */
+}
+
+/* Center: Navigation Links */
+.pill-nav-center {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pill-nav-link {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 9999px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.pill-nav-link:hover {
+    color: #FFFFFF;
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-1px);
+}
+
+.pill-nav-link.active {
+    color: #00C896;
+    background: rgba(0, 200, 150, 0.1);
+    border: 1px solid rgba(0, 200, 150, 0.2);
+}
+
+/* Right: Action Section */
+.pill-nav-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.pill-theme-toggle {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.pill-theme-toggle:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: rotate(15deg);
+}
+
+.pill-chat-btn {
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 11px 26px;
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 
+        0 4px 15px rgba(16, 185, 129, 0.3),
+        inset 0 1px 2px rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    letter-spacing: -0.01em;
+}
+
+.pill-chat-btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+    transform: skewX(-20deg);
+}
+
+.pill-chat-btn:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 
+        0 10px 25px rgba(16, 185, 129, 0.5),
+        inset 0 1px 2px rgba(255, 255, 255, 0.4);
+}
+
+.pill-chat-btn:hover::after {
+    animation: btn-shine 1s ease-in-out;
+}
+
+@keyframes btn-shine {
+    100% { left: 100%; }
+}
+
+.pill-chat-btn svg {
+    transition: transform 0.3s ease;
+}
+
+.pill-chat-btn:hover svg {
+    transform: translateX(3px);
+}
+
+.pill-chat-btn:active {
+    transform: translateY(0) scale(0.98);
+}
+
+.copied-toast {
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 20px;
+    background: #015AA9;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.copied-toast.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Mobile Responsive */
+.pill-mobile-toggle {
+    display: none;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 10px;
+    border-radius: 50%;
+    margin-left: 8px;
+}
+
+@media (max-width: 900px) {
+    .pill-nav-center {
+        display: none;
+    }
+    
+    .pill-nav-right .pill-chat-btn {
+        padding: 8px 16px;
+        font-size: 12px;
+    }
+    
+    .pill-mobile-toggle {
+        display: flex;
+    }
+}
+
+/* Mobile Dropdown */
+.pill-mobile-menu {
+    position: absolute;
+    top: calc(100% + 12px);
+    left: 0;
+    right: 0;
+    background: rgba(5, 5, 5, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+    pointer-events: none;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.pill-mobile-menu.open {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+.pill-mob-link {
+    padding: 12px 16px;
+    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.pill-mob-link:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+}
+
+.pill-mob-link.active {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+/* =========================================================================
+   LIGHT THEME OVERRIDES
+   ========================================================================= */
+[data-theme="light"] .pill-navbar {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-color: rgba(16, 185, 129, 0.2);
+    box-shadow: 
+        0 4px 24px rgba(16, 185, 129, 0.12),
+        inset 0 1px 1px rgba(255, 255, 255, 0.5);
+}
+
+[data-theme="light"] .pill-navbar:hover {
+    background: #FFFFFF;
+    border-color: rgba(16, 185, 129, 0.3);
+}
+
+[data-theme="light"] .pill-brand-name {
+    color: #1A1F36;
+}
+
+[data-theme="light"] .pill-nav-link {
+    color: #4B5563;
+}
+
+[data-theme="light"] .pill-nav-link:hover {
+    background: rgba(16, 185, 129, 0.05);
+    color: #10B981;
+}
+
+[data-theme="light"] .pill-nav-link.active {
+    background: var(--green-accent);
+    color: #FFFFFF;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+[data-theme="light"] .pill-theme-toggle {
+    background: rgba(0, 0, 0, 0.04);
+    border-color: rgba(0, 0, 0, 0.1);
+    color: #1A1F36;
+}
+
+[data-theme="light"] .pill-theme-toggle:hover {
+    background: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .pill-mobile-toggle {
+    background: rgba(0, 0, 0, 0.04);
+    border-color: rgba(0, 0, 0, 0.1);
+    color: #1A1F36;
+}
+
+[data-theme="light"] .pill-mobile-menu {
+    background: rgba(255, 255, 255, 0.98);
+    border-color: rgba(0, 0, 0, 0.08);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .pill-mob-link {
+    color: #4B5563;
+}
+
+[data-theme="light"] .pill-mob-link:hover {
+    background: rgba(0, 0, 0, 0.04);
+    color: #1A1F36;
+}
+
+[data-theme="light"] .pill-mob-link.active {
+    background: rgba(0, 0, 0, 0.06);
+    color: #111827;
+}

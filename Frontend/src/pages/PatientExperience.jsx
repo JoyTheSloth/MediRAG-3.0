@@ -110,159 +110,167 @@ const PatientExperience = ({ engineConfig, setEngineConfig }) => {
         }
     };
 
+    const handleFileUpload = async (e) => {
+        if (e.target.files && e.target.files.length > 0) {
+            const file = e.target.files[0];
+            setUploadedFile(file);
+            setIsUploading(true);
+            setUploadSuccess(false);
+            setErrorMsg('');
+
+            try {
+                const formData = new FormData();
+                formData.append('file', file);
+                const endpoint = `${engineConfig?.apiUrl || import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}/parse_file`;
+                const res = await fetch(endpoint, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!res.ok) {
+                    const errData = await res.json();
+                    throw new Error(errData.detail || 'Failed to parse file content.');
+                }
+                
+                const data = await res.json();
+                setUploadedText(data.text);
+                setUploadSuccess(true);
+            } catch (err) {
+                console.error('Upload error:', err);
+                setErrorMsg(`Upload failed: ${err.message}`);
+            } finally {
+                setIsUploading(false);
+            }
+        }
+    };
 
     return (
         <div className="patient-experience">
             {/* LEFT COLUMN: INPUTS */}
             <div className="px-input-col">
-                
-                {/* UPLOAD SECTION */}
-                <input 
-                    type="file" 
-                    onChange={async (e) => {
-                        if (e.target.files && e.target.files.length > 0) {
-                            const file = e.target.files[0];
-                            setUploadedFile(file);
-                            setIsUploading(true);
-                            setUploadSuccess(false);
-                            setErrorMsg('');
-
-                            try {
-                                const formData = new FormData();
-                                formData.append('file', file);
-                                const endpoint = `${engineConfig?.apiUrl || import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}/parse_file`;
-                                const res = await fetch(endpoint, {
-                                    method: 'POST',
-                                    body: formData
-                                });
-
-                                if (!res.ok) {
-                                    const errData = await res.json();
-                                    throw new Error(errData.detail || 'Failed to parse file content.');
-                                }
-                                
-                                const data = await res.json();
-                                setUploadedText(data.text);
-                                setUploadSuccess(true);
-                            } catch (err) {
-                                console.error('Upload error:', err);
-                                setErrorMsg(`Upload failed: ${err.message}`);
-                            } finally {
-                                setIsUploading(false);
-                            }
-                        }
-                    }} 
-                    ref={fileInputRef} 
-                    style={{display: 'none'}} 
-                    accept=".txt,.md,.pdf,.docx" 
-                />
-                <div 
-                    className="px-upload-zone" 
-                    onClick={() => {
-                        if (!isUploading) fileInputRef.current?.click();
-                    }} 
-                    style={{ 
-                        cursor: isUploading ? 'wait' : 'pointer', 
-                        borderColor: uploadSuccess ? '#00C896' : 'rgba(255,255,255,0.1)', 
-                        background: uploadSuccess ? 'rgba(0,200,150,0.05)' : '',
-                        opacity: isUploading ? 0.7 : 1
-                    }}
-                >
-                    <div className="px-upload-icon-wrapper" style={{ background: uploadSuccess ? '#00C896' : (isUploading ? '#ff4d4f' : ''), color: (uploadSuccess || isUploading) ? 'white' : '' }}>
-                        {isUploading ? <div className="loader-ring" style={{width: '20px', height: '20px', borderWidth: '2px'}}></div> : 
-                         uploadSuccess ? '✓' : (
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                                <polyline points="17 8 12 3 7 8" />
-                                <line x1="12" y1="3" x2="12" y2="15" />
-                            </svg>
-                        )}
+                {/* STEP 1: UPLOAD */}
+                <div className="px-step-wrapper">
+                    <div className="px-step-header">
+                        <span className="px-step-num">01</span>
+                        <div className="px-step-title-group">
+                            <h3 className="px-step-title">Clinical Document Ingestion</h3>
+                            <p className="px-step-subtitle">Upload the patient record for safety auditing</p>
+                        </div>
                     </div>
-                    <div className="px-upload-title">{uploadedFile ? uploadedFile.name : 'Upload your health document'}</div>
-                    <div className="px-upload-subtitle">
-                        {isUploading ? 'Ingesting and vectorizing document...' : 
-                         uploadSuccess ? 'Document loaded successfully. Ask your question below.' : 
-                         'Lab report, prescription, discharge summary — PDF'}
+                    
+                    <div className={`px-upload-zone ${uploadSuccess ? 'success' : ''}`} onClick={() => fileInputRef.current?.click()}>
+                        <input 
+                            type="file" 
+                            ref={fileInputRef} 
+                            style={{ display: 'none' }} 
+                            onChange={handleFileUpload}
+                            accept=".pdf,.txt,.doc,.docx"
+                        />
+                        <div className="px-upload-icon-wrapper">
+                            {isUploading ? <div className="loader-ring"></div> : 
+                            uploadSuccess ? '✓' : (
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                    <polyline points="17 8 12 3 7 8" />
+                                    <line x1="12" y1="3" x2="12" y2="15" />
+                                </svg>
+                            )}
+                        </div>
+                        <div className="px-upload-text-group">
+                            <div className="px-upload-title">{uploadedFile ? uploadedFile.name : 'Drop medical PDF here'}</div>
+                            {!isUploading && !uploadSuccess && <div className="px-upload-hint">Max file size: 10MB</div>}
+                        </div>
                     </div>
                 </div>
 
-                {/* TARGET APP SELECTION */}
-                <div style={{ marginBottom: '20px' }}>
-                    <div className="px-section-label">Target Healthcare App</div>
-                    <div className="px-chips-row" style={{ flexWrap: 'wrap', gap: '8px' }}>
-                        {appTargets.map(app => (
-                            <button
-                                key={app}
-                                className={`px-chip ${selectedApp === app ? 'active' : ''}`}
-                                onClick={() => setSelectedApp(app)}
-                                style={{ fontSize: '12px' }}
-                            >
-                                {app}
-                            </button>
-                        ))}
+                {/* STEP 2: CONTEXT */}
+                <div className="px-step-wrapper">
+                    <div className="px-step-header">
+                        <span className="px-step-num">02</span>
+                        <div className="px-step-title-group">
+                            <h3 className="px-step-title">Evaluation Context</h3>
+                            <p className="px-step-subtitle">Configure the target app and query type</p>
+                        </div>
+                    </div>
+
+                    <div className="px-context-grid">
+                        <div className="px-field-group">
+                            <div className="px-section-label">Target Healthcare App</div>
+                            <div className="px-chips-row">
+                                {appTargets.map(app => (
+                                    <button
+                                        key={app}
+                                        className={`px-chip ${selectedApp === app ? 'active' : ''}`}
+                                        onClick={() => setSelectedApp(app)}
+                                    >
+                                        {app}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="px-field-group" style={{ marginTop: '20px' }}>
+                            <div className="px-section-label">Document Classification</div>
+                            <div className="px-chips-row">
+                                {docTypes.map(type => (
+                                    <button 
+                                        key={type} 
+                                        className={`px-chip ${selectedDocType === type ? 'active' : ''}`}
+                                        onClick={() => setSelectedDocType(type)}
+                                    >
+                                        {type}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                {/* SAMPLE DOCUMENT TYPE SELECTION */}
-                <div>
-                    <div className="px-section-label">Document Type</div>
-                    <div className="px-chips-row">
-                        {docTypes.map(type => (
-                            <button 
-                                key={type} 
-                                className={`px-chip ${selectedDocType === type ? 'active' : ''}`}
-                                onClick={() => setSelectedDocType(type)}
-                            >
-                                {type}
-                            </button>
-                        ))}
+                <div className="px-step-wrapper">
+                    <div className="px-step-header">
+                        <span className="px-step-num">03</span>
+                        <div className="px-step-title-group">
+                            <h3 className="px-step-title">Safety Verification</h3>
+                            <p className="px-step-subtitle">Execute the hallucination risk assessment</p>
+                        </div>
                     </div>
-                </div>
 
-                {/* QUESTION INPUTS */}
-                <div className="px-question-box">
-                    <div>
-                        <div className="px-section-label">Your Question</div>
+                    <div className="px-question-box">
                         <select 
                             className="px-select"
                             value={selectedQuestion}
                             onChange={(e) => setSelectedQuestion(e.target.value)}
                         >
-                            <option value="-- pick a common question --">-- pick a common question --</option>
+                            <option value="-- pick a common question --">-- select standard clinical query --</option>
                             {commonQuestions.map(q => (
                                 <option key={q} value={q}>{q}</option>
                             ))}
                         </select>
+
+                        <textarea 
+                            className="px-textarea"
+                            placeholder="Or specify custom parameters for auditing..."
+                            value={customQuestion}
+                            onChange={(e) => setCustomQuestion(e.target.value)}
+                        ></textarea>
                     </div>
 
-                    <textarea 
-                        className="px-textarea"
-                        placeholder="Or type your own question about this document..."
-                        value={customQuestion}
-                        onChange={(e) => setCustomQuestion(e.target.value)}
-                    ></textarea>
-                </div>
-
-                {/* ACTION BUTTON */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                    <button 
-                        className={`px-action-btn ${isAnalyzing ? 'disabled' : 'primary'}`}
-                        disabled={isAnalyzing}
-                        onClick={handleCheck}
-                    >
-                        {isAnalyzing ? (
-                            <>
-                                <div className="loader-ring"></div>
-                                CHECKING...
-                            </>
-                        ) : 'Check this answer'}
-                    </button>
-                    <div className="px-hint">
-                        MediRAG will verify the AI's answer against your document and medical sources
+                    <div style={{ marginTop: '20px' }}>
+                        <button 
+                            className={`px-action-btn ${isAnalyzing ? 'disabled' : 'primary'}`}
+                            disabled={isAnalyzing}
+                            onClick={handleCheck}
+                        >
+                            {isAnalyzing ? (
+                                <>
+                                    <div className="loader-ring"></div>
+                                    VERIFYING CLINICAL FIDELITY...
+                                </>
+                            ) : 'Run Safety Audit'}
+                        </button>
+                        {errorMsg && <div className="px-error-msg">{errorMsg}</div>}
                     </div>
-                    {errorMsg && <div style={{color:'red', marginTop:'16px', fontSize:'14px'}}>{errorMsg}</div>}
                 </div>
-
             </div>
 
             {/* RIGHT COLUMN: RESULTS */}
@@ -306,41 +314,41 @@ const PatientExperience = ({ engineConfig, setEngineConfig }) => {
                             </div>
 
                             {/* HRS Gauge */}
-                            <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${bandColor}33`, borderRadius: '14px', padding: '20px' }}>
-                                <div style={{ fontSize: '11px', fontWeight: 800, color: 'var(--text-gray)', letterSpacing: '1px', marginBottom: '12px' }}>HALLUCINATION RISK SCORE</div>
+                            <div className="px-hrs-card">
+                                <div className="px-hrs-label">HALLUCINATION RISK SCORE</div>
                                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '12px' }}>
-                                    <div style={{ fontSize: '48px', fontWeight: 900, color: bandColor, lineHeight: 1 }}>{hrs}</div>
+                                    <div className="px-hrs-value" style={{ color: bandColor }}>{hrs}</div>
                                     <div style={{ fontSize: '14px', color: 'var(--text-gray)' }}>/100</div>
-                                    <div style={{ marginLeft: 'auto', background: `${bandColor}20`, border: `1px solid ${bandColor}`, borderRadius: '20px', padding: '4px 14px', fontSize: '12px', fontWeight: 800, color: bandColor }}>
+                                    <div className="px-risk-badge" style={{ background: `${bandColor}20`, border: `1px solid ${bandColor}`, color: bandColor }}>
                                         {band} RISK
                                     </div>
                                 </div>
-                                <div style={{ height: '6px', width: '100%', background: 'rgba(255,255,255,0.06)', borderRadius: '6px', overflow: 'hidden' }}>
-                                    <div style={{ height: '100%', width: `${hrs}%`, background: `linear-gradient(90deg, #00C896, ${bandColor})`, borderRadius: '6px', transition: 'width 1.2s ease-out' }}></div>
+                                <div className="px-hrs-bar-bg">
+                                    <div className="px-hrs-bar-fill" style={{ width: `${hrs}%`, background: `linear-gradient(90deg, #00C896, ${bandColor})` }}></div>
                                 </div>
                             </div>
 
                             {/* Answer — rendered as markdown */}
-                            <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '14px', padding: '20px' }}>
+                            <div className="px-answer-card">
                                 <ReactMarkdown
                                     remarkPlugins={[remarkGfm]}
                                     components={{
-                                        p:      ({node, ...props}) => <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.9)', lineHeight: 1.8, marginBottom: '12px', marginTop: 0 }} {...props} />,
-                                        strong: ({node, ...props}) => <strong style={{ color: '#ffffff', fontWeight: 700 }} {...props} />,
-                                        em:     ({node, ...props}) => <em style={{ color: 'rgba(0,200,150,0.9)', fontStyle: 'italic' }} {...props} />,
-                                        li:     ({node, ...props}) => <li style={{ fontSize: '13px', color: 'rgba(255,255,255,0.8)', lineHeight: 1.7, marginBottom: '4px' }} {...props} />,
-                                        ul:     ({node, ...props}) => <ul style={{ paddingLeft: '20px', margin: '8px 0' }} {...props} />,
-                                        ol:     ({node, ...props}) => <ol style={{ paddingLeft: '20px', margin: '8px 0' }} {...props} />,
-                                        h3:     ({node, ...props}) => <h3 style={{ fontSize: '14px', color: '#00C896', fontWeight: 700, margin: '14px 0 6px' }} {...props} />,
-                                        h4:     ({node, ...props}) => <h4 style={{ fontSize: '13px', color: '#00C896', fontWeight: 600, margin: '10px 0 4px' }} {...props} />,
-                                        code:   ({node, ...props}) => <code style={{ background: 'rgba(0,200,150,0.12)', color: '#00C896', padding: '1px 6px', borderRadius: '4px', fontSize: '12px', fontFamily: 'monospace' }} {...props} />,
-                                        blockquote: ({node, ...props}) => <blockquote style={{ borderLeft: '3px solid #00C896', paddingLeft: '12px', margin: '10px 0', color: 'rgba(255,255,255,0.6)', fontStyle: 'italic' }} {...props} />,
+                                        p:      ({node, ...props}) => <p className="px-markdown-p" {...props} />,
+                                        strong: ({node, ...props}) => <strong className="px-markdown-strong" {...props} />,
+                                        em:     ({node, ...props}) => <em className="px-markdown-em" {...props} />,
+                                        li:     ({node, ...props}) => <li className="px-markdown-li" {...props} />,
+                                        ul:     ({node, ...props}) => <ul className="px-markdown-ul" {...props} />,
+                                        ol:     ({node, ...props}) => <ol className="px-markdown-ol" {...props} />,
+                                        h3:     ({node, ...props}) => <h3 className="px-markdown-h3" {...props} />,
+                                        h4:     ({node, ...props}) => <h4 className="px-markdown-h4" {...props} />,
+                                        code:   ({node, ...props}) => <code className="px-markdown-code" {...props} />,
+                                        blockquote: ({node, ...props}) => <blockquote className="px-markdown-quote" {...props} />,
                                     }}
                                 >
                                     {answer}
                                 </ReactMarkdown>
                                 {resultData.intervention_applied && resultData.safe_answer && (
-                                    <div style={{ marginTop: '14px', padding: '12px', background: 'rgba(245,166,35,0.08)', border: '1px solid rgba(245,166,35,0.3)', borderRadius: '8px', fontSize: '12px', color: '#F5A623' }}>
+                                    <div className="px-intervention-alert">
                                         ⚡ <strong>MediRAG intervened</strong> — answer was replaced with a safer version.
                                     </div>
                                 )}
@@ -348,8 +356,8 @@ const PatientExperience = ({ engineConfig, setEngineConfig }) => {
 
                             {/* Retrieved Dataset Sources */}
                             {chunks.length > 0 && (
-                                <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '14px', padding: '20px' }}>
-                                    <div style={{ fontSize: '11px', fontWeight: 800, color: 'var(--text-gray)', letterSpacing: '1px', marginBottom: '14px' }}>📚 RETRIEVED DATASET SOURCES ({chunks.length})</div>
+                                <div className="px-sources-card">
+                                    <div className="px-sources-label">📚 RETRIEVED DATASET SOURCES ({chunks.length})</div>
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                                         {chunks.map((chunk, i) => {
                                             const score = chunk.similarity_score ?? chunk.score ?? 0;
@@ -358,17 +366,17 @@ const PatientExperience = ({ engineConfig, setEngineConfig }) => {
                                             const source = chunk.source || chunk.pub_type || '';
                                             const text = chunk.text || chunk.chunk_text || '';
                                             return (
-                                                <div key={i} style={{ background: 'rgba(0,0,0,0.2)', borderRadius: '10px', padding: '14px', borderLeft: `3px solid ${scoreColor}` }}>
+                                                <div key={i} className="px-source-item" style={{ borderLeftColor: scoreColor }}>
                                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px', gap: '8px' }}>
-                                                        <div style={{ fontSize: '12px', fontWeight: 700, color: 'white', lineHeight: 1.4, flex: 1 }}>{title}</div>
-                                                        <div style={{ fontSize: '11px', fontWeight: 800, color: scoreColor, flexShrink: 0, background: `${scoreColor}15`, padding: '2px 8px', borderRadius: '10px' }}>
+                                                        <div className="px-source-title">{title}</div>
+                                                        <div className="px-source-score" style={{ color: scoreColor, background: `${scoreColor}15` }}>
                                                             {(score * 100).toFixed(1)}% match
                                                         </div>
                                                     </div>
                                                     {source && (
-                                                        <div style={{ fontSize: '10px', color: 'rgba(0,200,150,0.7)', fontWeight: 600, marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{source}</div>
+                                                        <div className="px-source-meta">{source}</div>
                                                     )}
-                                                    <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.55)', lineHeight: 1.6 }}>
+                                                    <div className="px-source-text">
                                                         {text.length > 220 ? text.slice(0, 220) + '...' : text}
                                                     </div>
                                                 </div>
@@ -379,30 +387,60 @@ const PatientExperience = ({ engineConfig, setEngineConfig }) => {
                             )}
 
                             {/* Metrics */}
-                            {Object.keys(mods).length > 0 && (
-                                <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '14px', padding: '20px' }}>
-                                    <div style={{ fontSize: '11px', fontWeight: 800, color: 'var(--text-gray)', letterSpacing: '1px', marginBottom: '14px' }}>📊 EVALUATION METRICS</div>
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                                        {Object.entries(mods).map(([key, val]) => {
-                                            const score = val?.score ?? val ?? 0;
-                                            const pct = Math.round(score * 100);
-                                            const color = pct > 80 ? '#00C896' : pct > 50 ? '#F5A623' : '#EF4444';
-                                            const label = key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-                                            return (
-                                                <div key={key}>
-                                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                                                        <span style={{ fontSize: '12px', color: 'var(--text-gray)' }}>{label}</span>
-                                                        <span style={{ fontSize: '12px', fontWeight: 800, color }}>{pct}%</span>
-                                                    </div>
-                                                    <div style={{ height: '3px', width: '100%', background: 'rgba(255,255,255,0.05)', borderRadius: '3px' }}>
-                                                        <div style={{ height: '100%', width: `${pct}%`, background: color, borderRadius: '3px', transition: 'width 1.2s ease-out' }}></div>
-                                                    </div>
+                            {Object.keys(mods).length > 0 && (() => {
+                                const avgScore = Object.values(mods).reduce((acc, v) => acc + (v?.score ?? v ?? 0), 0) / Object.keys(mods).length;
+                                const reliabilityPct = Math.round(avgScore * 100);
+                                const reliabilityColor = reliabilityPct > 80 ? '#00C896' : reliabilityPct > 50 ? '#F5A623' : '#EF4444';
+
+                                return (
+                                    <div className="px-metrics-card">
+                                        <div className="px-metrics-header">
+                                            <div className="px-metrics-label">
+                                                <span>PERFORMANCE DIAGNOSTICS</span>
+                                                <div className="px-metrics-badge">LATEST RUN</div>
+                                            </div>
+                                            <div className="px-reliability-summary">
+                                                <div className="px-reliability-label">Global Reliability Index</div>
+                                                <div className="px-reliability-value" style={{ color: reliabilityColor }}>
+                                                    {reliabilityPct}%
+                                                    <span className="px-reliability-pulse" style={{ background: reliabilityColor }}></span>
                                                 </div>
-                                            );
-                                        })}
+                                            </div>
+                                        </div>
+
+                                        <div className="px-metrics-grid-v2">
+                                            {Object.entries(mods).map(([key, val]) => {
+                                                const score = val?.score ?? val ?? 0;
+                                                const pct = Math.round(score * 100);
+                                                const color = pct > 80 ? '#00C896' : pct > 50 ? '#F5A623' : '#EF4444';
+                                                const label = key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+                                                
+                                                let icon = '⚡';
+                                                if (key.includes('faith')) icon = '🛡️';
+                                                if (key.includes('source')) icon = '📚';
+                                                if (key.includes('context')) icon = '🔍';
+                                                if (key.includes('hallu')) icon = '⚠️';
+
+                                                return (
+                                                    <div className="px-diagnostic-card" key={key}>
+                                                        <div className="px-diag-top">
+                                                            <span className="px-diag-icon" style={{ background: `${color}15`, color }}>{icon}</span>
+                                                            <div className="px-diag-pct" style={{ color }}>{pct}%</div>
+                                                        </div>
+                                                        <div className="px-diag-name">{label}</div>
+                                                        <div className="px-diag-status" style={{ color: `${color}cc` }}>
+                                                            {pct > 80 ? 'OPTIMAL' : pct > 50 ? 'WARNING' : 'CRITICAL'}
+                                                        </div>
+                                                        <div className="px-diag-bar-bg">
+                                                            <div className="px-diag-bar-fill" style={{ width: `${pct}%`, background: color }}></div>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
                                     </div>
-                                </div>
-                            )}
+                                );
+                            })()}
 
                             {/* Audit Trace toggle */}
                             <button className="px-action-btn" onClick={() => setShowTrace(t => !t)}>

@@ -22,7 +22,9 @@ const About = () => {
     <section className="section">
         <div className="section-container">
             <div className="section-header reveal-up">
-                <div className="section-label about-section-label"><span className="sl-dash">—</span>THE PROBLEM<span className="sl-dash">—</span></div>
+                <div className="section-label about-section-label">THE PROBLEM</div>
+                <h2 className="section-title">Critical Safety Gaps in Medical AI</h2>
+                <p className="section-subtitle">Why generic RAG pipelines fail in high-stakes clinical environments.</p>
             </div>
             
             <div className="problem-section-v2">
@@ -78,224 +80,557 @@ const About = () => {
     </section>
 
     
-    <section className="section">
+    <section className="section about-approach-section">
         <div className="section-container">
             <div className="section-header reveal-up">
                 <div className="section-label about-section-label"><span className="sl-dash">—</span>OUR APPROACH<span className="sl-dash">—</span></div>
                 <h2 className="section-title">The MediRAG Safety Stack</h2>
+                <p className="section-subtitle">A multi-layered defense architecture for clinical AI reliability.</p>
             </div>
             
             <style>
             {`
-            .pipeline-3d-container {
-                position: relative;
-                max-width: 900px;
-                margin: 60px auto;
-                padding: 20px 0;
-                font-family: inherit;
-                perspective: 1500px;
+            .about-approach-section {
+                padding: 100px 0;
+                overflow: hidden;
+                background: radial-gradient(circle at 50% 50%, rgba(0, 200, 150, 0.03), transparent 70%) !important;
             }
 
-            .modules-flow-wrapper {
+            .stack-pipeline-v3 {
                 position: relative;
-                padding-bottom: 20px;
+                max-width: 1000px;
+                margin: 80px auto;
+                display: flex;
+                flex-direction: column;
+                gap: 0;
             }
 
-            .pipe-line-3d {
+            /* Central Flow Line */
+            .stack-pipeline-v3::before {
+                content: '';
                 position: absolute;
                 top: 0;
                 bottom: 0;
                 left: 50%;
-                width: 24px;
-                background: linear-gradient(90deg, #1e3a8a, #3b82f6, #60a5fa, #3b82f6, #1e3a8a);
+                width: 2px;
+                background: linear-gradient(to bottom, 
+                    transparent, 
+                    rgba(16, 185, 129, 0.5) 10%, 
+                    rgba(16, 185, 129, 0.5) 90%, 
+                    transparent
+                );
                 transform: translateX(-50%);
-                border-radius: 12px;
-                box-shadow: 
-                    inset 0 0 15px rgba(255,255,255,0.4),
-                    0 0 30px rgba(59, 130, 246, 0.6),
-                    0 0 10px rgba(59, 130, 246, 0.8);
                 z-index: 0;
             }
 
-            .pipe-pulse-3d {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 120px;
-                background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.9), transparent);
-                animation: pulse-down-3d 3s infinite linear;
-                border-radius: 12px;
-                box-shadow: 0 0 20px rgba(255,255,255,0.8);
-            }
-            @keyframes pulse-down-3d {
-                0% { top: -10%; opacity: 0; }
-                10% { opacity: 1; }
-                90% { opacity: 1; }
-                100% { top: 110%; opacity: 0; }
-            }
-
-            .module-3d-node {
+            .stack-node-v3 {
                 position: relative;
                 z-index: 1;
+                width: 100%;
                 display: flex;
+                justify-content: space-between;
                 align-items: center;
-                background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.95));
-                backdrop-filter: blur(12px);
-                border: 1px solid rgba(148, 163, 184, 0.2);
-                border-top: 1px solid rgba(255, 255, 255, 0.3);
-                border-radius: 20px;
-                padding: 24px;
-                margin: 40px 0;
-                width: 45%;
-                transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-                box-shadow: 0 15px 35px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.1);
-                cursor: pointer;
-                transform-style: preserve-3d;
+                margin: 20px 0; /* Reduced from 40px */
             }
 
-            .module-3d-node:nth-child(even) {
-                margin-left: auto;
-                flex-direction: row-reverse;
+            .stack-node-content {
+                width: 42%;
+                background: rgba(17, 24, 39, 0.4);
+                backdrop-filter: blur(20px);
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                padding: 24px 30px; /* More compact padding */
+                border-radius: 24px;
+                transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+                position: relative;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                overflow: hidden;
+            }
+
+            /* Card Illustrations */
+            .stack-node-content::before {
+                content: '';
+                position: absolute;
+                top: -20px;
+                right: -20px;
+                width: 100px;
+                height: 100px;
+                background: radial-gradient(circle at center, rgba(16, 185, 129, 0.08), transparent 70%);
+                border-radius: 50%;
+                pointer-events: none;
+                z-index: -1;
+            }
+
+            .stack-node-v3:nth-child(even) .stack-node-content::before {
+                right: auto;
+                left: -20px;
+            }
+
+            .node-v3-illustration {
+                position: absolute;
+                bottom: -10px;
+                right: 10px;
+                font-size: 64px;
+                opacity: 0.03;
+                font-weight: 900;
+                color: white;
+                pointer-events: none;
+                z-index: -1;
+                user-select: none;
+            }
+
+            .stack-node-v3:nth-child(even) .node-v3-illustration {
+                right: auto;
+                left: 10px;
+            }
+
+            .stack-node-v3:nth-child(even) .stack-node-content {
+                order: 2;
+                text-align: left;
+            }
+
+            .stack-node-v3:nth-child(odd) .stack-node-content {
+                order: 0;
                 text-align: right;
             }
-            .module-3d-node:nth-child(odd) {
-                margin-right: auto;
+
+            .stack-node-v3:hover .stack-node-content {
+                transform: scale(1.05);
+                border-color: var(--green-accent);
+                box-shadow: 0 20px 40px rgba(16, 185, 129, 0.1);
+                background: rgba(17, 24, 39, 0.8);
             }
 
-            .module-3d-node:hover {
-                box-shadow: 0 25px 50px rgba(0,0,0,0.7), 0 0 30px rgba(59, 130, 246, 0.5);
-                border-color: rgba(96, 165, 250, 0.8);
-            }
-
-            .module-3d-node:nth-child(odd):hover { transform: translateY(-8px) scale(1.03) rotateY(4deg); }
-            .module-3d-node:nth-child(even):hover { transform: translateY(-8px) scale(1.03) rotateY(-4deg); }
-
-            .node-icon-3d {
-                width: 70px;
-                height: 70px;
-                background: linear-gradient(135deg, #1e3a8a, #3b82f6, #60a5fa);
-                border-radius: 16px;
+            /* Central Indicator Icon */
+            .stack-node-indicator {
+                width: 56px;
+                height: 56px;
+                background: #111827;
+                border: 2px solid rgba(16, 185, 129, 0.3);
+                border-radius: 50%;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                font-size: 32px;
-                box-shadow: 0 10px 20px rgba(0,0,0,0.5), inset 0 2px 5px rgba(255,255,255,0.5);
-                flex-shrink: 0;
-                transform: translateZ(30px);
+                z-index: 2;
+                font-size: 24px;
+                transition: all 0.5s ease;
+                box-shadow: 0 0 20px rgba(16, 185, 129, 0.1);
+                position: relative;
+                background: radial-gradient(circle at center, #1e293b, #0f172a);
             }
 
-            .module-3d-node:nth-child(odd) .node-icon-3d { margin-right: 20px; }
-            .module-3d-node:nth-child(even) .node-icon-3d { margin-left: 20px; }
+            .stack-node-v3:hover .stack-node-indicator {
+                background: var(--green-accent);
+                border-color: white;
+                box-shadow: 0 0 30px rgba(16, 185, 129, 0.5);
+                transform: scale(1.2);
+            }
 
-            .node-content-3d { flex-grow: 1; transform: translateZ(20px); }
-
-            .node-m-title { font-size: 11px; font-weight: 800; color: #60a5fa; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 6px; }
-            .node-m-heading { font-size: 17px; font-weight: 800; color: white; margin-bottom: 8px; }
-            .node-m-desc { font-size: 12.5px; color: #cbd5e1; line-height: 1.5; }
-
-            .connector-arm-3d {
+            /* Connection Line Animation */
+            .stack-node-connection {
                 position: absolute;
                 top: 50%;
-                width: 12%;
-                height: 16px;
-                background: linear-gradient(90deg, #1e3a8a, #60a5fa);
-                z-index: -1;
+                left: 50%;
+                width: 8%;
+                height: 2px;
+                background: rgba(16, 185, 129, 0.3);
+                z-index: 0;
                 transform: translateY(-50%);
             }
 
-            .module-3d-node:nth-child(odd) .connector-arm-3d { right: -12%; border-radius: 0 8px 8px 0; }
-            .module-3d-node:nth-child(even) .connector-arm-3d { left: -12%; border-radius: 8px 0 0 8px; background: linear-gradient(90deg, #60a5fa, #1e3a8a); }
-            
-            .engine-output-3d {
-                background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(5, 150, 105, 0.4));
-                border: 1px solid rgba(52, 211, 153, 0.5);
-                border-radius: 24px;
-                padding: 40px;
-                text-align: center;
-                margin: 40px auto 0 auto;
-                width: 80%;
-                max-width: 600px;
-                position: relative;
-                z-index: 2;
-                box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-                transform-style: preserve-3d;
+            .stack-node-v3:nth-child(odd) .stack-node-connection {
+                left: 42%;
+                width: 8%;
             }
 
+            .stack-node-v3:nth-child(even) .stack-node-connection {
+                right: 42%;
+                left: auto;
+                width: 8%;
+            }
+
+            .stack-node-v3:hover .stack-node-connection {
+                background: var(--green-accent);
+                box-shadow: 0 0 10px var(--green-accent);
+            }
+
+            .node-v3-title {
+                color: var(--green-accent);
+                font-size: 11px;
+                font-weight: 800;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+                margin-bottom: 8px;
+            }
+
+            .node-v3-heading {
+                color: white;
+                font-size: 18px;
+                font-weight: 700;
+                margin-bottom: 10px;
+            }
+
+            .node-v3-desc {
+                color: var(--text-gray-light);
+                font-size: 13px;
+                line-height: 1.6;
+            }
+
+            /* Beam Pulse Effect */
+            .beam-pulse {
+                position: absolute;
+                width: 4px;
+                height: 60px;
+                background: linear-gradient(to bottom, transparent, #10B981, transparent);
+                left: 50%;
+                transform: translateX(-50%);
+                z-index: 1;
+                animation: beam-move 4s infinite linear;
+                opacity: 0;
+            }
+
+            @keyframes beam-move {
+                0% { top: -5%; opacity: 0; }
+                10% { opacity: 1; }
+                90% { opacity: 1; }
+                100% { top: 100%; opacity: 0; }
+            }
+
+            /* Result Box */
+            .stack-result-v3 {
+                background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.2));
+                border: 1px solid rgba(16, 185, 129, 0.4);
+                border-radius: 32px;
+                padding: 50px;
+                text-align: center;
+                max-width: 700px;
+                margin: 60px auto 0;
+                position: relative;
+                backdrop-filter: blur(10px);
+                box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+            }
+
+            .stack-result-v3 h3 {
+                font-size: 24px;
+                color: white;
+                margin-bottom: 15px;
+            }
+
+            /* Emoji & Interaction Animations */
+            @keyframes emoji-float {
+                0%, 100% { transform: translateY(0) scale(1); }
+                50% { transform: translateY(-8px) scale(1.15); }
+            }
+
+            @keyframes card-shimmer {
+                0% { left: -100%; opacity: 0; }
+                50% { opacity: 0.15; }
+                100% { left: 100%; opacity: 0; }
+            }
+
+            .stack-node-indicator {
+                overflow: visible !important;
+            }
+
+            .stack-node-indicator span {
+                display: inline-block;
+                animation: emoji-float 3s ease-in-out infinite;
+            }
+
+            .stack-node-v3:hover .stack-node-indicator span {
+                animation: emoji-float 1.2s ease-in-out infinite;
+                filter: drop-shadow(0 0 10px white);
+            }
+
+            /* Card Shine Effect */
+            .stack-node-content::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 60%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+                transform: skewX(-20deg);
+                pointer-events: none;
+            }
+
+            .stack-node-v3:hover .stack-node-content::after {
+                animation: card-shimmer 1.5s ease-in-out;
+            }
+
+            /* Enhanced Illustrations */
+            .node-v3-illustration {
+                background: linear-gradient(180deg, rgba(255,255,255,0.08), transparent);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                font-size: 90px;
+                bottom: -30px;
+                filter: blur(1px);
+            }
+
+            .stack-node-v3:nth-child(even) .node-v3-illustration {
+                transform: rotate(-10deg);
+            }
+
+            .stack-node-v3:nth-child(odd) .node-v3-illustration {
+                transform: rotate(10deg);
+            }
+
+            /* Light Theme Adaptation */
+            [data-theme="light"] .about-approach-section {
+                background: radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.05), transparent 70%) !important;
+            }
+
+            [data-theme="light"] .stack-node-content {
+                background: #FFFFFF;
+                border-color: rgba(0,0,0,0.06);
+                box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            }
+
+            [data-theme="light"] .stack-node-indicator {
+                background: #FFFFFF;
+                border-color: #BBF7D0;
+                color: #16A34A;
+            }
+
+            [data-theme="light"] .node-v3-heading { color: #1E293B; }
+            [data-theme="light"] .node-v3-desc { color: #475569; }
+
+            [data-theme="light"] .stack-result-v3 {
+                background: #DCFCE7;
+                border-color: #BBF7D0;
+            }
+
+            [data-theme="light"] .stack-result-v3 h3 { color: #064E3B; }
+            [data-theme="light"] .stack-result-v3 p { color: #14532D; }
+
             @media (max-width: 768px) {
-                .module-3d-node { width: calc(100% - 70px); margin-left: auto !important; flex-direction: row-reverse !important; text-align: left !important; }
-                .module-3d-node:nth-child(even) .node-icon-3d { margin-left: 0; margin-right: 20px; }
-                .connector-arm-3d { width: 30px; left: -30px !important; right: auto !important; }
+                /* General layouts */
+                .about-hero {
+                    padding-top: 30px !important;
+                }
+                .about-hero-subtext {
+                    font-size: 13px !important;
+                    line-height: 1.5;
+                }
+
+                /* Problem Cards */
+                .problem-cards-row {
+                    flex-direction: column !important;
+                    gap: 12px !important;
+                }
+                .problem-card {
+                    padding: 16px !important;
+                    border-radius: 16px !important;
+                }
+                .problem-title {
+                    font-size: 16px !important;
+                }
+                .problem-text {
+                    font-size: 12px !important;
+                }
+
+                /* Problem Stats */
+                .problem-stats-row {
+                    flex-direction: column !important;
+                    gap: 16px !important;
+                }
+                .stat-block-v2 {
+                    padding: 16px !important;
+                }
+                .huge-stat {
+                    font-size: 28px !important;
+                }
+                .stat-desc-v2 {
+                    font-size: 13px !important;
+                }
+                .stat-subtext-v2 {
+                    font-size: 11px !important;
+                }
+
+                /* Stack pipeline module */
+                .stack-pipeline-v3::before { left: 30px; }
+                .stack-node-v3 { flex-direction: row !important; text-align: left !important; }
+                .stack-node-content { 
+                    width: calc(100% - 80px); 
+                    margin-left: 80px; 
+                    order: 2 !important; 
+                    padding: 16px 20px !important;
+                    border-radius: 16px !important;
+                }
+                .stack-node-indicator { width: 44px; height: 44px; font-size: 18px; margin-left: 8px; }
+                .stack-node-connection { display: none; }
+                .beam-pulse { left: 30px; }
+
+                .node-v3-title { font-size: 9px !important; }
+                .node-v3-heading { font-size: 14px !important; margin-bottom: 6px !important; }
+                .node-v3-desc { font-size: 11px !important; line-height: 1.4 !important; }
+
+                .stack-result-v3 {
+                    padding: 24px 16px !important;
+                    border-radius: 20px !important;
+                    margin: 30px auto 0 !important;
+                }
+                .stack-result-v3 h3 { font-size: 18px !important; }
+                .stack-result-v3 p { font-size: 12px !important; }
+
+                /* Team Cards stacking */
+                .team-grid {
+                    grid-template-columns: 1fr !important;
+                    gap: 12px !important;
+                }
+                .team-card {
+                    padding: 16px !important;
+                    border-radius: 16px !important;
+                }
+                .team-bio {
+                    font-size: 12px !important;
+                }
+
+                /* Impact Grid stacking */
+                .impact-grid {
+                    grid-template-columns: 1fr !important;
+                    gap: 10px !important;
+                }
+                .impact-card {
+                    padding: 16px !important;
+                    border-radius: 12px !important;
+                }
+                .impact-title {
+                    font-size: 15px !important;
+                }
+                .impact-text {
+                    font-size: 12px !important;
+                }
+
+                /* Philosophy Card */
+                .tech-philosophy-card {
+                    padding: 24px 16px !important;
+                    border-radius: 16px !important;
+                }
+                .philosophy-tags {
+                    justify-content: center !important;
+                    gap: 8px !important;
+                }
+                .ptag {
+                    font-size: 10px !important;
+                    padding: 4px 8px !important;
+                }
+                .philosophy-text {
+                    font-size: 12px !important;
+                }
+
+                /* Context cards */
+                .context-grid {
+                    grid-template-columns: 1fr !important;
+                    gap: 12px !important;
+                }
+                .context-card {
+                    padding: 16px !important;
+                    border-radius: 16px !important;
+                }
+                .context-title {
+                    font-size: 16px !important;
+                }
+                .context-desc {
+                    font-size: 12px !important;
+                }
+
+                /* CTA Banner */
+                .cta-banner {
+                    padding: 32px 16px !important;
+                }
+                .cta-banner-title {
+                    font-size: 20px !important;
+                }
+                .cta-banner-subtext {
+                    font-size: 12px !important;
+                }
+                .cta-banner-actions {
+                    flex-direction: column !important;
+                    gap: 10px !important;
+                    align-items: center !important;
+                }
+                .cta-banner-actions a {
+                    width: 100% !important;
+                    max-width: 250px !important;
+                    justify-content: center !important;
+                }
             }
             `}
             </style>
 
-            <div className="pipeline-3d-container reveal-up">
-                <div className="modules-flow-wrapper">
-                    <div className="pipe-line-3d">
-                        <div className="pipe-pulse-3d"></div>
-                    </div>
+            <div className="stack-pipeline-v3 reveal-up">
+                <div className="beam-pulse"></div>
+                <div className="beam-pulse" style={{animationDelay:'2s'}}></div>
 
-                    <div className="module-3d-node">
-                        <div className="node-icon-3d">🔒</div>
-                        <div className="node-content-3d">
-                            <div className="node-m-title">Middleware Phase 1</div>
-                            <div className="node-m-heading">PHI Privacy Shield</div>
-                            <div className="node-m-desc">Automatic PII/PHI redaction. Masks sensitive patient data before external processing.</div>
-                        </div>
-                        <div className="connector-arm-3d"></div>
+                <div className="stack-node-v3">
+                    <div className="stack-node-content">
+                        <div className="node-v3-illustration">01</div>
+                        <div className="node-v3-title">Phase 1: Privacy</div>
+                        <div className="node-v3-heading">PHI Privacy Shield</div>
+                        <div className="node-v3-desc">Automatic PII/PHI redaction. Masks sensitive patient data before any external processing takes place.</div>
                     </div>
-
-                    <div className="module-3d-node">
-                        <div className="node-icon-3d">⚖️</div>
-                        <div className="node-content-3d">
-                            <div className="node-m-title">Middleware Phase 2</div>
-                            <div className="node-m-heading">Consensus Judge</div>
-                            <div className="node-m-desc">Cross-references multiple AI models against the retrieved clinical dataset to identify the most evidence-supported response.</div>
-                        </div>
-                        <div className="connector-arm-3d"></div>
-                    </div>
-
-                    <div className="module-3d-node">
-                        <div className="node-icon-3d">📊</div>
-                        <div className="node-content-3d">
-                            <div className="node-m-title">Audit Layer 1</div>
-                            <div className="node-m-heading">Evidence Grounding</div>
-                            <div className="node-m-desc">Scientific verification using your medical dataset. Ensures every AI claim is explicitly supported by retrieved text chunks.</div>
-                        </div>
-                        <div className="connector-arm-3d"></div>
-                    </div>
-
-                    <div className="module-3d-node">
-                        <div className="node-icon-3d">🔍</div>
-                        <div className="node-content-3d">
-                            <div className="node-m-title">Audit Layer 2</div>
-                            <div className="node-m-heading">Entity Validation</div>
-                            <div className="node-m-desc">Verifies drug names and clinical entities using SciSpaCy and RxNorm, strictly cross-checking against the source dataset.</div>
-                        </div>
-                        <div className="connector-arm-3d"></div>
-                    </div>
-
-                    <div className="module-3d-node">
-                        <div className="node-icon-3d">📄</div>
-                        <div className="node-content-3d">
-                            <div className="node-m-title">Audit Layer 3</div>
-                            <div className="node-m-heading">Dataset Credibility</div>
-                            <div className="node-m-desc">Ranks the reliability of the source evidence (RCTs vs Guidelines) used to verify the AI's generated response.</div>
-                        </div>
-                        <div className="connector-arm-3d"></div>
-                    </div>
+                    <div className="stack-node-indicator"><span>🔒</span></div>
+                    <div className="stack-node-connection"></div>
                 </div>
 
-                <div className="engine-output-3d">
-                    <h3>THE RESULT: Dataset-Grounded Safety</h3>
-                    <p>Real-time privacy, multi-model consensus, and a rigorous 3-layer audit focused on evidence from your clinical dataset.</p>
+                <div className="stack-node-v3">
+                    <div className="stack-node-content">
+                        <div className="node-v3-illustration">02</div>
+                        <div className="node-v3-title">Phase 2: Consensus</div>
+                        <div className="node-v3-heading">Consensus Judge</div>
+                        <div className="node-v3-desc">Cross-references multiple AI models against the retrieved clinical dataset to identify the most evidence-supported response.</div>
+                    </div>
+                    <div className="stack-node-indicator"><span>⚖️</span></div>
+                    <div className="stack-node-connection"></div>
+                </div>
+
+                <div className="stack-node-v3">
+                    <div className="stack-node-content">
+                        <div className="node-v3-illustration">03</div>
+                        <div className="node-v3-title">Phase 3: Grounding</div>
+                        <div className="node-v3-heading">Evidence Grounding</div>
+                        <div className="node-v3-desc">Scientific verification using your medical dataset. Ensures every AI claim is explicitly supported by retrieved text chunks.</div>
+                    </div>
+                    <div className="stack-node-indicator"><span>📊</span></div>
+                    <div className="stack-node-connection"></div>
+                </div>
+
+                <div className="stack-node-v3">
+                    <div className="stack-node-content">
+                        <div className="node-v3-illustration">04</div>
+                        <div className="node-v3-title">Phase 4: Validation</div>
+                        <div className="node-v3-heading">Entity Validation</div>
+                        <div className="node-v3-desc">Verifies drug names and clinical entities strictly cross-checking against the source dataset and clinical guidelines.</div>
+                    </div>
+                    <div className="stack-node-indicator"><span>🔍</span></div>
+                    <div className="stack-node-connection"></div>
+                </div>
+
+                <div className="stack-node-v3">
+                    <div className="stack-node-content">
+                        <div className="node-v3-illustration">05</div>
+                        <div className="node-v3-title">Phase 5: Credibility</div>
+                        <div className="node-v3-heading">Dataset Credibility</div>
+                        <div className="node-v3-desc">Ranks the reliability of the source evidence (RCTs vs Guidelines) used to verify the final AI response.</div>
+                    </div>
+                    <div className="stack-node-indicator"><span>📄</span></div>
+                    <div className="stack-node-connection"></div>
+                </div>
+
+                <div className="stack-result-v3">
+                    <div className="badge badge-outline" style={{marginBottom:'20px'}}>Final Output</div>
+                    <h3>Clinical-Grade Reliability</h3>
+                    <p>Real-time privacy, multi-model consensus, and a rigorous 3-layer audit focused on evidence from your specific medical context.</p>
                 </div>
             </div>
             
             <p className="pipeline-caption reveal-up">All modules run locally. Zero paid APIs. Full pipeline completes in &lt; 30 seconds on CPU.</p>
         </div>
     </section>
+
+
 
     
     <section className="section">

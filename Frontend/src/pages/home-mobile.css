@@ -1,0 +1,127 @@
+/* =========================================================================
+   HOME PAGE + CONSOLE — MOBILE OVERHAUL
+   Imported via App.jsx or index.css
+   ========================================================================= */
+
+/* ── 768px TABLET / MOBILE ────────────────────────────────────────────── */
+@media (max-width: 768px) {
+
+    /* ─── GLOBAL ─── */
+    .app-main-content { padding-top: 60px; }
+    .section { padding: 24px 12px; }
+    .section-title { font-size: 22px !important; margin-bottom: 10px; }
+    .section-subtitle { font-size: 13px !important; margin-bottom: 20px; }
+    .home-section-label, .about-section-label { font-size: 14px; letter-spacing: 0.08em; gap: 10px; }
+    .section-header { margin-bottom: 16px; }
+
+    /* ─── HERO ─── */
+    .hero-section { padding: 16px 12px 32px; min-height: auto; }
+    .hero-container {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+        text-align: center;
+    }
+    .hero-left { order: 1; }
+    .hero-right { order: 2; display: none; } /* Hide the CardSwap on mobile to prevent overflow */
+    .main-title { font-size: clamp(22px, 7vw, 30px) !important; margin-bottom: 12px; }
+    .subheadline { font-size: 13px !important; margin-bottom: 16px; max-width: 100%; line-height: 1.4; }
+    .badge { font-size: 10px; padding: 4px 10px; }
+    .cta-group { justify-content: center; flex-direction: column; align-items: center; gap: 10px; }
+    .primary-btn.large, .secondary-btn.large { width: 100%; max-width: 250px; padding: 10px 18px; font-size: 13px; }
+    .trust-indicators { justify-content: center; gap: 10px; }
+    .trust-item { font-size: 11px; }
+    .cursor-demo-section { display: none; } /* Hide the crosshair demo on mobile */
+
+    /* ─── STATS BAND ─── */
+    .stats-container { 
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+    .stat-divider { display: none; }
+    .stat-item { min-width: unset; padding: 10px; }
+    .stat-value { font-size: 22px; }
+    .stat-label { font-size: 10px; }
+
+    /* ─── PIPELINE / HOW IT WORKS ─── */
+    .pipeline-container {
+        flex-direction: column;
+        gap: 16px;
+    }
+    .pipeline-arrow { display: none; }
+    .step-card { padding: 14px; }
+    .step-title { font-size: 15px; }
+    .step-desc { font-size: 12px; }
+
+    /* ─── RISK CARDS GRID ─── */
+    .risk-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px;
+    }
+    .risk-card-v2 { min-height: 210px; }
+    .rc-score { font-size: 28px; }
+    .rc-title { font-size: 12px; }
+    .rc-desc { font-size: 10px; }
+    .rc-top { padding: 12px 12px 0; }
+    .rc-bottom { padding: 10px; margin: 10px 6px 6px; }
+
+    /* ─── FORMULA CARD ─── */
+    .formula-card { padding: 16px 12px; }
+    .formula-block { font-size: 11px; padding: 12px; }
+    .formula-weights { flex-wrap: wrap; justify-content: center; gap: 6px; }
+    .weight-tag { font-size: 10px; padding: 6px; }
+
+    /* ─── TECH / FEATURE CARDS ─── */
+    .tech-grid { grid-template-columns: 1fr !important; gap: 10px; }
+    .dataset-grid { grid-template-columns: 1fr !important; gap: 10px; }
+    .persona-grid { grid-template-columns: 1fr !important; gap: 10px; }
+    .problem-cards-grid { grid-template-columns: 1fr !important; gap: 12px; }
+
+    /* ─── FOOTER ─── */
+    .footer-grid { grid-template-columns: 1fr !important; gap: 20px; }
+    .footer-bottom { flex-direction: column; gap: 10px; text-align: center; font-size: 12px; }
+
+    /* ─── CONSOLE PAGE ─── */
+    .console-layout { grid-template-columns: 1fr !important; }
+    .console-main { padding: 10px !important; }
+    .console-view-title { font-size: 16px !important; }
+    .console-view-header { margin-bottom: 12px !important; }
+    .glass-header { 
+        padding: 12px;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .con-wordmark { font-size: 16px; }
+    .con-header-info { text-align: left; max-width: 100%; }
+    .console-status-block { padding: 10px; margin-bottom: 16px; }
+}
+
+/* ── 480px SMALL PHONES ───────────────────────────────────────────────── */
+@media (max-width: 480px) {
+
+    /* ─── HERO ─── */
+    .main-title { font-size: 20px !important; }
+    .subheadline { font-size: 11px !important; }
+
+    /* ─── RISK CARDS ─── */
+    .risk-grid { grid-template-columns: 1fr !important; }
+    .risk-card-v2 { min-height: 180px; }
+
+    /* ─── STATS BAND ─── */
+    .stats-container { grid-template-columns: 1fr !important; }
+
+    /* ─── SECTION LABELS ─── */
+    .home-section-label, .about-section-label { 
+        font-size: 12px;
+        gap: 6px;
+        letter-spacing: 0.05em;
+    }
+    .home-section-label::before,
+    .home-section-label::after,
+    .about-section-label::before,
+    .about-section-label::after { max-width: 30px; }
+
+    /* ─── CONSOLE ─── */
+    .glass-header { padding: 10px; }
+    .console-main { padding: 8px !important; }
+}

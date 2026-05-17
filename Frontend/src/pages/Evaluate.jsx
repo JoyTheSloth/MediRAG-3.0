@@ -8,69 +8,62 @@ import ReactMarkdown from 'react-markdown';
 const SourceChunkCard = ({ chk, i, chunkDetails }) => {
     const [expanded, setExpanded] = useState(false);
     const score = chk.similarity_score ?? 0;
-    const scoreColor = score > 0.5 ? '#00C896' : score > 0.2 ? '#F5A623' : 'rgba(255,255,255,0.4)';
+    const scoreColor = score > 0.5 ? '#00C896' : score > 0.2 ? '#F5A623' : 'rgba(120,120,120,0.4)';
     const tier = chunkDetails?.tier;
-    const tierColor = tier === 1 ? '#00C896' : tier === 2 ? '#4dabf7' : tier === 3 ? '#F5A623' : 'rgba(255,255,255,0.3)';
+    const tierColor = tier === 1 ? '#00C896' : tier === 2 ? '#4dabf7' : tier === 3 ? '#F5A623' : 'rgba(120,120,120,0.3)';
     return (
-        <div style={{
-            background: 'rgba(255,255,255,0.02)',
-            border: `1px solid ${scoreColor}30`,
-            borderLeft: `3px solid ${scoreColor}`,
-            borderRadius: '10px',
-            padding: '16px',
-            marginBottom: '12px'
-        }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px', marginBottom: '10px' }}>
-                <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: '13px', fontWeight: 700, color: 'white', marginBottom: '4px' }}>
+        <div className="res-source-card" style={{ borderLeftColor: scoreColor, borderRightColor: `${scoreColor}20`, borderTopColor: `${scoreColor}20`, borderBottomColor: `${scoreColor}20` }}>
+            <div className="res-source-header">
+                <div className="res-source-main">
+                    <div className="res-source-title">
                         {chk.title || chk.source || `Source ${i + 1}`}
                     </div>
-                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                    <div className="res-source-tags">
                         {chk.pub_type && (
-                            <span style={{ fontSize: '10px', background: 'rgba(77,171,247,0.12)', color: '#4dabf7', padding: '2px 8px', borderRadius: '10px', fontWeight: 600 }}>
+                            <span className="res-source-badge pub-type">
                                 {chk.pub_type.replace(/_/g, ' ').toUpperCase()}
                             </span>
                         )}
                         {chk.source && chk.source !== chk.title && (
-                            <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', padding: '2px 8px', background: 'rgba(255,255,255,0.04)', borderRadius: '10px' }}>
+                            <span className="res-source-badge meta">
                                 {chk.source}
                             </span>
                         )}
                         {chk.pub_year && (
-                            <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', padding: '2px 8px', background: 'rgba(255,255,255,0.04)', borderRadius: '10px' }}>
+                            <span className="res-source-badge meta">
                                 {chk.pub_year}
                             </span>
                         )}
                         {chk.chunk_id && (
-                            <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.25)', fontFamily: 'monospace' }}>
+                            <span className="res-source-id">
                                 ID:{chk.chunk_id.slice(0, 8)}
                             </span>
                         )}
                     </div>
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px', flexShrink: 0 }}>
-                    <span style={{ fontSize: '12px', fontWeight: 800, color: scoreColor, background: `${scoreColor}15`, padding: '3px 10px', borderRadius: '10px' }}>
+                <div className="res-source-metrics">
+                    <span className="res-match-pill" style={{ color: scoreColor, background: `${scoreColor}15` }}>
                         {(score * 100).toFixed(1)}% match
                     </span>
                     {tier && (
-                        <span style={{ fontSize: '10px', fontWeight: 700, color: tierColor, border: `1px solid ${tierColor}`, padding: '2px 8px', borderRadius: '4px' }}>
+                        <span className="res-tier-badge" style={{ color: tierColor, borderColor: tierColor }}>
                             TIER {tier}
                         </span>
                     )}
                 </div>
             </div>
-            <div style={{ height: '3px', width: '100%', background: 'rgba(255,255,255,0.05)', borderRadius: '3px', marginBottom: '12px' }}>
-                <div style={{ height: '100%', width: `${score * 100}%`, background: scoreColor, borderRadius: '3px', transition: 'width 0.8s ease-out' }}></div>
+            <div className="res-score-bar-bg">
+                <div className="res-score-bar-fill" style={{ width: `${score * 100}%`, background: scoreColor }}></div>
             </div>
             {chk.text && (
-                <div>
-                    <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.7 }}>
+                <div className="res-source-content">
+                    <div className="res-source-text">
                         {expanded ? chk.text : chk.text.slice(0, 280) + (chk.text.length > 280 ? '...' : '')}
                     </div>
                     {chk.text.length > 280 && (
                         <button
+                            className="res-expand-btn"
                             onClick={() => setExpanded(e => !e)}
-                            style={{ marginTop: '8px', background: 'none', border: 'none', color: '#00C896', fontSize: '11px', cursor: 'pointer', padding: 0, fontWeight: 600 }}
                         >
                             {expanded ? '▲ Show less' : '▼ Show full text'}
                         </button>
@@ -79,32 +72,32 @@ const SourceChunkCard = ({ chk, i, chunkDetails }) => {
             )}
             
             {/* In-Depth Metadata Row */}
-            <div style={{ marginTop: '14px', paddingTop: '12px', borderTop: '1px dashed rgba(255,255,255,0.1)', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '12px' }}>
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <span style={{ fontSize: '9px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', letterSpacing: '0.5px', marginBottom: '2px' }}>Retrieval Time</span>
-                    <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.7)', fontFamily: 'monospace' }}>{new Date().toISOString().replace('T', ' ').slice(0, 19)}</span>
+            <div className="res-source-footer">
+                <div className="res-meta-item">
+                    <span className="res-meta-label">Retrieval Time</span>
+                    <span className="res-meta-val">{new Date().toISOString().replace('T', ' ').slice(0, 19)}</span>
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <span style={{ fontSize: '9px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', letterSpacing: '0.5px', marginBottom: '2px' }}>Chunk Vector Hash</span>
-                    <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.7)', fontFamily: 'monospace' }}>xV_{chk.chunk_id ? chk.chunk_id.slice(0, 8) : '00x4f81'}</span>
+                <div className="res-meta-item">
+                    <span className="res-meta-label">Chunk Vector Hash</span>
+                    <span className="res-meta-val">xV_{chk.chunk_id ? chk.chunk_id.slice(0, 8) : '00x4f81'}</span>
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <span style={{ fontSize: '9px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', letterSpacing: '0.5px', marginBottom: '2px' }}>Line Nums (Est)</span>
-                    <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.7)', fontFamily: 'monospace' }}>L{142 + (i * 24)} - L{185 + (i * 24)}</span>
+                <div className="res-meta-item">
+                    <span className="res-meta-label">Line Nums (Est)</span>
+                    <span className="res-meta-val">L{142 + (i * 24)} - L{185 + (i * 24)}</span>
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <span style={{ fontSize: '9px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', letterSpacing: '0.5px', marginBottom: '2px' }}>Token Count</span>
-                    <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.7)', fontFamily: 'monospace' }}>~{chk.text ? Math.ceil(chk.text.length / 4) : 150} tkns</span>
+                <div className="res-meta-item">
+                    <span className="res-meta-label">Token Count</span>
+                    <span className="res-meta-val">~{chk.text ? Math.ceil(chk.text.length / 4) : 150} tkns</span>
                 </div>
             </div>
 
             {chunkDetails && Object.keys(chunkDetails).length > 0 && (
-                <div style={{ marginTop: '10px', paddingTop: '10px', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                <div className="res-chunk-details">
                     {chunkDetails.tier_score !== undefined && (
-                        <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)' }}>Tier score: <strong style={{color:'rgba(255,255,255,0.7)'}}>{chunkDetails.tier_score?.toFixed(3)}</strong></span>
+                        <span className="res-detail-stat">Tier score: <strong>{chunkDetails.tier_score?.toFixed(3)}</strong></span>
                     )}
                     {chunkDetails.nli_score !== undefined && (
-                        <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)' }}>NLI score: <strong style={{color:'rgba(255,255,255,0.7)'}}>{chunkDetails.nli_score?.toFixed(3)}</strong></span>
+                        <span className="res-detail-stat">NLI score: <strong>{chunkDetails.nli_score?.toFixed(3)}</strong></span>
                     )}
                 </div>
             )}
@@ -360,55 +353,35 @@ const Evaluate = ({ embedded = false, mode = 'researcher', engineConfig, setEngi
             {view === 'form' && (
                 <>
                     {evalTab === 'single' && (
-                        <div className="ab-prompt-fullwidth" style={{ marginBottom: '30px' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', background: 'rgba(255,255,255,0.02)', padding: '12px 20px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                    <label className="form-label" style={{ color: '#00C896', marginBottom: '4px' }}>Side-by-Side Prompt Engineering</label>
-                                    <p style={{ margin: 0, fontSize: '11px', opacity: 0.5 }}>Test different clinical personas or instructions against the same query</p>
+                        <div className="ab-prompt-fullwidth">
+                            <div className="ab-header-box">
+                                <div className="ab-header-text">
+                                    <label className="form-label highlight">Side-by-Side Prompt Engineering</label>
+                                    <p className="form-subtitle">Test different clinical personas or instructions against the same query</p>
                                 </div>
                                 <div 
+                                    className={`ab-toggle ${isABMode ? 'active' : ''}`}
                                     onClick={() => setIsABMode(!isABMode)}
-                                    style={{
-                                        width: '44px',
-                                        height: '24px',
-                                        background: isABMode ? '#00C896' : 'rgba(255,255,255,0.1)',
-                                        borderRadius: '20px',
-                                        cursor: 'pointer',
-                                        position: 'relative',
-                                        transition: '0.3s'
-                                    }}
                                 >
-                                    <div style={{
-                                        width: '20px',
-                                        height: '20px',
-                                        background: 'white',
-                                        borderRadius: '50%',
-                                        position: 'absolute',
-                                        top: '2px',
-                                        left: isABMode ? '22px' : '2px',
-                                        transition: '0.3s',
-                                        boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
-                                    }}></div>
+                                    <div className="ab-toggle-thumb"></div>
                                 </div>
                             </div>
                             
                             {isABMode && (
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px', animation: 'fadeIn 0.4s ease-out' }}>
-                                    <div>
-                                        <label className="form-label" style={{ fontSize: '10px', opacity: 0.6, marginBottom: '8px', display: 'block' }}>SYSTEM PROMPT A // EXPERIMENT CONTROL</label>
+                                <div className="ab-prompt-grid">
+                                    <div className="ab-prompt-col">
+                                        <label className="form-label small-caps">SYSTEM PROMPT A // EXPERIMENT CONTROL</label>
                                         <textarea 
-                                            className="form-textarea" 
-                                            style={{ height: '120px', width: '100%', fontSize: '13px', padding: '16px', background: 'rgba(15, 23, 42, 0.4)' }}
+                                            className="form-textarea ab-textarea" 
                                             value={promptA}
                                             onChange={(e) => setPromptA(e.target.value)}
                                             placeholder="Enter first persona instructions..."
                                         />
                                     </div>
-                                    <div>
-                                        <label className="form-label" style={{ fontSize: '10px', opacity: 0.6, marginBottom: '8px', display: 'block' }}>SYSTEM PROMPT B // EXPERIMENT VARIANT</label>
+                                    <div className="ab-prompt-col">
+                                        <label className="form-label small-caps">SYSTEM PROMPT B // EXPERIMENT VARIANT</label>
                                         <textarea 
-                                            className="form-textarea" 
-                                            style={{ height: '120px', width: '100%', fontSize: '13px', padding: '16px', background: 'rgba(15, 23, 42, 0.4)' }}
+                                            className="form-textarea ab-textarea" 
                                             value={promptB}
                                             onChange={(e) => setPromptB(e.target.value)}
                                             placeholder="Enter second persona instructions..."
@@ -437,7 +410,7 @@ const Evaluate = ({ embedded = false, mode = 'researcher', engineConfig, setEngi
                                 )}
 
                                 {errorMsg && (
-                                    <div style={{ padding: '12px', background: 'rgba(255, 107, 107, 0.1)', border: '1px solid #FF6B6B', color: '#FF6B6B', borderRadius: '8px', marginBottom: '16px', fontSize: '13px' }}>
+                                    <div className="eval-error-alert">
                                         <strong>Error:</strong> {errorMsg}
                                     </div>
                                 )}
@@ -455,7 +428,7 @@ const Evaluate = ({ embedded = false, mode = 'researcher', engineConfig, setEngi
                                 </div>
 
                                 <div className="form-group">
-                                    <div style={{display:'flex', justifyContent:'space-between', alignItems:'baseline'}}>
+                                    <div className="form-label-row">
                                         <label className="form-label">RETRIEVED CONTEXT CHUNKS (Optional)</label>
                                         <span className="chunk-count">{context ? context.split('\n\n').filter(Boolean).length : 0} CHUNKS</span>
                                     </div>
@@ -502,7 +475,7 @@ const Evaluate = ({ embedded = false, mode = 'researcher', engineConfig, setEngi
                                     <div className="evaluating-state-res">
                                         <div className="telemetry-dot-res pulse"></div>
                                         <span>SCANNING PIPELINE...</span>
-                                        <div style={{marginTop:'40px', width:'100%', opacity:0.5}}>
+                                        <div className="res-mini-bar-container">
                                             <div className="res-mini-bar"></div>
                                             <div className="res-mini-bar" style={{width:'60%'}}></div>
                                         </div>
@@ -680,7 +653,7 @@ const Evaluate = ({ embedded = false, mode = 'researcher', engineConfig, setEngi
                         .lp-markdown-container li { margin-bottom: 4px; }
                         .lp-claim-table td p { margin: 0; padding: 0; }
                         .lp-claim-table td strong { color: #111; font-weight: 700; }
-                        @media(max-width: 680px) { .latex-paper { padding: 28px 16px; } .lp-two-col { grid-template-columns: 1fr; } }
+                        @media(max-width: 680px) { .latex-page-chrome { padding: 12px 8px; border-radius: 8px; margin-top: 16px; } .latex-paper { padding: 20px 12px; } .lp-two-col { grid-template-columns: 1fr; } }
                         @media print {
                             body * { visibility: hidden; }
                             .latex-paper, .latex-paper * { visibility: visible; }

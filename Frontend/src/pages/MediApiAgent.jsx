@@ -25,6 +25,36 @@ const MediApiAgent = () => {
         { id: 5, time: '19:13:52.8', end: '/redact', meta: 'Apollo247: Stripping Patient ID meta-tags', status: '🔒 SANITIZED', class: 'status-warn' }
     ]);
 
+    // Intelligence & Governance State
+    const [kpiData, setKpiData] = useState([
+        { label: 'Total Queries Audited', val: '0', sub: 'Historical', trend: null, icon: '📊' },
+        { label: 'Avg Hallucination Risk', val: '0.0', sub: 'Live Monitoring', trend: 'down', color: 'teal', icon: '⚡' },
+        { label: 'Audit Readiness', val: '94%', sub: 'High Compliance', trend: null, color: 'teal', icon: '🛡️' },
+        { label: 'Critical Flags', val: '0', sub: 'Requires Review', trend: null, color: 'red', icon: '⚠️' },
+    ]);
+
+    React.useEffect(() => {
+        const fetchGovData = async () => {
+            try {
+                const statsRes = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}/stats`);
+                if (statsRes.ok) {
+                    const stats = await statsRes.json();
+                    setKpiData([
+                        { label: 'Total Queries Audited', val: stats.totalEvals || 0, sub: 'Historical', trend: null, icon: '📊' },
+                        { label: 'Avg Hallucination Risk', val: stats.avgHrs ? stats.avgHrs.toFixed(1) : '0.0', sub: 'Live Monitoring', trend: 'down', color: 'teal', icon: '⚡' },
+                        { label: 'Audit Readiness', val: '94%', sub: 'High Compliance', trend: null, color: 'teal', icon: '🛡️' },
+                        { label: 'Critical Flags', val: stats.critAlerts || 0, sub: 'Requires Review', trend: null, color: 'red', icon: '⚠️' },
+                    ]);
+                }
+            } catch (e) {
+                console.error("KPI fetch error:", e);
+            }
+        };
+        fetchGovData();
+        const intervalId = setInterval(fetchGovData, 15000);
+        return () => clearInterval(intervalId);
+    }, []);
+
     React.useEffect(() => {
         const endpoints = ['/safe_execute', '/p_check', '/predict', '/redact', '/eval_v2'];
         const metaValues = [
@@ -107,6 +137,44 @@ const MediApiAgent = () => {
             <div className="agent-header">
                 <h1>MediAPI Agent</h1>
                 <p>Automate safety and intelligence across your healthcare APIs</p>
+            </div>
+
+            {/* INTELLIGENCE HUB: KPI CARDS */}
+            <div className="gov-kpi-stack reveal-up" style={{ 
+                display: 'grid', 
+                gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', 
+                gap: '20px', 
+                marginBottom: '30px' 
+            }}>
+                {kpiData.map((kpi, i) => (
+                    <div className="gov-kpi-card-v2" key={i} style={{
+                        background: 'rgba(15, 23, 42, 0.4)',
+                        border: '1px solid rgba(255, 255, 255, 0.05)',
+                        borderRadius: '16px',
+                        padding: '20px',
+                        backdropFilter: 'blur(10px)'
+                    }}>
+                        <div className="kpi-v2-header" style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
+                            <span className="kpi-v2-icon" style={{ fontSize: '18px' }}>{kpi.icon}</span>
+                            <span className="kpi-v2-label" style={{ fontSize: '11px', fontWeight: 800, color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '1px' }}>{kpi.label}</span>
+                        </div>
+                        <div className="kpi-v2-body" style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
+                            <div className="kpi-v2-val" style={{ 
+                                fontSize: '28px', 
+                                fontWeight: 800, 
+                                color: kpi.color === 'red' ? '#ef4444' : (kpi.color === 'teal' ? '#00C896' : 'white') 
+                            }}>
+                                {kpi.val}
+                            </div>
+                            {kpi.trend && (
+                                <div className={`kpi-v2-trend ${kpi.trend}`} style={{ fontSize: '12px', color: '#00C896' }}>
+                                    {kpi.trend === 'down' ? '↓' : '↑'} {kpi.trend === 'down' ? 'Stable' : 'Elevated'}
+                                </div>
+                            )}
+                        </div>
+                        <div className="kpi-v2-footer" style={{ fontSize: '11px', color: 'rgba(255,255,255,0.3)', marginTop: '8px' }}>{kpi.sub}</div>
+                    </div>
+                ))}
             </div>
 
             {/* REAL-TIME TRAFFIC CONTROL VISUALIZATION */}

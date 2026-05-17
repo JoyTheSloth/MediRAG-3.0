@@ -1,0 +1,677 @@
+.impl-container {
+    padding: 80px 40px 80px;
+    max-width: 1200px;
+    margin: 0 auto;
+    color: var(--text-white);
+}
+
+.impl-hero {
+    text-align: center;
+    margin-bottom: 80px;
+}
+
+.impl-badge {
+    background: rgba(0, 200, 150, 0.1);
+    color: #00C896;
+    padding: 6px 16px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    display: inline-block;
+    margin-bottom: 20px;
+}
+
+.impl-hero h1 {
+    font-size: 48px;
+    font-weight: 900;
+    margin-bottom: 20px;
+    background: linear-gradient(180deg, #fff 0%, rgba(255,255,255,0.7) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.impl-hero p {
+    font-size: 18px;
+    color: var(--text-gray);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.impl-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 30px;
+    margin-bottom: 100px;
+}
+
+.impl-card {
+    background: rgba(15, 23, 42, 0.3);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 24px;
+    padding: 40px;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.impl-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(0, 200, 150, 0.3);
+}
+
+.impl-card-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.impl-number {
+    font-size: 32px;
+    font-weight: 900;
+    color: rgba(0, 200, 150, 0.3);
+}
+
+.impl-card h3 {
+    font-size: 22px;
+    font-weight: 800;
+    margin: 0;
+}
+
+.impl-card-desc {
+    color: var(--text-gray);
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+.impl-code-block {
+    background: #0d1117;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    margin-bottom: 30px;
+    font-family: 'Fira Code', monospace;
+}
+
+.impl-code-title {
+    font-size: 11px;
+    font-weight: 800;
+    color: #f59e0b;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+}
+
+.impl-code-block pre {
+    margin: 0;
+    font-size: 13px;
+    color: #a5d6ff;
+    white-space: pre-wrap;
+}
+
+.impl-benefits {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.benefit {
+    font-size: 11px;
+    font-weight: 800;
+    padding: 6px 12px;
+    border-radius: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.benefit.b-teal {
+    color: #00C896;
+    background: rgba(0, 200, 150, 0.08);
+}
+
+.benefit.b-amber {
+    color: #f59e0b;
+    background: rgba(245, 158, 11, 0.08);
+}
+
+/* New Security Section */
+.impl-security-section {
+    margin-bottom: 100px;
+    padding: 60px;
+    background: rgba(15, 23, 42, 0.3);
+    border-radius: 32px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.sec-tag {
+    color: #00C896;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+}
+
+.impl-security-section h2 {
+    font-size: 36px;
+    font-weight: 800;
+    margin-bottom: 16px;
+}
+
+.impl-security-section p {
+    color: var(--text-gray);
+    margin-bottom: 40px;
+}
+
+.security-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.s-card {
+    background: rgba(0,0,0,0.2);
+    padding: 24px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.03);
+}
+
+.s-icon {
+    font-size: 24px;
+    margin-bottom: 16px;
+}
+
+.s-card h4 {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.s-card p {
+    font-size: 13px;
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* SDK Section */
+.impl-sdk-section {
+    text-align: center;
+    margin-bottom: 100px;
+}
+
+.impl-sdk-section h2 {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 16px;
+}
+
+.impl-sdk-section p {
+    color: var(--text-gray);
+    margin-bottom: 40px;
+}
+
+.sdk-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.sdk-card {
+    background: #0d1117;
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 16px;
+    padding: 24px;
+    text-align: left;
+}
+
+.sdk-lang {
+    font-size: 14px;
+    font-weight: 800;
+    color: #00C896;
+    margin-bottom: 16px;
+}
+
+.sdk-card code {
+    display: block;
+    background: rgba(0,0,0,0.3);
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    margin-bottom: 16px;
+    color: #a5d6ff;
+}
+
+.sdk-features {
+    font-size: 11px;
+    color: rgba(255,255,255,0.4);
+}
+
+.impl-flow-section {
+    background: rgba(15, 23, 42, 0.2);
+    border-radius: 30px;
+    padding: 60px;
+    margin-bottom: 100px;
+    text-align: center;
+}
+
+.impl-flow-section h2 {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 50px;
+}
+
+.impl-steps {
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+    text-align: left;
+}
+
+.impl-step {
+    flex: 1;
+    display: flex;
+    gap: 20px;
+}
+
+.step-num {
+    width: 40px;
+    height: 40px;
+    background: #00C896;
+    color: #000;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    flex-shrink: 0;
+    box-shadow: 0 0 20px rgba(0, 200, 150, 0.3);
+}
+
+.step-content h4 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.step-content p {
+    font-size: 14px;
+    color: var(--text-gray);
+    line-height: 1.6;
+}
+
+.impl-footer-cta {
+    text-align: center;
+    padding: 80px 0;
+}
+
+.impl-footer-cta h3 {
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 16px;
+}
+
+.impl-footer-cta p {
+    color: var(--text-gray);
+    margin-bottom: 40px;
+}
+
+@media (max-width: 992px) {
+    .impl-steps {
+        flex-direction: column;
+    }
+    .impl-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =========================================================================
+   LIGHT THEME OVERRIDES
+   ========================================================================= */
+[data-theme="light"] .impl-container {
+    color: #1E293B;
+}
+
+[data-theme="light"] .impl-hero h1 {
+    background: linear-gradient(180deg, #0F172A 0%, #334155 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+[data-theme="light"] .impl-hero p {
+    color: #475569;
+}
+
+/* Primary Cards - Vibrant Green */
+[data-theme="light"] .impl-card.mode-proxy,
+[data-theme="light"] .impl-card.mode-audit {
+    background: linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%);
+    border: 1px solid #BBF7D0;
+    border-top: 5px solid #22C55E;
+    box-shadow: 0 10px 30px rgba(34, 197, 94, 0.1);
+}
+
+[data-theme="light"] .impl-card:hover {
+    transform: translateY(-12px);
+    box-shadow: 0 20px 40px rgba(22, 163, 74, 0.15);
+    border-color: #4ADE80;
+}
+
+/* Security Cards - Vibrant & High-Contrast */
+[data-theme="light"] .s-card.s-card-lock {
+    background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%);
+    border: 1px solid #FFEDD5;
+    border-top: 5px solid #F59E0B; /* Amber Accent */
+    box-shadow: 0 8px 24px rgba(245, 158, 11, 0.08);
+}
+
+[data-theme="light"] .s-card.s-card-shield {
+    background: linear-gradient(135deg, #FEF2F2 0%, #FEE2E2 100%);
+    border: 1px solid #FEE2E2;
+    border-top: 5px solid #EF4444; /* Red Accent */
+    box-shadow: 0 8px 24px rgba(239, 68, 68, 0.08);
+}
+
+[data-theme="light"] .s-card.s-card-bolt {
+    background: linear-gradient(135deg, #F5F3FF 0%, #EDE9FE 100%);
+    border: 1px solid #EDE9FE;
+    border-top: 5px solid #8B5CF6; /* Purple Accent */
+    box-shadow: 0 8px 24px rgba(139, 92, 246, 0.08);
+}
+
+[data-theme="light"] .s-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+}
+
+[data-theme="light"] .s-card h4 { color: #1E293B; }
+[data-theme="light"] .s-card p { color: #475569; }
+
+/* SDK Cards - Vibrant & Colourful */
+[data-theme="light"] .sdk-card.sdk-card-py {
+    background: linear-gradient(135deg, #FEFCE8 0%, #FFFDE7 100%);
+    border: 1px solid #FEF08A;
+    border-top: 5px solid #EAB308;
+}
+
+[data-theme="light"] .sdk-card.sdk-card-node {
+    background: linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%);
+    border: 1px solid #BBF7D0;
+    border-top: 5px solid #22C55E;
+}
+
+[data-theme="light"] .sdk-card.sdk-card-go {
+    background: linear-gradient(135deg, #ECFEFF 0%, #CFFAFE 100%);
+    border: 1px solid #A5F3FC;
+    border-top: 5px solid #06B6D4;
+}
+
+[data-theme="light"] .sdk-card:hover {
+    transform: translateY(-12px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+/* Global Light Elements */
+[data-theme="light"] .impl-number {
+    color: #16A34A;
+    opacity: 0.2;
+}
+
+[data-theme="light"] .impl-code-block {
+    background: #FFFFFF;
+    border-color: rgba(0,0,0,0.08);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+}
+
+[data-theme="light"] .impl-code-block pre {
+    color: #334155;
+}
+
+[data-theme="light"] .impl-flow-section {
+    background: #FFFFFF;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+[data-theme="light"] .impl-security-section {
+    background: #F8FAFC;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+[data-theme="light"] .impl-step .step-num {
+    background: #16A34A;
+    color: white;
+}
+
+[data-theme="light"] .benefit.b-teal {
+    background: #DCFCE7;
+    color: #166534;
+}
+
+[data-theme="light"] .benefit.b-amber {
+    background: #FEF3C7;
+    color: #92400E;
+}
+
+[data-theme="light"] .sdk-features {
+    color: #64748B;
+}
+
+/* =========================================================================
+   MIDDLEWARE INTEGRATION MOBILE SCREEN RESPONSIVE OVERRIDES
+   ========================================================================= */
+@media (max-width: 768px) {
+    .impl-container {
+        padding: 24px 12px 40px;
+    }
+
+    .impl-hero {
+        margin-bottom: 32px;
+    }
+
+    .impl-badge {
+        padding: 4px 12px;
+        font-size: 10px;
+        letter-spacing: 1px;
+        margin-bottom: 12px;
+    }
+
+    .impl-hero h1 {
+        font-size: 24px;
+        margin-bottom: 12px;
+    }
+
+    .impl-hero p {
+        font-size: 13px;
+        max-width: 100%;
+    }
+
+    .impl-grid {
+        grid-template-columns: 1fr !important;
+        gap: 16px;
+        margin-bottom: 32px;
+    }
+
+    .impl-card {
+        padding: 16px;
+        border-radius: 16px;
+    }
+
+    .impl-card-header {
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .impl-number {
+        font-size: 20px;
+    }
+
+    .impl-card h3 {
+        font-size: 16px;
+    }
+
+    .impl-card-desc {
+        font-size: 12px;
+        margin-bottom: 16px;
+        line-height: 1.4;
+    }
+
+    .impl-code-block {
+        padding: 12px;
+        margin-bottom: 16px;
+        border-radius: 8px;
+    }
+
+    .impl-code-title {
+        font-size: 9px;
+        margin-bottom: 6px;
+    }
+
+    .impl-code-block pre {
+        font-size: 11px;
+    }
+
+    .impl-benefits {
+        gap: 8px;
+    }
+
+    .benefit {
+        font-size: 9px;
+        padding: 4px 8px;
+    }
+
+    /* Security cards stack */
+    .impl-security-section {
+        margin-bottom: 32px;
+        padding: 16px;
+        border-radius: 16px;
+    }
+
+    .sec-tag {
+        font-size: 9px;
+        letter-spacing: 1px;
+        margin-bottom: 10px;
+    }
+
+    .impl-security-section h2 {
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+
+    .impl-security-section p {
+        font-size: 12px;
+        margin-bottom: 20px;
+    }
+
+    .security-cards {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .s-card {
+        padding: 14px;
+        border-radius: 12px;
+    }
+
+    .s-icon {
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+
+    .s-card h4 {
+        font-size: 14px;
+        margin-bottom: 6px;
+    }
+
+    .s-card p {
+        font-size: 11px;
+    }
+
+    /* SDK Grid stacking */
+    .impl-sdk-section {
+        margin-bottom: 32px;
+    }
+
+    .impl-sdk-section h2 {
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+
+    .impl-sdk-section p {
+        font-size: 12px;
+        margin-bottom: 20px;
+    }
+
+    .sdk-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .sdk-card {
+        padding: 16px;
+        border-radius: 12px;
+    }
+
+    .sdk-lang {
+        font-size: 12px;
+        margin-bottom: 10px;
+    }
+
+    .sdk-card code {
+        font-size: 10px;
+        padding: 8px;
+        margin-bottom: 12px;
+    }
+
+    .sdk-features {
+        font-size: 10px;
+    }
+
+    /* Integration flow steps */
+    .impl-flow-section {
+        padding: 16px;
+        border-radius: 16px;
+        margin-bottom: 32px;
+    }
+
+    .impl-flow-section h2 {
+        font-size: 20px;
+        margin-bottom: 24px;
+    }
+
+    .impl-steps {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .impl-step {
+        gap: 12px;
+    }
+
+    .step-num {
+        width: 32px;
+        height: 32px;
+        font-size: 12px;
+    }
+
+    .step-content h4 {
+        font-size: 14px;
+        margin-bottom: 4px;
+    }
+
+    .step-content p {
+        font-size: 11px;
+        line-height: 1.4;
+    }
+
+    /* Footer CTA compact */
+    .impl-footer-cta {
+        padding: 40px 0;
+    }
+
+    .impl-footer-cta h3 {
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+
+    .impl-footer-cta p {
+        font-size: 12px;
+        margin-bottom: 24px;
+    }
+}

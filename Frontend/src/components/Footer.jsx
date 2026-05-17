@@ -7,10 +7,7 @@ const Footer = () => {
             <div className="footer-container">
                 <div className="footer-left">
                     <Link to="/" className="logo">
-                        <img src="/logo.png" className="navbar-logo-img" alt="MediRAG Logo" style={{ height: '32px', width: 'auto' }} />
-                        <div className="logo-text">
-                            <span className="logo-white">MediRAG</span><span className="logo-green">-Eval</span>
-                        </div>
+                        <img src="/Frame 1352.png" alt="MediRAG Logo" className="navbar-logo-img" style={{ height: '44px', width: 'auto' }} />
                     </Link>
                     <div className="tagline">Hallucination Detection for Medical AI</div>
                     <div className="footer-credits">

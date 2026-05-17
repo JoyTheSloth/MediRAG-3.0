@@ -588,3 +588,163 @@
 [data-theme="light"] .audit-drawer-overlay { box-shadow: -10px 0 50px rgba(0,0,0,0.1); }
 [data-theme="light"] .gov-table-wrap, [data-theme="light"] .gov-card { box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
 [data-theme="light"] .threshold-label { background: #FFFFFF; }
+
+/* =========================================================================
+   SAFETY GOVERNANCE PAGE — MOBILE RESPONSIVENESS OVERHAUL
+   ========================================================================= */
+
+@media (max-width: 1024px) {
+    .gov-container {
+        padding: 0 24px;
+    }
+    .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+    .charts-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+    .compliance-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+}
+
+@media (max-width: 768px) {
+    .gov-page {
+        padding-bottom: 40px;
+    }
+    .gov-container {
+        padding: 0 16px;
+    }
+
+    /* --- HEADER --- */
+    .gov-header-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        padding: 16px 0;
+        margin-bottom: 20px;
+    }
+    .gov-header-right {
+        width: 100%;
+        justify-content: space-between;
+        gap: 12px;
+    }
+    .gov-tabs-pills {
+        width: 100%;
+        display: flex;
+        overflow-x: auto;
+        white-space: nowrap;
+        border-radius: 100px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE/Edge */
+        padding: 4px;
+        background: rgba(255, 255, 255, 0.05);
+    }
+    .gov-tabs-pills::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, Opera */
+    }
+    .gov-tab-pill {
+        flex: 1 0 auto;
+        padding: 6px 14px;
+        font-size: 12px;
+        justify-content: center;
+        border-radius: 100px;
+    }
+
+    /* --- KPI CARDS --- */
+    .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        margin-bottom: 24px;
+    }
+    .gov-card {
+        padding: 16px;
+    }
+    .kpi-val {
+        font-size: 28px;
+    }
+
+    /* --- CHARTS --- */
+    .trend-line-chart {
+        height: 200px;
+    }
+    .chart-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 16px;
+    }
+
+    /* --- TABLE RESPONSIVENESS --- */
+    .gov-table-wrap {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    .gov-table th, .gov-table td {
+        padding: 12px 16px;
+        font-size: 13px;
+    }
+
+    /* --- AUDIT DRAWER --- */
+    .audit-drawer-overlay {
+        width: 100%;
+        max-width: 100%;
+    }
+    .drawer-header, .drawer-body, .drawer-footer {
+        padding: 20px;
+    }
+
+    /* --- FILTERS --- */
+    .filter-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+    .filter-input, .filter-select {
+        width: 100%;
+    }
+    .csv-btn {
+        margin-left: 0;
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+    }
+
+    /* --- COMPLIANCE / PREVIEW --- */
+    .preview-wrap {
+        padding: 24px 16px;
+        min-height: auto;
+    }
+    .preview-header {
+        margin-bottom: 30px;
+    }
+    .preview-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        padding: 16px;
+        margin-bottom: 24px;
+    }
+    .ps-val {
+        font-size: 15px;
+    }
+    .cert-block {
+        margin-top: 30px;
+        padding: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .kpi-grid {
+        grid-template-columns: 1fr;
+    }
+    .gov-wordmark {
+        font-size: 18px;
+    }
+    .preview-stats {
+        grid-template-columns: 1fr;
+    }
+}

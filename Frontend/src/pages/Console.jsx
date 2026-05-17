@@ -5,6 +5,7 @@ import Dashboard from './Dashboard';
 import Governance from './Governance';
 import PatientExperience from './PatientExperience';
 import './Console.css';
+import './home-mobile.css';
 
 const Console = () => {
     const location = useLocation();
@@ -64,28 +65,36 @@ const Console = () => {
                         <button className="con-close-btn" onClick={() => setIsSidebarOpen(false)}>✕</button>
                     </div>
 
+                    <div className="console-status-block">
+                        <div className="status-dot-pulse"></div>
+                        <div className="status-info">
+                            <span className="status-label">ENGINE STATUS</span>
+                            <span className="status-value">OPERATIONAL</span>
+                        </div>
+                    </div>
+
                     <div className="console-nav-group">
                         <div className="console-nav-label">EVALUATE</div>
                         <button 
                             className={`console-nav-link ${activeSection === 'evaluate' && activeSubSection === 'researcher' ? 'active' : ''}`}
                             onClick={() => handleNav('evaluate', 'researcher')}
                         >
-                            <span className="console-nav-icon">🔬</span>
-                            Researcher / AI Trainer
+                            <span className="console-nav-icon">🔍</span>
+                            Researcher Lab
                         </button>
                         <button 
                             className={`console-nav-link ${activeSection === 'evaluate' && activeSubSection === 'patient' ? 'active' : ''}`}
                             onClick={() => handleNav('evaluate', 'patient')}
                         >
-                            <span className="console-nav-icon">📤</span>
-                            Upload Data &amp; Analyse
+                            <span className="console-nav-icon">📁</span>
+                            Data Upload Zone
                         </button>
                         <button 
                             className={`console-nav-link ${activeSection === 'evaluate' && activeSubSection === 'governance' ? 'active' : ''}`}
                             onClick={() => handleNav('evaluate', 'governance')}
                         >
-                            <span className="console-nav-icon">🛡️</span>
-                            AI Governance System
+                            <span className="console-nav-icon">⚖️</span>
+                            Safety Governance
                         </button>
                     </div>
 
@@ -95,32 +104,33 @@ const Console = () => {
                             className={`console-nav-link ${activeSection === 'dashboard' ? 'active' : ''}`}
                             onClick={() => handleNav('dashboard')}
                         >
-                            <span className="console-nav-icon">📊</span>
-                            System Dashboard
+                            <span className="console-nav-icon">📈</span>
+                            Performance Metrics
                         </button>
                     </div>
 
-                    <div className="engine-settings-panel" style={{ marginTop: 'auto', paddingTop: '24px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
-                            <span style={{ fontSize: '16px' }}>⚙️</span>
-                            <h3 style={{ margin: 0, fontSize: '14px', fontWeight: 800 }}>Evaluation Engine</h3>
+                    <div className="engine-settings-panel">
+                        <div className="settings-header">
+                            <span className="settings-header-icon">⚙️</span>
+                            <h3 className="settings-header-title">Evaluation Engine</h3>
                         </div>
 
-                        <div className="settings-group" style={{ marginBottom: '20px' }}>
-                            <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, color: 'var(--text-gray-light)', marginBottom: '8px' }}>API URL</label>
+                        <div className="settings-group">
+                            <label className="settings-label">API URL</label>
                             <input 
                                 type="text" 
+                                className="settings-input"
                                 value={engineConfig.apiUrl}
                                 onChange={(e) => setEngineConfig({...engineConfig, apiUrl: e.target.value})}
-                                style={{ width: '100%', background: '#121620', border: '1px solid #1c253b', borderRadius: '6px', padding: '8px 12px', color: 'white', fontSize: '12px' }}
                             />
                         </div>
 
-                        <h4 style={{ margin: '0 0 12px 0', fontSize: '13px', fontWeight: 700, color: 'white' }}>LLM Settings</h4>
+                        <h4 className="settings-section-title">Core Inference</h4>
                         
-                        <div className="settings-group" style={{ marginBottom: '16px' }}>
-                            <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, color: 'var(--text-gray-light)', marginBottom: '8px' }}>Provider</label>
+                        <div className="settings-group">
+                            <label className="settings-label">Model Provider</label>
                             <select 
+                                className="settings-select"
                                 value={engineConfig.provider}
                                 onChange={(e) => {
                                     const p = e.target.value;
@@ -130,7 +140,6 @@ const Console = () => {
                                         model: p === 'OpenAI' ? 'gpt-4o' : p === 'Mistral' ? 'mistral-large-latest' : 'gemini-2.0-flash'
                                     });
                                 }}
-                                style={{ width: '100%', background: '#121620', border: '1px solid #1c253b', borderRadius: '6px', padding: '8px 12px', color: 'white', fontSize: '12px' }}
                             >
                                 <option value="Gemini">Gemini</option>
                                 <option value="OpenAI">OpenAI</option>
@@ -141,29 +150,29 @@ const Console = () => {
 
                         {['Gemini', 'OpenAI', 'Mistral'].includes(engineConfig.provider) && (
                             <>
-                                <div className="settings-group" style={{ marginBottom: '16px' }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                                        <label style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-gray-light)' }}>{engineConfig.provider} API Key</label>
-                                        <span style={{ fontSize: '11px', color: 'var(--text-gray)', cursor: 'help' }}>❔</span>
+                                <div className="settings-group">
+                                    <div className="settings-label-row">
+                                        <label className="settings-label">API Key</label>
+                                        <span className="settings-help-icon">❔</span>
                                     </div>
-                                    <div style={{ position: 'relative' }}>
+                                    <div className="settings-input-wrapper">
                                         <input 
                                             type="password"
+                                            className="settings-input"
                                             value={engineConfig.apiKey}
                                             onChange={(e) => setEngineConfig({...engineConfig, apiKey: e.target.value})}
-                                            placeholder="sk-... or AIza..."
-                                            style={{ width: '100%', background: '#121620', border: '1px solid #1c253b', borderRadius: '6px', padding: '8px 32px 8px 12px', color: 'white', fontSize: '12px' }}
+                                            placeholder={`Enter ${engineConfig.provider} API Key`}
                                         />
-                                        <span style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-gray)', fontSize: '14px', cursor: 'pointer' }}>👁</span>
+                                        <span className="settings-toggle-eye">👁</span>
                                     </div>
                                 </div>
 
-                                <div className="settings-group" style={{ marginBottom: '24px' }}>
-                                    <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, color: 'var(--text-gray-light)', marginBottom: '8px' }}>Model</label>
+                                <div className="settings-group">
+                                    <label className="settings-label">Model</label>
                                     <select 
+                                        className="settings-select"
                                         value={engineConfig.model}
                                         onChange={(e) => setEngineConfig({...engineConfig, model: e.target.value})}
-                                        style={{ width: '100%', background: '#121620', border: '1px solid #1c253b', borderRadius: '6px', padding: '8px 12px', color: 'white', fontSize: '12px' }}
                                     >
                                         {engineConfig.provider === 'Gemini' ? (
                                             <>
@@ -187,28 +196,28 @@ const Console = () => {
                             </>
                         )}
                         
-                        <h4 style={{ margin: '0 0 12px 0', fontSize: '13px', fontWeight: 700, color: 'white' }}>Retrieval Settings</h4>
+                        <h4 className="settings-section-title">Retrieval Settings</h4>
 
-                        <div className="settings-group" style={{ marginBottom: '16px' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                                <label style={{ fontSize: '11px', fontWeight: 700, color: 'white' }}>Top-K Chunks</label>
-                                <span style={{ fontSize: '11px', color: '#ff4d4f', fontWeight: 800 }}>{engineConfig.topK}</span>
+                        <div className="settings-group">
+                            <div className="settings-label-row">
+                                <label className="settings-label">Top-K Chunks</label>
+                                <span className="settings-value-pill">{engineConfig.topK}</span>
                             </div>
                             <input 
                                 type="range" 
+                                className="settings-range"
                                 min="1" max="10" 
                                 value={engineConfig.topK}
                                 onChange={(e) => setEngineConfig({...engineConfig, topK: parseInt(e.target.value)})}
-                                style={{ width: '100%', accentColor: '#ff4d4f' }}
                             />
                         </div>
 
-                        <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: 'white', cursor: 'pointer' }}>
+                        <label className="settings-checkbox-label">
                             <input 
                                 type="checkbox" 
+                                className="settings-checkbox"
                                 checked={engineConfig.runRagas}
                                 onChange={(e) => setEngineConfig({...engineConfig, runRagas: e.target.checked})}
-                                style={{ accentColor: '#ff4d4f', background: 'transparent' }}
                             />
                             Run RAGAS (slower)
                         </label>
@@ -232,10 +241,15 @@ const Console = () => {
 
                     {activeSection === 'evaluate' && activeSubSection === 'patient' && (
                         <div className="console-view-wrapper">
-                            <div className="console-view-header">
-                                <span className="res-mode-pill" style={{ background: 'rgba(0, 200, 150, 0.1)', color: '#00C896' }}>App Integration Mode</span>
-                                <h1 className="console-view-title">Upload Data &amp; Analyse</h1>
-                                <p style={{ color: 'var(--text-gray)', marginTop: '8px' }}>Test chatbot safety for healthcare apps like Apollo 247, Tata 1mg — upload patient docs and verify AI responses against medical sources</p>
+                            <div className="console-view-header glass-header">
+                                <div className="con-brand-block">
+                                    <div className="con-wordmark">MediRAG <span style={{ color: 'var(--gov-teal)' }}>Integrate</span></div>
+                                    <div className="con-tagline">Clinical App Safety Evaluation</div>
+                                </div>
+                                <div className="con-header-info">
+                                    <span className="con-mode-badge clinical">SaMD Class B Sandbox</span>
+                                    <p className="con-header-desc">Simulate patient interactions for healthcare platforms (Apollo 247, Tata 1mg) and verify AI reliability.</p>
+                                </div>
                             </div>
                             <PatientExperience engineConfig={engineConfig} setEngineConfig={setEngineConfig} />
                         </div>

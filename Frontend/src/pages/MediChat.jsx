@@ -34,7 +34,6 @@ function HeatmapAnswer({ claims }) {
                 const status = item.status;
                 const score = item.nli_score;
                 
-                // Colors based on SRS/User request
                 let bgColor = 'transparent';
                 let borderColor = 'transparent';
                 let label = '';
@@ -53,14 +52,10 @@ function HeatmapAnswer({ claims }) {
                     label = 'Uncertain / No Evidence';
                 }
 
-                // Format markdown bold and italic
                 let htmlFormat = item.claim.replace(/\*\*(.*?)\*\*/g, '<strong style="color: white; font-weight: 700;">$1</strong>');
                 htmlFormat = htmlFormat.replace(/(?<!\*)\*(?!\*)(.*?)\*/g, '<em>$1</em>');
-                
-                // Fade out the "[not cited in context]" texts
                 htmlFormat = htmlFormat.replace(/(\[not cited.*?\])/gi, '<span style="opacity: 0.5; font-size: 12px; font-style: italic;">$1</span>');
 
-                // Detect if claim is the start of a list item or new section
                 const isListItem = /^\s*(?:\d+\.|-|\*)\s/.test(item.claim);
                 const isHeader = /^\s*#+\s|\bRecommendation(s)?:\b/i.test(item.claim);
 
@@ -79,7 +74,7 @@ function HeatmapAnswer({ claims }) {
                                 cursor: 'help',
                                 transition: 'all 0.2s',
                                 borderRadius: '2px',
-                                paddingLeft: isListItem ? '12px' : '0' // Slight indent for lists
+                                paddingLeft: isListItem ? '12px' : '0'
                             }}
                             dangerouslySetInnerHTML={{ __html: htmlFormat + ' ' }}
                         />
@@ -114,7 +109,7 @@ function FormattedAnswer({ text, claims }) {
                 if (/^[-*\u2022]\s/.test(t)) {
                     return (
                         <div key={i} style={{ display: 'flex', gap: '10px', marginBottom: '7px', paddingLeft: '4px' }}>
-                            <span style={{ color: '#00C896', marginTop: '2px', flexShrink: 0 }}>&#9658;</span>
+                            <span style={{ color: '#00C896', marginTop: '2px', flexShrink: 0 }}>►</span>
                             <span>{t.replace(/^[-*\u2022]\s/, '')}</span>
                         </div>
                     );
@@ -143,19 +138,19 @@ function HRSGauge({ hrs }) {
     const color = hrs <= 30 ? '#00C896' : hrs <= 60 ? '#ffc832' : '#ff6432';
     const label = hrs <= 30 ? 'LOW HALLUCINATION RISK' : hrs <= 60 ? 'MODERATE RISK' : 'HIGH HALLUCINATION RISK';
     return (
-        <div style={{ marginBottom: '16px', background: 'rgba(255,255,255,0.03)', borderRadius: '10px', padding: '12px 14px', border: '1px solid rgba(255,255,255,0.06)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                <span style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '1px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>
-                    &#129516; Hallucination Risk Score
+        <div className="mc-risk-gauge-card">
+            <div className="mc-risk-gauge-header">
+                <span className="mc-risk-gauge-label">
+                    ⛨ Hallucination Risk Score
                 </span>
-                <span style={{ fontSize: '22px', fontWeight: 900, color }}>
-                    {hrs}<span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.35)', fontWeight: 400 }}>/100</span>
+                <span className="mc-risk-gauge-value" style={{ color }}>
+                    {hrs}<span className="mc-risk-gauge-total">/100</span>
                 </span>
             </div>
-            <div style={{ height: '7px', background: 'rgba(255,255,255,0.07)', borderRadius: '99px', overflow: 'hidden' }}>
-                <div style={{ height: '100%', width: `${hrs}%`, background: `linear-gradient(90deg, #00C896, ${color})`, borderRadius: '99px', transition: 'width 0.8s ease' }} />
+            <div className="mc-risk-gauge-bar-bg">
+                <div className="mc-risk-gauge-bar-fill" style={{ width: `${hrs}%`, background: `linear-gradient(90deg, #10B981, ${color})` }} />
             </div>
-            <div style={{ marginTop: '5px', fontSize: '10.5px', color, fontWeight: 700, letterSpacing: '0.5px' }}>{label}</div>
+            <div className="mc-risk-gauge-footer" style={{ color }}>{label}</div>
         </div>
     );
 }
@@ -186,18 +181,18 @@ function AIMessageCard({ msg }) {
     return (
         <div className="mc-ai-card">
             {/* Header */}
-            <div className="mc-ai-card-header" style={{ marginBottom: '14px' }}>
+            <div className="mc-ai-card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
                 <div className={`mc-safety-badge ${badge.cls}`}>
-                    <span>&#9679;</span>{badge.label}
+                    <span>●</span>{badge.label}
                 </div>
                 <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                     {isIntervened && (
-                        <div style={{ fontSize: '10px', color: '#ffc832', fontWeight: 700, background: 'rgba(255,200,50,0.1)', border: '1px solid rgba(255,200,50,0.2)', borderRadius: '12px', padding: '3px 9px' }}>
-                            &#9889; {interventionReason === 'CRITICAL_BLOCKED' ? 'BLOCKED' : 'REGENERATED'}
+                        <div className="mc-intervention-badge">
+                            ⚡ {interventionReason === 'CRITICAL_BLOCKED' ? 'BLOCKED' : 'REGENERATED'}
                         </div>
                     )}
                     {data?.total_pipeline_ms && (
-                        <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.3)' }}>&#8987; {data.total_pipeline_ms}ms</span>
+                        <span className="mc-pipeline-latency">⏱ {data.total_pipeline_ms}ms</span>
                     )}
                 </div>
             </div>
@@ -206,9 +201,9 @@ function AIMessageCard({ msg }) {
             <HRSGauge hrs={hrs} />
 
             {/* Formatted Answer */}
-            <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '14px', marginBottom: '14px' }}>
-                <div style={{ fontSize: '10px', fontWeight: 700, color: 'rgba(255,255,255,0.3)', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '10px' }}>
-                    &#128203; MediRAG Response — grounded from {chunks.length > 0 ? `${chunks.length} retrieved source${chunks.length > 1 ? 's' : ''}` : 'medical dataset'}
+            <div className="mc-answer-section">
+                <div className="mc-answer-label">
+                    📄 MediRAG Response — grounded from {chunks.length > 0 ? `${chunks.length} retrieved source${chunks.length > 1 ? 's' : ''}` : 'medical dataset'}
                 </div>
                 <FormattedAnswer 
                     text={data?.generated_answer || msg.text} 
@@ -218,11 +213,11 @@ function AIMessageCard({ msg }) {
 
             {/* Module Scores */}
             {(mod.faithfulness || mod.source_credibility || mod.contradiction || mod.entity_verifier) && (
-                <div style={{ marginBottom: '14px' }}>
-                    <div style={{ fontSize: '10px', fontWeight: 700, color: 'rgba(255,255,255,0.3)', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '8px' }}>
-                        &#10004; Safety Evaluation Modules
+                <div className="mc-modules-section">
+                    <div className="mc-modules-label">
+                        ✔ Safety Evaluation Modules
                     </div>
-                    <div style={{ display: 'flex', gap: '7px', flexWrap: 'wrap' }}>
+                    <div className="mc-modules-grid">
                         <ModulePill label="Faithfulness" score={mod.faithfulness?.score} />
                         <ModulePill label="Src. Cred." score={mod.source_credibility?.score} />
                         <ModulePill label="Consistency" score={mod.contradiction?.score} />
@@ -254,17 +249,15 @@ function AIMessageCard({ msg }) {
 
                                 return (
                                     <div key={i} style={{
-                                        background: 'linear-gradient(135deg, rgba(0,200,150,0.04), rgba(15,23,42,0.8))',
+                                        background: 'linear-gradient(135deg, rgba(0,200,150,0.04), rgba(15, 23, 42, 0.8))',
                                         border: '1px solid rgba(0,200,150,0.12)',
                                         borderLeft: `3px solid ${simColor}`,
                                         borderRadius: '10px',
                                         padding: '14px 16px',
                                         transition: 'border-color 0.2s',
                                     }}>
-                                        {/* Header row */}
                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '10px', marginBottom: '10px' }}>
                                             <div style={{ flex: 1 }}>
-                                                {/* Rank + Title */}
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '5px' }}>
                                                     <span style={{
                                                         background: simColor,
@@ -279,14 +272,12 @@ function AIMessageCard({ msg }) {
                                                         {c.title || 'Medical Literature'}
                                                     </span>
                                                 </div>
-                                                {/* Source / Journal */}
                                                 {c.source && (
                                                     <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', marginBottom: '4px' }}>
                                                         📰 {c.source}
                                                     </div>
                                                 )}
                                             </div>
-                                            {/* Right badges */}
                                             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '5px', flexShrink: 0 }}>
                                                 {c.pub_type && (
                                                     <span style={{
@@ -305,7 +296,6 @@ function AIMessageCard({ msg }) {
                                             </div>
                                         </div>
 
-                                        {/* Similarity Score Bar */}
                                         <div style={{ marginBottom: '11px' }}>
                                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
                                                 <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.3)', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase' }}>
@@ -326,7 +316,6 @@ function AIMessageCard({ msg }) {
                                             </div>
                                         </div>
 
-                                        {/* Chunk Text */}
                                         <div style={{
                                             fontSize: '12.5px',
                                             color: 'rgba(255,255,255,0.55)',
@@ -342,13 +331,6 @@ function AIMessageCard({ msg }) {
                                                 <span style={{ color: 'rgba(255,255,255,0.25)', fontStyle: 'italic' }}> …[truncated]</span>
                                             )}
                                         </div>
-
-                                        {/* Chunk ID footer */}
-                                        {c.chunk_id && (
-                                            <div style={{ marginTop: '8px', fontSize: '10px', color: 'rgba(255,255,255,0.2)', fontFamily: 'monospace' }}>
-                                                chunk_id: {c.chunk_id}
-                                            </div>
-                                        )}
                                     </div>
                                 );
                             })}
@@ -364,7 +346,6 @@ function AIMessageCard({ msg }) {
     );
 }
 
-// Generate smart contextual question suggestions from document text
 function generateDocSuggestions(text) {
     const lower = text.toLowerCase();
     const suggestions = [];
@@ -380,19 +361,10 @@ function generateDocSuggestions(text) {
         suggestions.push('What allergies are mentioned in this document?');
         suggestions.push('What alternative medications are recommended?');
     }
-    if (lower.includes('cholesterol') || lower.includes('statin') || lower.includes('lipid')) {
-        suggestions.push('What are the cholesterol levels mentioned?');
-        suggestions.push('What treatment is recommended for high cholesterol?');
-    }
-    if (lower.includes('diagnosis') || lower.includes('condition') || lower.includes('disease')) {
-        suggestions.push('What is the primary diagnosis described?');
-        suggestions.push('What are the recommended treatments?');
-    }
-    // Always add generic fallbacks if not enough
     const generic = [
         'Is the information in this document medically accurate?',
         'What are the key medical findings in this document?',
-        'Are there any safety concerns or contraindications mentioned?',
+        'Are there any safety concerns mentioned?',
         'What follow-up care is recommended?',
     ];
     for (const g of generic) {
@@ -439,7 +411,7 @@ const MediChat = ({ engineConfig }) => {
     const [uploadedDocText, setUploadedDocText] = useState('');
     const [uploadedDocName, setUploadedDocName] = useState('');
     const [isUploadingDoc, setIsUploadingDoc] = useState(false);
-    const [persona, setPersona] = useState('physician'); // 'physician' or 'patient'
+    const [persona, setPersona] = useState('physician');
     const bottomRef = useRef(null);
     const inputRef = useRef(null);
     const pasteFileRef = useRef(null);
@@ -454,7 +426,7 @@ const MediChat = ({ engineConfig }) => {
             margin:       10,
             filename:     `Clinical_Report_${activeSession || Date.now()}.pdf`,
             image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#0a0d14', windowWidth: element.scrollWidth },
+            html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#05070a', windowWidth: element.scrollWidth },
             jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
 
@@ -472,8 +444,7 @@ const MediChat = ({ engineConfig }) => {
 
     const startNewChat = () => {
         const id = Date.now();
-        const newSession = { id, title: 'New Chat', messages: [] };
-        setSessions(prev => [newSession, ...prev]);
+        setSessions(prev => [{ id, title: 'New Chat', messages: [] }, ...prev]);
         setActiveSession(id);
         setMessages([]);
         setError('');
@@ -510,18 +481,15 @@ const MediChat = ({ engineConfig }) => {
         setIsThinking(true);
         setError('');
 
-        // Auto-create session if none
         let sid = activeSession;
         if (!sid) {
             sid = Date.now();
-            const ns = { id: sid, title: q.slice(0, 40), messages: [] };
-            setSessions(prev => [ns, ...prev]);
+            setSessions(prev => [{ id: sid, title: q.slice(0, 40), messages: [] }, ...prev]);
             setActiveSession(sid);
         }
 
         try {
             const endpoint = `${localConfig.apiUrl}/query`;
-            // If a doc is uploaded, enrich the question with doc context
             const enrichedQuestion = uploadedDocText
                 ? `[User uploaded document: ${uploadedDocName}]\n\nDocument Content:\n${uploadedDocText.slice(0, 3000)}\n\n---\nUser Question: ${q}`
                 : q;
@@ -543,30 +511,14 @@ const MediChat = ({ engineConfig }) => {
             const data = await res.json();
             if (!res.ok) throw new Error(data.detail || 'API error');
 
-            const botMsg = {
-                id: Date.now() + 1,
-                role: 'bot',
-                text: data.generated_answer,
-                data
-            };
-
+            const botMsg = { id: Date.now() + 1, role: 'bot', text: data.generated_answer, data };
             const finalMsgs = [...newMessages, botMsg];
             setMessages(finalMsgs);
 
-            // Update session title on first real message
-            setSessions(prev => prev.map(s =>
-                s.id === sid
-                    ? { ...s, title: q.slice(0, 42), messages: finalMsgs }
-                    : s
-            ));
+            setSessions(prev => prev.map(s => s.id === sid ? { ...s, title: q.slice(0, 42), messages: finalMsgs } : s));
 
         } catch (err) {
-            const errMsg = {
-                id: Date.now() + 2,
-                role: 'bot',
-                text: `❌ Error: ${err.message}`,
-                isError: true
-            };
+            const errMsg = { id: Date.now() + 2, role: 'bot', text: `❌ Error: ${err.message}`, isError: true };
             setMessages(prev => [...prev, errMsg]);
             setError(err.message);
         } finally {
@@ -588,12 +540,8 @@ const MediChat = ({ engineConfig }) => {
 
     return (
         <div className="medichat-layout">
-            {/* ─── Mobile Overlay ─── */}
-            {isSidebarOpen && (
-                <div className="mc-mobile-overlay" onClick={() => setIsSidebarOpen(false)}></div>
-            )}
+            {isSidebarOpen && <div className="mc-mobile-overlay" onClick={() => setIsSidebarOpen(false)}></div>}
 
-            {/* ─── Sidebar ─── */}
             <div className={`mc-sidebar ${isSidebarOpen ? 'open' : ''}`}>
                 <div className="mc-sidebar-header">
                     <div className="mc-brand-name">MEDIRAG ASSISTANT</div>
@@ -606,525 +554,205 @@ const MediChat = ({ engineConfig }) => {
                     NEW CHAT
                 </button>
 
-                {sessions.length > 0 && (
-                    <>
-                        <div className="mc-section-label" style={{ marginBottom: '4px' }}>RECENT CHATS</div>
-                        {sessions.map(s => (
-                            <div
-                                key={s.id}
-                                className={`mc-chat-item ${activeSession === s.id ? 'active' : ''}`}
-                                onClick={() => loadSession(s)}
-                            >
-                                <span className="mc-chat-item-icon">🕐</span>
-                                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                    {s.title}
-                                </span>
-                            </div>
-                        ))}
-                    </>
+                <div className="mc-section-label">RECENT SESSIONS</div>
+                {sessions.length > 0 ? (
+                    sessions.map(s => (
+                        <div key={s.id} className={`mc-chat-item ${activeSession === s.id ? 'active' : ''}`} onClick={() => loadSession(s)}>
+                            <span className="mc-chat-item-icon">🕐</span> {s.title}
+                        </div>
+                    ))
+                ) : (
+                    <div style={{ padding: '0 20px', fontSize: '11px', color: 'rgba(255,255,255,0.2)' }}>No recent sessions</div>
                 )}
 
-                <div style={{ height: '20px' }} />
-                <div className="mc-section-label">POPULAR HEALTH TOPICS</div>
+                <div style={{ height: '24px' }} />
+                <div className="mc-section-label">POPULAR TOPICS</div>
                 {POPULAR_TOPICS.map(t => (
-                    <div
-                        key={t.label}
-                        className="mc-chat-item"
-                        onClick={() => { startNewChat(); sendMessage(t.label); }}
-                    >
-                        <span className="mc-chat-item-icon">{t.icon}</span>
-                        {t.label}
+                    <div key={t.label} className="mc-chat-item" onClick={() => { startNewChat(); sendMessage(t.label); }}>
+                        <span className="mc-chat-item-icon">{t.icon}</span> {t.label}
                     </div>
                 ))}
 
                 <div className="mc-sidebar-spacer" />
 
-                {/* ── EVALUATION ENGINE PANEL ── */}
-                <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', padding: '20px 16px 12px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '18px' }}>
-                        <span style={{ fontSize: '15px' }}>⚙️</span>
-                        <span style={{ fontSize: '13px', fontWeight: 800, color: 'white' }}>Evaluation Engine</span>
-                    </div>
-
-                    {/* API URL */}
-                    <div style={{ marginBottom: '16px' }}>
-                        <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, color: 'rgba(255,255,255,0.4)', letterSpacing: '0.08em', marginBottom: '7px' }}>API URL</label>
-                        <input
-                            type="text"
-                            value={localConfig.apiUrl}
-                            onChange={e => setLocalConfig(c => ({ ...c, apiUrl: e.target.value }))}
-                            style={{ width: '100%', background: '#121620', border: '1px solid #1c253b', borderRadius: '6px', padding: '8px 10px', color: 'white', fontSize: '12px', outline: 'none', boxSizing: 'border-box' }}
-                        />
-                    </div>
-
-                    {/* LLM Settings */}
-                    <div style={{ fontSize: '13px', fontWeight: 700, color: 'white', marginBottom: '12px' }}>LLM Settings</div>
-
-                    <div style={{ marginBottom: '14px' }}>
-                        <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, color: 'rgba(255,255,255,0.4)', marginBottom: '7px' }}>Provider</label>
+                {/* ── Evaluation Engine Controls ── */}
+                <div className="mc-sidebar-engine">
+                    <div className="mc-section-label">Evaluation Engine</div>
+                    
+                    <div className="mc-engine-row">
+                        <label>Provider</label>
                         <select
                             value={localConfig.provider}
-                            onChange={e => {
-                                const p = e.target.value;
-                                setLocalConfig(c => ({ 
-                                    ...c, 
-                                    provider: p,
-                                    model: p === 'OpenAI' ? 'gpt-4o' : p === 'Mistral' ? 'mistral-large-latest' : 'gemini-2.0-flash'
-                                }));
-                            }}
-                            style={{ width: '100%', background: '#121620', border: '1px solid #1c253b', borderRadius: '6px', padding: '8px 10px', color: 'white', fontSize: '12px', outline: 'none' }}
+                            onChange={e => setLocalConfig(c => ({ ...c, provider: e.target.value }))}
                         >
                             <option value="Gemini">Gemini</option>
                             <option value="OpenAI">OpenAI</option>
                             <option value="Mistral">Mistral AI</option>
-                            <option value="Ollama">Ollama (Local)</option>
                         </select>
                     </div>
 
-                    {['Gemini', 'OpenAI', 'Mistral'].includes(localConfig.provider) && (
-                        <>
-                            <div style={{ marginBottom: '14px' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '7px' }}>
-                                    <label style={{ fontSize: '11px', fontWeight: 700, color: 'rgba(255,255,255,0.4)' }}>
-                                        {localConfig.provider} API Key
-                                    </label>
-                                    <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.3)', cursor: 'help' }}>❔</span>
-                                </div>
-                                <div style={{ position: 'relative' }}>
-                                    <input
-                                        type={showKey ? 'text' : 'password'}
-                                        value={localApiKey}
-                                        onChange={e => setLocalApiKey(e.target.value)}
-                                        placeholder="sk-... or AIza..."
-                                        style={{ width: '100%', background: '#121620', border: `1px solid ${localApiKey ? 'rgba(0,200,150,0.4)' : '#1c253b'}`, borderRadius: '6px', padding: '8px 34px 8px 10px', color: 'white', fontSize: '12px', outline: 'none', boxSizing: 'border-box', fontFamily: 'monospace' }}
-                                    />
-                                    <button onClick={() => setShowKey(s => !s)} style={{ position: 'absolute', right: '8px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', cursor: 'pointer', fontSize: '14px', padding: 0 }}>
-                                        👁
-                                    </button>
-                                </div>
-                                {localApiKey && <div style={{ marginTop: '5px', fontSize: '10.5px', color: '#00C896' }}>✓ Key active</div>}
-                            </div>
-
-                            <div style={{ marginBottom: '14px' }}>
-                                <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, color: 'rgba(255,255,255,0.4)', marginBottom: '7px' }}>Model</label>
-                                <select
-                                    value={localConfig.model}
-                                    onChange={e => setLocalConfig(c => ({ ...c, model: e.target.value }))}
-                                    style={{ width: '100%', background: '#121620', border: '1px solid #1c253b', borderRadius: '6px', padding: '8px 10px', color: 'white', fontSize: '12px', outline: 'none' }}
-                                >
-                                    {localConfig.provider === 'Gemini' ? (
-                                        <>
-                                            <option value="gemini-2.0-flash">gemini-2.0-flash</option>
-                                            <option value="gemini-1.5-pro">gemini-1.5-pro</option>
-                                        </>
-                                    ) : localConfig.provider === 'Mistral' ? (
-                                        <>
-                                            <option value="mistral-large-latest">mistral-large-latest</option>
-                                            <option value="mistral-small-latest">mistral-small-latest</option>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <option value="gpt-4o">gpt-4o</option>
-                                            <option value="gpt-4o-mini">gpt-4o-mini</option>
-                                            <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
-                                        </>
-                                    )}
-                                </select>
-                            </div>
-                        </>
-                    )}
-
-                    {/* Retrieval Settings */}
-                    <div style={{ fontSize: '13px', fontWeight: 700, color: 'white', marginBottom: '12px' }}>Retrieval Settings</div>
-
-                    <div style={{ marginBottom: '14px' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '7px' }}>
-                            <label style={{ fontSize: '11px', fontWeight: 700, color: 'white' }}>Top-K Chunks</label>
-                            <span style={{ fontSize: '11px', color: '#ff4d4f', fontWeight: 800 }}>{localConfig.topK}</span>
+                    <div className="mc-engine-row">
+                        <label>Top-K Retrieval</label>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <input
+                                type="range" min="1" max="10"
+                                value={localConfig.topK}
+                                onChange={e => setLocalConfig(c => ({ ...c, topK: parseInt(e.target.value) }))}
+                                style={{ flex: 1, accentColor: '#10B981' }}
+                            />
+                            <span style={{ fontSize: '12px', fontWeight: 900, color: '#10B981', minWidth: '15px' }}>{localConfig.topK}</span>
                         </div>
-                        <input
-                            type="range" min="1" max="10"
-                            value={localConfig.topK}
-                            onChange={e => setLocalConfig(c => ({ ...c, topK: parseInt(e.target.value) }))}
-                            style={{ width: '100%', accentColor: '#ff4d4f' }}
-                        />
                     </div>
 
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: 'white', cursor: 'pointer', marginBottom: '16px' }}>
+                    <label className="mc-engine-checkbox">
                         <input
                             type="checkbox"
                             checked={localConfig.runRagas}
                             onChange={e => setLocalConfig(c => ({ ...c, runRagas: e.target.checked }))}
-                            style={{ accentColor: '#ff4d4f' }}
                         />
-                        Run RAGAS (slower)
+                        <span>Enable RAGAS Evaluation</span>
                     </label>
+                </div>
+
+                {/* ── Clinical Audit Stats ── */}
+                <div className="mc-sidebar-stats">
+                    <div className="mc-stat-item">
+                        <div className="mc-stat-val">2.4k</div>
+                        <div className="mc-stat-lbl">Verified Chunks</div>
+                    </div>
+                    <div className="mc-stat-item">
+                        <div className="mc-stat-val">0.02s</div>
+                        <div className="mc-stat-lbl">Latency (Avg)</div>
+                    </div>
+                    <div className="mc-stat-item">
+                        <div className="mc-stat-val">98%</div>
+                        <div className="mc-stat-lbl">Grounding</div>
+                    </div>
                 </div>
             </div>
 
-            {/* ─── Main ─── */}
             <div className="mc-main">
-                {/* Mobile Header Toggle */}
                 <div className="mc-mobile-header">
-                    <button className="mc-hamburger-btn" onClick={() => setIsSidebarOpen(true)}>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-                    </button>
-                    <div className="mc-mobile-title">MediRAG-Eval Assistant</div>
+                    <button className="mc-hamburger-btn" onClick={() => setIsSidebarOpen(true)}>☰</button>
                 </div>
 
-                {/* ─── Chat Header with Persona Toggle ─── */}
-                <div style={{ 
-                    padding: '16px 40px', 
-                    borderBottom: '1px solid rgba(255,255,255,0.05)',
-                    background: 'rgba(10, 13, 20, 0.4)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between'
-                }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <div style={{ width: '8px', height: '8px', background: '#00C896', borderRadius: '50%', boxShadow: '0 0 10px #00C896' }} />
-                        <span style={{ fontSize: '12px', fontWeight: 700, color: 'rgba(255,255,255,0.7)', letterSpacing: '1px' }}>SYSTEM ACTIVE</span>
+                <div className="mc-status-bar">
+                    <div className="mc-status-pill">
+                        <div className="mc-status-dot" />
+                        <span className="mc-status-txt">SYSTEM ACTIVE</span>
+                        <div className="mc-status-separator" />
+                        <span className="mc-status-mode">AUDIT MODE</span>
                     </div>
 
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                        <button 
-                            onClick={exportToPDF}
-                            disabled={isExporting || messages.length === 0}
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '8px',
-                                background: 'rgba(0, 200, 150, 0.1)',
-                                border: '1px solid rgba(0, 200, 150, 0.3)',
-                                borderRadius: '6px',
-                                color: '#00C896',
-                                padding: '6px 12px',
-                                fontSize: '11px',
-                                fontWeight: 700,
-                                cursor: (isExporting || messages.length === 0) ? 'not-allowed' : 'pointer',
-                                opacity: (isExporting || messages.length === 0) ? 0.5 : 1,
-                                letterSpacing: '0.5px',
-                                transition: 'all 0.2s'
-                            }}
-                        >
-                            {isExporting ? '⏳ GENERATING...' : '📄 EXPORT REPORT'}
-                        </button>
-
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
                         <div className="persona-toggle-container">
                             <div className={`persona-slider ${persona}`} />
-                            <div 
-                                className={`persona-option ${persona === 'physician' ? 'active' : ''}`}
-                                onClick={() => setPersona('physician')}
-                            >
-                                👨‍⚕️ Physician
-                            </div>
-                            <div 
-                                className={`persona-option ${persona === 'patient' ? 'active' : ''}`}
-                                onClick={() => setPersona('patient')}
-                            >
-                                👤 Patient
-                            </div>
+                            <div className={`persona-option ${persona === 'physician' ? 'active' : ''}`} onClick={() => setPersona('physician')}>🩺 Physician</div>
+                            <div className={`persona-option ${persona === 'patient' ? 'active' : ''}`} onClick={() => setPersona('patient')}>👤 Patient</div>
                         </div>
+
+                        <button className="mc-export-btn" onClick={exportToPDF} disabled={isExporting || messages.length === 0}>
+                            {isExporting ? '⏳ EXPORTING...' : '📄 EXPORT PDF'}
+                        </button>
                     </div>
                 </div>
 
                 <div className="mc-chat-window" ref={chatContainerRef}>
-
-                    {/* Welcome Screen */}
-                    {activeSession === null && messages.length === 0 && (
+                    {messages.length === 0 ? (
                         <div className="mc-welcome">
-                            <div className="mc-welcome-logo">🏥</div>
-                            <h1>Hello, I'm your MediRAG-Eval safety assistant.</h1>
-                            <p>I can help you analyze medical information for safety and accuracy. What would you like to check today?</p>
-                            <div style={{ marginTop: '32px', display: 'flex', flexWrap: 'wrap', gap: '10px', justifyContent: 'center' }}>
+                        <div className="mc-welcome-logo">
+                            <img src="/Frame 1352.png" alt="MediRAG Logo" style={{ height: '64px', width: 'auto' }} />
+                        </div>
+                            <h1>MediRAG-Eval Assistant</h1>
+                            <p>Premium medical AI interface with real-time hallucination detection and clinical grounding. Select your persona and begin the diagnostic audit.</p>
+                            <div className="mc-suggestions-grid">
                                 {INITIAL_TOPICS.map(t => (
-                                    <button key={t} onClick={() => sendMessage(t)} style={{
-                                        background: 'rgba(255,255,255,0.05)',
-                                        border: '1px solid rgba(255,255,255,0.1)',
-                                        borderRadius: '20px',
-                                        color: 'rgba(255,255,255,0.7)',
-                                        padding: '8px 16px',
-                                        fontSize: '13px',
-                                        cursor: 'pointer',
-                                        transition: 'all 0.2s'
-                                    }}
-                                    onMouseEnter={e => { e.target.style.background = 'rgba(0,200,150,0.1)'; e.target.style.color = '#00C896'; e.target.style.borderColor = 'rgba(0,200,150,0.3)'; }}
-                                    onMouseLeave={e => { e.target.style.background = 'rgba(255,255,255,0.05)'; e.target.style.color = 'rgba(255,255,255,0.7)'; e.target.style.borderColor = 'rgba(255,255,255,0.1)'; }}
-                                    >
-                                        {t}
-                                    </button>
+                                    <button key={t} className="mc-sugg-btn" onClick={() => sendMessage(t)}>{t}</button>
                                 ))}
                             </div>
                         </div>
-                    )}
-
-                    {/* Messages */}
-                    {messages.map(msg => (
-                        <div key={msg.id} className={`mc-msg-row ${msg.role}`}>
-                            {msg.role === 'user' ? (
-                                <div>
-                                    <div className="mc-msg-bubble">
-                                        {msg.text}
-                                    </div>
-                                    <div className="mc-msg-meta">YOU • {formatTime(msg.id)}</div>
-                                </div>
-                            ) : msg.isSuggestion ? (
-                                <div style={{ maxWidth: '90%' }}>
-                                    <div style={{
-                                        background: 'linear-gradient(135deg, rgba(0, 200, 150, 0.05), rgba(15, 23, 42, 0.9))',
-                                        border: '1px solid rgba(0, 200, 150, 0.2)',
-                                        borderRadius: '4px 16px 16px 16px',
-                                        padding: '20px 22px',
-                                    }}>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px' }}>
-                                            <span style={{ fontSize: '20px' }}>📄</span>
+                    ) : (
+                        messages.map(msg => (
+                            <div key={msg.id} className={`mc-msg-row ${msg.role}`}>
+                                {msg.role === 'user' ? (
+                                    <div className="mc-msg-bubble">{msg.text}</div>
+                                ) : msg.isSuggestion ? (
+                                    <div className="mc-ai-card">
+                                        <div style={{ display: 'flex', gap: '12px', marginBottom: '14px' }}>
+                                            <span>📄</span>
                                             <div>
-                                                <div style={{ fontSize: '13px', fontWeight: 800, color: 'white' }}>Document ingested successfully!</div>
-                                                <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', marginTop: '2px' }}>{msg.docName}</div>
+                                                <div style={{ fontWeight: 800 }}>Document ingested!</div>
+                                                <div style={{ fontSize: '11px', opacity: 0.5 }}>{msg.docName}</div>
                                             </div>
                                         </div>
-                                        <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.6)', marginBottom: '14px' }}>
-                                            What would you like to know about this document?
-                                        </div>
-                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                        <div className="mc-suggestions-grid-compact">
                                             {msg.suggestions.map((s, i) => (
-                                                <button
-                                                    key={i}
-                                                    onClick={() => sendMessage(s)}
-                                                    style={{
-                                                        background: 'rgba(0,200,150,0.06)',
-                                                        border: '1px solid rgba(0,200,150,0.2)',
-                                                        borderRadius: '10px',
-                                                        color: 'rgba(255,255,255,0.75)',
-                                                        padding: '10px 14px',
-                                                        fontSize: '13px',
-                                                        textAlign: 'left',
-                                                        cursor: 'pointer',
-                                                        transition: 'all 0.2s',
-                                                        display: 'flex',
-                                                        alignItems: 'center',
-                                                        gap: '10px'
-                                                    }}
-                                                    onMouseEnter={e => { e.currentTarget.style.background = 'rgba(0,200,150,0.14)'; e.currentTarget.style.color = 'white'; e.currentTarget.style.borderColor = 'rgba(0,200,150,0.5)'; }}
-                                                    onMouseLeave={e => { e.currentTarget.style.background = 'rgba(0,200,150,0.06)'; e.currentTarget.style.color = 'rgba(255,255,255,0.75)'; e.currentTarget.style.borderColor = 'rgba(0,200,150,0.2)'; }}
-                                                >
-                                                    <span style={{ color: '#00C896', fontSize: '15px', flexShrink: 0 }}>›</span>
-                                                    {s}
-                                                </button>
+                                                <button key={i} className="mc-suggestion-chip" onClick={() => sendMessage(s)}>{s}</button>
                                             ))}
                                         </div>
-                                        <div style={{ marginTop: '12px', fontSize: '11px', color: 'rgba(255,200,50,0.6)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                            <span>⚡</span> Answers verified against PubMed + DrugBank dataset
-                                        </div>
                                     </div>
-                                    <div className="mc-msg-meta">MEDIRAG • {formatTime(msg.id)}</div>
-                                </div>
-                            ) : (
-                                <div>
-                                    {msg.data && !msg.isError ? (
-                                        <AIMessageCard msg={msg} />
-                                    ) : (
-                                        <div className="mc-msg-bubble" style={{
-                                            background: msg.isError ? 'rgba(255,80,80,0.08)' : '#111827',
-                                            border: `1px solid ${msg.isError ? 'rgba(255,80,80,0.2)' : 'rgba(0,200,150,0.15)'}`,
-                                            borderRadius: '4px 16px 16px 16px'
-                                        }}>
-                                            {msg.text}
-                                        </div>
-                                    )}
-                                    <div className="mc-msg-meta">MEDIRAG • {formatTime(msg.id)}</div>
-                                </div>
-                            )}
-                        </div>
-                    ))}
-
-                    {/* Pre-flight Checklist (Thinking mode) */}
+                                ) : (
+                                    <AIMessageCard msg={msg} />
+                                )}
+                            </div>
+                        ))
+                    )}
                     {isThinking && (
-                        <div className="mc-thinking" style={{ 
-                            flexDirection: 'column', 
-                            alignItems: 'flex-start', 
-                            padding: '20px 24px', 
-                            backgroundColor: 'rgba(15, 23, 42, 0.95)', 
-                            border: '1px solid rgba(0, 200, 150, 0.3)', 
-                            borderRadius: '16px', 
-                            width: '100%',
-                            maxWidth: '450px',
-                            boxShadow: '0 10px 30px rgba(0,0,0,0.5), inset 0 1px 2px rgba(255,255,255,0.1)'
-                        }}>
-                            <div style={{ fontSize: '12px', fontWeight: 800, color: '#00C896', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '10px', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                                <div className="mc-thinking-dots" style={{ margin: 0 }}><span /><span /><span /></div>
-                                MEDIRAG SAFETY PIPELINE ACTIVE
-                            </div>
-                            
-                            <style>
-                            {`
-                                .checklist-item {
-                                    font-size: 13.5px;
-                                    color: rgba(255,255,255,0.4);
-                                    margin-bottom: 10px;
-                                    display: flex;
-                                    align-items: center;
-                                    gap: 12px;
-                                    animation: checklistPopIn 0.1s ease forwards, checklistFadeText 0.3s ease forwards;
-                                    opacity: 0;
-                                    transform: translateX(-10px);
-                                }
-                                .checklist-item .icon {
-                                    font-size: 14px;
-                                    width: 18px;
-                                    display: inline-block;
-                                    text-align: center;
-                                }
-                                
-                                /* Simulate the sequential steps using animation-delay */
-                                .step-1 { animation-delay: 0.2s, 0.2s; }
-                                .step-1 > .icon { animation: checkmarkChange 0.1s forwards; animation-delay: 1.5s; }
-                                
-                                .step-2 { animation-delay: 1.5s, 1.5s; }
-                                .step-2 > .icon { animation: checkmarkChange 0.1s forwards; animation-delay: 2.8s; }
-                                
-                                .step-3 { animation-delay: 2.8s, 2.8s; }
-                                .step-3 > .icon { animation: checkmarkChange 0.1s forwards; animation-delay: 5.5s; }
-                                
-                                .step-4 { animation-delay: 5.5s, 5.5s; }
-                                .step-5 { animation-delay: 6.0s, 6.0s; }
-
-                                @keyframes checklistPopIn {
-                                    to { opacity: 1; transform: translateX(0); }
-                                }
-                                @keyframes checklistFadeText {
-                                    to { color: rgba(255,255,255,0.9); }
-                                }
-                                @keyframes checkmarkChange {
-                                    to { content: '✓'; color: #00C896; font-weight: bold; }
-                                }
-                            `}
-                            </style>
-                            
-                            <div className="checklist-item step-1">
-                                <span className="icon">⏳</span> <span>Applying PHI Privacy Shield & Redaction</span>
-                            </div>
-                            <div className="checklist-item step-2">
-                                <span className="icon">⏳</span> <span>Retrieving context from Med-Dataset</span>
-                            </div>
-                            <div className="checklist-item step-3">
-                                <span className="icon">⏳</span> <span>Generating baseline clinical response</span>
-                            </div>
-                            <div className="checklist-item step-4">
-                                <span className="icon" style={{ color: '#60a5fa' }}>⚙️</span> <span>Running DeBERTa Faithfulness evaluation</span>
-                            </div>
-                            <div className="checklist-item step-5">
-                                <span className="icon" style={{ color: '#60a5fa' }}>⚙️</span> <span>Consulting Consensus Judge engine</span>
-                            </div>
+                        <div className="mc-thinking">
+                            <div className="mc-thinking-dots"><span/><span/><span/></div>
+                            <span>Analyzing clinical datasets...</span>
                         </div>
                     )}
-
                     <div ref={bottomRef} />
                 </div>
 
-                {/* ─── Input Bar ─── */}
                 <div className="mc-input-area">
                     <div className="mc-input-actions">
-                        <input
-                            type="file"
-                            ref={pasteFileRef}
-                            style={{ display: 'none' }}
-                            accept=".pdf,.txt,.docx"
-                            onChange={async (e) => {
-                                const file = e.target.files?.[0];
-                                if (!file) return;
-                                setIsUploadingDoc(true);
-                                setError('');
-
-                                // Show user upload message
-                                const sid = activeSession || Date.now();
-                                if (!activeSession) {
-                                    setSessions(prev => [{ id: sid, title: `📄 ${file.name}`, messages: [] }, ...prev]);
-                                    setActiveSession(sid);
-                                }
-                                const uploadMsg = { id: Date.now(), role: 'user', text: `📎 Uploaded: ${file.name}` };
-                                setMessages(prev => [...prev, uploadMsg]);
-
-                                try {
-                                    const formData = new FormData();
-                                    formData.append('file', file);
-                                    const res = await fetch(`${localConfig.apiUrl}/parse_file`, { method: 'POST', body: formData });
-                                    if (!res.ok) throw new Error('Failed to parse document.');
-                                    const { text } = await res.json();
-                                    setUploadedDocText(text);
-                                    setUploadedDocName(file.name);
-
-                                    // Generate smart suggestions based on doc content
-                                    const suggestions = generateDocSuggestions(text);
-
-                                    const botSuggestionMsg = {
-                                        id: Date.now() + 1,
-                                        role: 'bot',
-                                        isSuggestion: true,
-                                        docName: file.name,
-                                        suggestions,
-                                        text: ''
-                                    };
-                                    setMessages(prev => [...prev, botSuggestionMsg]);
-                                } catch (err) {
-                                    setError(err.message);
-                                    const errMsg = { id: Date.now() + 2, role: 'bot', text: `❌ Could not read document: ${err.message}`, isError: true };
-                                    setMessages(prev => [...prev, errMsg]);
-                                } finally {
-                                    setIsUploadingDoc(false);
-                                    // Reset file input so same file can be re-uploaded
-                                    e.target.value = '';
-                                }
-                            }}
-                        />
-                        <button
-                            className="mc-action-chip"
-                            onClick={() => pasteFileRef.current?.click()}
-                            disabled={isUploadingDoc}
-                            style={{ opacity: isUploadingDoc ? 0.6 : 1 }}
-                        >
-                            {isUploadingDoc ? '⏳ Reading...' : '📎 UPLOAD PDF / LABS'}
-                        </button>
-                        {uploadedDocName && (
-                            <span style={{ fontSize: '11px', color: '#00C896', display: 'flex', alignItems: 'center', gap: '5px', background: 'rgba(0,200,150,0.08)', border: '1px solid rgba(0,200,150,0.2)', borderRadius: '20px', padding: '4px 10px' }}>
-                                📄 {uploadedDocName}
-                                <button onClick={() => { setUploadedDocText(''); setUploadedDocName(''); }} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', cursor: 'pointer', fontSize: '13px', padding: 0, lineHeight: 1 }}>✕</button>
-                            </span>
-                        )}
+                        <input type="file" ref={pasteFileRef} style={{ display: 'none' }} accept=".pdf,.txt,.docx" onChange={async (e) => {
+                            const file = e.target.files?.[0];
+                            if (!file) return;
+                            setIsUploadingDoc(true);
+                            try {
+                                const formData = new FormData();
+                                formData.append('file', file);
+                                const res = await fetch(`${localConfig.apiUrl}/parse_file`, { method: 'POST', body: formData });
+                                if (!res.ok) throw new Error('Failed to parse document.');
+                                const { text } = await res.json();
+                                setUploadedDocText(text);
+                                setUploadedDocName(file.name);
+                                const suggestions = generateDocSuggestions(text);
+                                setMessages(prev => [...prev, { id: Date.now(), role: 'bot', isSuggestion: true, docName: file.name, suggestions, text: '' }]);
+                            } catch (err) {
+                                setMessages(prev => [...prev, { id: Date.now(), role: 'bot', text: `❌ Error: ${err.message}`, isError: true }]);
+                            } finally {
+                                setIsUploadingDoc(false);
+                            }
+                        }} />
+                        <button className="mc-action-chip" onClick={() => pasteFileRef.current?.click()}>📎 UPLOAD PDF / LABS</button>
                     </div>
 
                     <div className="mc-input-row">
                         <textarea
                             ref={inputRef}
                             className="mc-input-field"
-                            placeholder={uploadedDocName ? `Ask about ${uploadedDocName}...` : 'Ask a health question or paste a clinical summary...'}
+                            placeholder="Ask a medical question..."
                             value={input}
                             onChange={e => setInput(e.target.value)}
                             onKeyDown={handleKeyDown}
                             rows={1}
                         />
-                        <button
-                            className="mc-send-btn"
-                            onClick={() => sendMessage()}
-                            disabled={!input.trim() || isThinking}
-                        >
-                            ▶
-                        </button>
+                        <button className="mc-send-btn" onClick={() => sendMessage()} disabled={!input.trim() || isThinking}>▶</button>
                     </div>
                 </div>
             </div>
-            
+
             <ApiKeyModal 
                 isOpen={isApiModalOpen} 
                 onClose={() => setIsApiModalOpen(false)} 
-                defaultProvider={localConfig.provider || 'Mistral'}
                 onSave={(key) => {
                     setLocalApiKey(key);
                     setIsApiModalOpen(false);
-                    if (pendingQuery) {
-                        executeQuery(pendingQuery, key);
-                        setPendingQuery('');
-                    }
+                    if (pendingQuery) executeQuery(pendingQuery, key);
                 }} 
             />
         </div>

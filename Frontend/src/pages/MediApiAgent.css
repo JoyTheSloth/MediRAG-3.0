@@ -3,14 +3,14 @@
 .agent-container {
     max-width: 1200px;
     margin: 0 auto 40px;
-    padding: 120px 20px 40px;
+    padding: 30px 20px 40px;
     color: #E2E8F0;
     min-height: 80vh;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
 .agent-header {
-    text-align: left;
+    text-align: center;
     margin-bottom: 40px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     padding-bottom: 20px;
@@ -555,3 +555,288 @@ input:checked + .slider:before {
 [data-theme="light"] .log-item { border-bottom-color: rgba(0,0,0,0.05); }
 [data-theme="light"] .log-text { color: #334155; }
 [data-theme="light"] .slider { background-color: rgba(0,0,0,0.1); }
+
+/* =========================================================================
+   LIGHT THEME CARD & VISUALIZATION IMPROVEMENTS
+   ========================================================================= */
+[data-theme="light"] .gov-kpi-card-v2 {
+    background: #FFFFFF !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03) !important;
+}
+
+[data-theme="light"] .kpi-v2-label {
+    color: #4B5563 !important;
+}
+
+[data-theme="light"] .kpi-v2-val {
+    color: #111827 !important;
+}
+
+[data-theme="light"] .kpi-v2-footer {
+    color: #6B7280 !important;
+}
+
+[data-theme="light"] .traffic-control-section {
+    background: #FFFFFF !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03) !important;
+}
+
+[data-theme="light"] .traffic-header h3 {
+    color: #111827 !important;
+}
+
+[data-theme="light"] .traffic-header p {
+    color: #4B5563 !important;
+}
+
+[data-theme="light"] .traffic-stats {
+    border-top-color: rgba(0, 0, 0, 0.06) !important;
+}
+
+[data-theme="light"] .stat-label {
+    color: #6B7280 !important;
+}
+
+[data-theme="light"] .stat-value {
+    color: #111827 !important;
+}
+
+/* =========================================================================
+   MOBILE RESPONSIVE OVERRIDES (MEDIAPI AGENT)
+   ========================================================================= */
+@media (max-width: 768px) {
+    .agent-container {
+        margin-top: 30px;
+        padding: 40px 10px 30px;
+        margin-bottom: 20px;
+    }
+
+    .agent-header {
+        margin-bottom: 24px;
+        padding-bottom: 12px;
+    }
+
+    .agent-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .agent-header p {
+        font-size: 0.85rem;
+    }
+
+    .agent-layout {
+        gap: 20px;
+    }
+
+    .agent-col {
+        gap: 20px;
+    }
+
+    .agent-section {
+        padding: 14px;
+        border-radius: 12px;
+    }
+
+    .section-title {
+        font-size: 0.95rem;
+    }
+
+    .section-desc {
+        font-size: 0.8rem;
+        margin-bottom: 16px;
+    }
+
+    /* Code Block Compact overrides */
+    .code-header {
+        padding: 8px 12px;
+        gap: 8px;
+    }
+
+    .method {
+        padding: 1px 6px;
+        font-size: 0.7rem;
+    }
+
+    .endpoint {
+        font-size: 0.75rem;
+    }
+
+    .code-content {
+        padding: 12px;
+        font-size: 0.75rem;
+    }
+
+    /* Rule Builder stacking */
+    .builder-row {
+        flex-direction: column;
+        gap: 12px;
+        align-items: stretch;
+    }
+
+    .builder-field select {
+        padding: 10px;
+        font-size: 0.85rem;
+    }
+
+    .add-rule-btn {
+        width: 100%;
+        height: 40px;
+        padding: 10px;
+        font-size: 0.85rem;
+    }
+
+    /* Animated Pipeline compact mode */
+    .pipeline-container {
+        padding: 10px 0 10px 20px;
+        gap: 20px;
+    }
+
+    .pipeline-track {
+        left: 40px;
+        top: 25px;
+        bottom: 25px;
+    }
+
+    .node-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
+        border-radius: 10px;
+    }
+
+    .node-title {
+        font-size: 0.9rem;
+    }
+
+    .node-sub {
+        font-size: 0.7rem;
+    }
+
+    /* Rule Cards compact mode */
+    .rule-card {
+        padding: 10px 12px;
+        border-radius: 8px;
+    }
+
+    .rule-name {
+        font-size: 0.85rem;
+    }
+
+    .rule-summary {
+        font-size: 0.75rem;
+    }
+
+    /* Activity Logs compact mode */
+    .log-item {
+        gap: 8px;
+        font-size: 0.75rem;
+        padding-bottom: 10px;
+    }
+
+    .log-meta {
+        font-size: 0.7rem;
+    }
+
+    /* Intelligence Hub KPI Cards Mobile compact */
+    .gov-kpi-stack {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px !important;
+        margin-bottom: 20px !important;
+    }
+
+    .gov-kpi-card-v2 {
+        padding: 12px !important;
+        border-radius: 12px !important;
+    }
+
+    .kpi-v2-header {
+        margin-bottom: 6px !important;
+        gap: 6px !important;
+    }
+
+    .kpi-v2-icon {
+        font-size: 14px !important;
+    }
+
+    .kpi-v2-label {
+        font-size: 9px !important;
+        letter-spacing: 0.5px !important;
+    }
+
+    .kpi-v2-val {
+        font-size: 20px !important;
+    }
+
+    .kpi-v2-trend {
+        font-size: 9px !important;
+    }
+
+    .kpi-v2-footer {
+        font-size: 9px !important;
+        margin-top: 4px !important;
+    }
+
+    /* Live Traffic Firewall Interceptor Compact */
+    .traffic-control-section {
+        padding: 14px !important;
+        border-radius: 12px !important;
+        margin-bottom: 20px !important;
+    }
+
+    .traffic-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 10px !important;
+        margin-bottom: 16px !important;
+    }
+
+    .traffic-header h3 {
+        font-size: 14px !important;
+    }
+
+    .traffic-header p {
+        font-size: 11px !important;
+    }
+
+    .traffic-badge {
+        font-size: 9px !important;
+        padding: 3px 8px !important;
+    }
+
+    .traffic-terminal {
+        height: 160px !important;
+        padding: 10px !important;
+        font-size: 10px !important;
+        gap: 6px !important;
+        border-radius: 8px !important;
+    }
+
+    /* Hide timestamp column on mobile to prevent overflow */
+    .t-timestamp, .traffic-row > span:first-child {
+        display: none !important;
+    }
+
+    .traffic-row {
+        grid-template-columns: 80px 1fr 75px !important;
+        font-size: 9px !important;
+        gap: 6px !important;
+        padding: 3px 0 !important;
+    }
+
+    .traffic-stats {
+        gap: 12px !important;
+        justify-content: space-between !important;
+        margin-top: 12px !important;
+        padding-top: 12px !important;
+    }
+
+    .stat-label {
+        font-size: 8px !important;
+    }
+
+    .stat-value {
+        font-size: 13px !important;
+    }
+}

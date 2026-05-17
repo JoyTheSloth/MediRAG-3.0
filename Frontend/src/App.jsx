@@ -11,6 +11,7 @@ import './pages/Evaluate.css';
 import './pages/Dashboard.css';
 import './pages/Governance.css';
 import './pages/PatientExperience.css';
+import './pages/Implementation.css';
 import Home from './pages/Home';
 import ApiDocs from './pages/ApiDocs';
 import About from './pages/About';
@@ -19,6 +20,7 @@ import Console from './pages/Console';
 import MediChat from './pages/MediChat';
 import MediApiAgent from './pages/MediApiAgent';
 import Research from './pages/Research';
+import Implementation from './pages/Implementation';
 
 import Footer from './components/Footer';
 import ProjectGuide from './components/ProjectGuide';
@@ -78,7 +80,7 @@ const App = () => {
             <EcgCanvasBg />
             <Navbar />
             {showProjectGuide && <ProjectGuide />}
-            <main>
+            <main className="app-main-content">
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/api-docs" element={<ApiDocs />} />
@@ -87,6 +89,7 @@ const App = () => {
                     <Route path="/chat" element={<MediChat />} />
                     <Route path="/api-agent" element={<MediApiAgent />} />
                     <Route path="/research" element={<Research />} />
+                    <Route path="/implementation" element={<Implementation />} />
                     <Route path="*" element={<Home />} />
                 </Routes>
             </main>

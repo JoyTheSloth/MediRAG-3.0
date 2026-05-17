@@ -1,0 +1,439 @@
+.card-swap-container {
+  /* Positioning handled by parent and inline styles */
+  perspective: 1200px;
+  overflow: visible;
+  transform-origin: center center;
+}
+
+.card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(13, 17, 23, 0.7);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  box-shadow: 
+    0 0 0 1px rgba(255, 255, 255, 0.05) inset,
+    0 20px 50px -10px rgba(0, 0, 0, 0.9),
+    0 10px 30px -5px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  transform-style: preserve-3d;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  background: rgba(13, 17, 23, 0.85);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset,
+    0 30px 60px -12px rgba(0, 0, 0, 0.95),
+    0 15px 40px -8px rgba(0, 0, 0, 0.6);
+}
+
+.card .card-header {
+  background: rgba(10, 10, 10, 0.6);
+  height: 52px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  flex-shrink: 0;
+  position: relative;
+}
+
+/* Window Traffic Lights - more Apple-like */
+.card-header::before {
+  content: '';
+  display: flex;
+  gap: 8px;
+  width: 52px;
+  height: 12px;
+  background: transparent;
+  background-image: radial-gradient(circle, #ff5f56 50%, transparent 50%),
+                    radial-gradient(circle, #ffbd2e 50%, transparent 50%),
+                    radial-gradient(circle, #27c93f 50%, transparent 50%);
+  background-size: 12px 12px;
+  background-repeat: no-repeat;
+  background-position: 0 center, 20px center, 40px center;
+  opacity: 1;
+}
+
+.card .card-header .card-label {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  font-family: 'Inter', sans-serif;
+  text-transform: uppercase;
+}
+
+.card .card-body {
+  flex: 1;
+  padding: 32px;
+  overflow-y: auto;
+  position: relative;
+}
+
+/* Scanning effect - subtler */
+.card-body::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, transparent 50%, rgba(255, 255, 255, 0.015) 50%);
+  background-size: 100% 4px;
+  pointer-events: none;
+  opacity: 0.3;
+}
+
+.card-icon {
+  width: 18px;
+  height: 18px;
+  color: var(--primary-accent);
+  margin-left: auto;
+  opacity: 0.8;
+}
+
+/* Light theme overrides for CardSwap */
+[data-theme="light"] .card {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 
+    0 0 0 1px rgba(0, 0, 0, 0.02) inset,
+    0 25px 50px -12px rgba(26, 31, 54, 0.15);
+}
+
+[data-theme="light"] .card .card-header {
+  background: rgba(248, 250, 252, 0.6);
+  border-bottom-color: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .card .card-header .card-label {
+  color: #475569;
+}
+
+[data-theme="light"] .card-icon {
+  color: var(--primary-accent);
+}
+
+[data-theme="light"] .query-text {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.05);
+  color: #1a1f36;
+}
+
+[data-theme="light"] .status-bit {
+  background: rgba(255, 255, 255, 0.8);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #475569;
+}
+
+[data-theme="light"] .audit-description {
+  color: #475569;
+}
+
+[data-theme="light"] .trace-line {
+  background: rgba(0, 0, 0, 0.02);
+  border-left-color: rgba(0, 0, 0, 0.1);
+  color: #475569;
+}
+
+[data-theme="light"] .telemetry-item {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .metric-name {
+  color: #475569;
+}
+
+[data-theme="light"] .metric-progress {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .card-gauge-number {
+  color: #1a1f36;
+  text-shadow: none;
+}
+
+/* Internal Content Layouts */
+.audit-card-body {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+  height: 100%;
+}
+
+.audit-info-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.query-meta {
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.query-text {
+  font-size: 14px;
+  color: #FFFFFF;
+  line-height: 1.6;
+  font-family: 'Inter', sans-serif;
+  letter-spacing: -0.01em;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.query-label {
+  color: var(--primary-accent);
+  font-weight: 800;
+  margin-right: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.query-status {
+  display: flex;
+  gap: 12px;
+}
+
+.status-bit {
+  font-size: 11px;
+  padding: 4px 12px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.divider {
+  height: 1px;
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.2), transparent);
+  margin: 24px 0;
+}
+
+.card-risk-badge {
+  font-size: 11px;
+  font-weight: 900;
+  padding: 6px 14px;
+  border-radius: 6px;
+  letter-spacing: 0.08em;
+  display: inline-block;
+  text-transform: uppercase;
+}
+
+.orange-badge {
+  background: rgba(245, 166, 35, 0.15);
+  color: #F5A623;
+  border: 1px solid rgba(245, 166, 35, 0.3);
+  box-shadow: 0 0 15px rgba(245, 166, 35, 0.1);
+}
+
+.audit-description {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.6;
+  margin-top: 12px;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Gauge Styles */
+.card-gauge-wrapper {
+  width: 220px;
+  height: 220px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  margin-left: auto;
+}
+
+.card-gauge-svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 0 20px rgba(245, 166, 35, 0.15));
+}
+
+.card-gauge-bg {
+  stroke: rgba(255, 255, 255, 0.05);
+}
+
+.card-gauge-fill {
+  transition: stroke-dasharray 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-gauge-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -10%);
+  text-align: center;
+}
+
+.card-gauge-number {
+  font-size: 52px;
+  font-weight: 900;
+  color: #FFFFFF;
+  line-height: 1;
+  font-family: 'Space Grotesk', sans-serif;
+  text-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+}
+
+.card-gauge-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 8px;
+  font-weight: 700;
+}
+
+/* Metrics Grid */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px 48px;
+}
+
+.metric-row {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.metric-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.metric-name {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 600;
+}
+
+.metric-val {
+  font-size: 13px;
+  font-weight: 800;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.metric-progress {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.metric-bar {
+  height: 100%;
+  border-radius: 4px;
+}
+
+/* Telemetry Grid */
+.telemetry-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.telemetry-item {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  text-align: center;
+}
+
+.telemetry-label {
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.telemetry-val {
+  font-size: 16px;
+  font-weight: 800;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Trace Log */
+.trace-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.trace-line {
+  font-size: 13px;
+  font-family: 'JetBrains Mono', monospace;
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  border-left: 3px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: background 0.2s ease;
+}
+
+.trace-line:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.t-prefix {
+  font-weight: 800;
+  opacity: 0.9;
+  font-size: 11px;
+}
+
+.trace-line.err { border-left-color: #EF4444; color: #EF4444; background: rgba(239, 68, 68, 0.08); }
+.trace-line.warn { border-left-color: #F5A623; color: #F5A623; background: rgba(245, 166, 35, 0.08); }
+.trace-line.success { border-left-color: #10B981; color: #10B981; background: rgba(16, 185, 129, 0.08); }
+
+@media (max-width: 1024px) {
+  .card-swap-container {
+    transform: scale(0.85) translate(15%, 15%);
+    bottom: -40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .card-swap-container {
+    transform: scale(0.75) translate(25%, 25%);
+    bottom: -60px;
+  }
+}
+
+@media (max-width: 480px) {
+  .card-swap-container {
+    transform: scale(0.55) translate(25%, 25%);
+  }
+}

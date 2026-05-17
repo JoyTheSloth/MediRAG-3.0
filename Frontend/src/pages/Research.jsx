@@ -280,6 +280,79 @@ const Research = () => {
                     .ragas-grid { grid-template-columns: 1fr 1fr; }
                     .export-container { grid-template-columns: 1fr; }
                 }
+
+                @media(max-width: 768px) {
+                    /* ── Page layout ── */
+                    .research-page { padding-top: 90px; padding-bottom: 40px; }
+                    .research-header { margin-bottom: 32px; }
+
+                    /* ── Typography ── */
+                    .tag-label { font-size: 11px; padding: 5px 10px; }
+
+                    /* ── Ablation benchmark grid ── */
+                    .ablation-grid {
+                        grid-template-columns: 1fr !important;
+                        gap: 16px;
+                        margin-bottom: 32px;
+                    }
+                    .ablation-card { padding: 20px 14px; }
+                    .bar-row { gap: 8px; margin-bottom: 14px; }
+                    .bar-label { width: 90px; font-size: 11px; }
+                    .bar-val { width: 36px; font-size: 12px; }
+
+                    /* ── RAGAS grid ── */
+                    .ragas-grid {
+                        grid-template-columns: 1fr 1fr !important;
+                        gap: 12px;
+                    }
+                    .ragas-dial { padding: 16px 10px; }
+                    .dial-value { font-size: 26px; }
+                    .dial-label { font-size: 11px; }
+
+                    /* ── Failure modes ── */
+                    .failure-modes { margin-top: 40px; }
+                    .fm-grid {
+                        grid-template-columns: 1fr !important;
+                        gap: 12px;
+                    }
+                    .fm-header { padding: 10px 14px; font-size: 13px; }
+                    .fm-body { padding: 14px; font-size: 12px; }
+
+                    /* ── Export container ── */
+                    .export-container {
+                        grid-template-columns: 1fr !important;
+                        gap: 16px;
+                        min-height: unset;
+                    }
+                    .export-controls { flex-direction: row; flex-wrap: wrap; }
+                    .control-card { flex: 1 1 calc(50% - 7px); padding: 14px 10px; gap: 10px; min-width: 120px; }
+                    .control-icon { font-size: 18px; }
+                    .control-info h4 { font-size: 12px; }
+                    .control-info p { font-size: 10px; }
+
+                    /* ── Viewer pane ── */
+                    .viewer-pane { min-height: 300px; }
+                    .viewer-header { padding: 8px 12px; }
+                    .viewer-tabs { gap: 12px; }
+                    .vtab { font-size: 11px; }
+                    .viewer-actions { gap: 6px; }
+                    .v-action-btn { padding: 4px 8px; font-size: 11px; }
+                    .viewer-code { padding: 12px; font-size: 10px; line-height: 1.6; }
+                }
+
+                @media(max-width: 480px) {
+                    /* ── RAGAS to single column ── */
+                    .ragas-grid { grid-template-columns: 1fr 1fr !important; }
+                    .dial-value { font-size: 22px; }
+
+                    /* ── Export controls stacked ── */
+                    .export-controls { flex-direction: column; }
+                    .control-card { flex: 1 1 100%; }
+
+                    /* ── Bar chart labels smaller ── */
+                    .bar-label { width: 75px; font-size: 10px; }
+                    .bar-track { height: 8px; }
+                }
             `}</style>
 
             <div className="section-container">

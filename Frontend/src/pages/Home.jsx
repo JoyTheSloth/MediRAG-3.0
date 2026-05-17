@@ -1,6 +1,9 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import ScrambledText from '../components/ScrambledText';
+import CardSwap, { Card } from '../components/CardSwap';
+import './home-mobile.css';
 
 const Home = () => {
     useEffect(() => {
@@ -31,15 +34,42 @@ const Home = () => {
         counters.forEach(c => observer.observe(c));
     }, []);
 
+    const fadeInUp = {
+        initial: { opacity: 0, y: 40 },
+        whileInView: { opacity: 1, y: 0 },
+        viewport: { once: true, margin: "-100px" },
+        transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
+    };
+
+    const fadeInLeft = {
+        initial: { opacity: 0, x: -40 },
+        whileInView: { opacity: 1, x: 0 },
+        viewport: { once: true },
+        transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
+    };
+
+    const fadeInRight = {
+        initial: { opacity: 0, x: 40 },
+        whileInView: { opacity: 1, x: 0 },
+        viewport: { once: true },
+        transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
+    };
+
+    const staggerContainer = {
+        initial: { opacity: 0 },
+        whileInView: { 
+            opacity: 1,
+            transition: { staggerChildren: 0.1, delayChildren: 0.2 }
+        },
+        viewport: { once: true }
+    };
+
   return (
     <>
 
     <header id="home" className="hero-section">
         <div className="hero-container">
-            <div className="hero-left reveal-left">
-                <div className="hero-logo-container" style={{ marginBottom: '20px' }}>
-                    <img src="/logo.png" alt="MediRAG Logo" style={{ height: '80px', width: 'auto' }} />
-                </div>
+            <motion.div className="hero-left" {...fadeInLeft}>
                 <div className="badge badge-outline">
                     <span className="shield-icon">🛡</span> Open Source · India Innovates 2026
                 </div>
@@ -58,7 +88,7 @@ const Home = () => {
                     <Link to="/api-docs" className="secondary-btn large cursor-target" style={{textDecoration:'none', display:'inline-flex', alignItems:'center', gap:'6px'}}>Read the Docs</Link>
                 </div>
 
-                <div className="cursor-demo-section reveal-up">
+                <div className="cursor-demo-section">
                     <h4 className="demo-label">CROSSHAIR SYSTEM READY</h4>
                     <p className="demo-text">Hover over the interactive elements below to test the targeting system.</p>
                     <div className="demo-actions">
@@ -73,97 +103,137 @@ const Home = () => {
                     <span className="trust-item"><span className="check-icon">✓</span> 100% open source</span>
                 </div>
 
-            </div>
+            </motion.div>
 
-            <div className="hero-right reveal-right">
-                <div className="floating-card audit-card">
-                    {/* Scanning line overlay */}
-                    <div className="scan-line"></div>
-
-                    <div className="card-header">
-                        <div className="mac-dots">
-                            <span className="dot red-dot"></span>
-                            <span className="dot yellow-dot"></span>
-                            <span className="dot green-dot"></span>
-                        </div>
-                        <div className="card-label">SYSTEM AUDIT · ACTIVE</div>
-                        <div className="telemetry-box">
-                            <span className="telemetry-dot pulse"></span>
-                            <span className="telemetry-text">NODE 082</span>
-                        </div>
-                    </div>
-
-                    <div className="card-body">
-                        <div className="query-meta">
-                            <div className="query-text">
-                                <span className="query-label">INPUT:</span> Dosage of metformin for T2 diabetes?
+            <motion.div className="hero-right" {...fadeInRight}>
+                <div style={{ height: '550px', width: '100%', position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <CardSwap
+                        width={820}
+                        height={480}
+                        cardDistance={60}
+                        verticalDistance={45}
+                        delay={6000}
+                        pauseOnHover={true}
+                        skewAmount={3}
+                    >
+                        {/* CARD 1: OVERVIEW */}
+                        <Card customClass="audit-card">
+                            <div className="card-header">
+                                <div className="card-label">System Audit · Overview</div>
+                                <svg className="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
                             </div>
-                            <div className="query-status">
-                                <span className="status-bit">200 OK</span>
-                                <span className="status-bit">RAG:ACTIVE</span>
-                            </div>
-                        </div>
-
-                        <div className="divider"></div>
-                        
-                        <div className="gauge-container">
-                            <svg className="gauge-svg" viewBox="0 0 120 120">
-                                <path className="gauge-bg" d="M 20 95 A 50 50 0 1 1 100 95" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="10" strokeLinecap="round"/>
-                                {/* Segmented gauge look */}
-                                <path id="gauge-fill" className="gauge-fill orange-fill" d="M 20 95 A 50 50 0 1 1 100 95" fill="none" strokeWidth="10" strokeLinecap="round" strokeDasharray="165 235" strokeDashoffset="0"/>
-                            </svg>
-                            <div className="gauge-content">
-                                <div className="gauge-number pulse-ani" id="gauge-number">67</div>
-                                <div className="gauge-label">RISK SCORE</div>
-                            </div>
-                        </div>
-
-                        <div className="risk-indicator-row">
-                            <span className="risk-badge orange-badge">HIGH RISK DETECTED</span>
-                        </div>
-                        
-                        <div className="score-rows technical">
-                            {[
-                                { name: 'Faithfulness', val: '0.45', color: 'red', tag: 'DeBERTa-NLI' },
-                                { name: 'Entity Accuracy', val: '0.60', color: 'amber', tag: 'SciSpaCy' },
-                                { name: 'Source Credib.', val: '0.80', color: 'green', tag: 'Tier Analysis' },
-                                { name: 'Consistency', val: '0.28', color: 'green', tag: 'Internal NLI' },
-                            ].map((m, i) => (
-                                <div key={i} className="score-row">
-                                    <div className="score-main">
-                                        <span className="score-name">{m.name}</span>
-                                        <span className="score-tag">{m.tag}</span>
+                            <div className="card-body">
+                                <div className="audit-card-body">
+                                    <div className="audit-info-main">
+                                        <div className="query-meta">
+                                            <div className="query-text">
+                                                <span className="query-label">INPUT:</span> Dosage of metformin for T2 diabetes?
+                                            </div>
+                                            <div className="query-status">
+                                                <span className="status-bit">200 OK</span>
+                                                <span className="status-bit">RAG:ACTIVE</span>
+                                            </div>
+                                        </div>
+                                        <div className="divider"></div>
+                                        <div className="risk-indicator-row">
+                                            <span className="card-risk-badge orange-badge">HIGH RISK DETECTED</span>
+                                        </div>
+                                        <p className="audit-description">
+                                            Significant divergence between model output and verified clinical source documents (PubMed/NICE).
+                                        </p>
                                     </div>
-                                    <div className="score-bar-container">
-                                        <div className={`score-bar ${m.color}-bg`} style={{ width: `${parseFloat(m.val)*100}%` }}></div>
+                                    <div className="card-gauge-wrapper">
+                                        <svg className="card-gauge-svg" viewBox="0 0 120 120">
+                                            <path className="card-gauge-bg" d="M 20 95 A 50 50 0 1 1 100 95" fill="none" strokeWidth="8" strokeLinecap="round"/>
+                                            <path className="card-gauge-fill orange-fill pulse-ani" d="M 20 95 A 50 50 0 1 1 100 95" fill="none" strokeWidth="8" strokeLinecap="round" strokeDasharray="165 235" stroke="#F5A623" />
+                                        </svg>
+                                        <div className="card-gauge-content">
+                                            <div className="card-gauge-number">67</div>
+                                            <div className="card-gauge-label">RISK</div>
+                                        </div>
                                     </div>
-                                    <div className={`score-val ${m.color}-text`}>{m.val}</div>
                                 </div>
-                            ))}
-                        </div>
-                        
-                        <div className="audit-trace">
-                            <div className="trace-header">AUDIT TRACE LOG</div>
-                            <div className="trace-line">
-                                <span className="t-prefix">[ERR]</span> Claims extraction mismatch at clause 2.
                             </div>
-                            <div className="trace-line warn">
-                                <span className="t-prefix">[WARN]</span> Unverified dosage entity: 850mg tid.
+                        </Card>
+
+                        {/* CARD 2: METRICS */}
+                        <Card customClass="audit-card">
+                            <div className="card-header">
+                                <div className="card-label">Safety Metrics · Technical Analysis</div>
+                                <svg className="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
                             </div>
-                            <div className="trace-line success">
-                                <span className="t-prefix">[OK]</span> Source Tier 1 verified (RCT).
+                            <div className="card-body">
+                                <div className="metrics-grid">
+                                    {[
+                                        { name: 'Faithfulness', val: '0.45', color: 'red' },
+                                        { name: 'Entity Accuracy', val: '0.60', color: 'amber' },
+                                        { name: 'Source Credib.', val: '0.80', color: 'green' },
+                                        { name: 'Consistency', val: '0.28', color: 'red' },
+                                    ].map((m, i) => (
+                                        <div key={i} className="metric-row">
+                                            <div className="metric-info">
+                                                <span className="metric-name">{m.name}</span>
+                                                <span className={`metric-val ${m.color}-text`}>{m.val}</span>
+                                            </div>
+                                            <div className="metric-progress">
+                                                <div className={`metric-bar ${m.color}-bg`} style={{ width: `${parseFloat(m.val)*100}%` }}></div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="telemetry-row">
+                                    {[
+                                        { l: 'LATENCY', v: '2.4s', c: '#10B981' },
+                                        { l: 'UPTIME', v: '99.9%', c: '#3B82F6' },
+                                        { l: 'QUERIES', v: '1.2k', c: '#F5A623' },
+                                        { l: 'TOKENS', v: '4.8k', c: 'rgba(255,255,255,0.6)' },
+                                    ].map((t, i) => (
+                                        <div key={i} className="telemetry-item">
+                                            <div className="telemetry-label">{t.l}</div>
+                                            <div className="telemetry-val" style={{color: t.c}}>{t.v}</div>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
-                        </div>
-                    </div>
+                        </Card>
+
+                        {/* CARD 3: TRACE LOG */}
+                        <Card customClass="audit-card">
+                            <div className="card-header">
+                                <div className="card-label">Audit Trace Log · Real-time Stream</div>
+                                <svg className="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                            </div>
+                            <div className="card-body">
+                                <div className="trace-container">
+                                    <div className="trace-line err">
+                                        <span className="t-prefix">[ERR]</span> Claims extraction mismatch at clause 2.
+                                    </div>
+                                    <div className="trace-line warn">
+                                        <span className="t-prefix">[WARN]</span> Unverified dosage entity: 850mg tid.
+                                    </div>
+                                    <div className="trace-line success">
+                                        <span className="t-prefix">[OK]</span> Source Tier 1 verified (PubMed RCT).
+                                    </div>
+                                    <div className="trace-line warn">
+                                        <span className="t-prefix">[WARN]</span> Potential contradiction in paragraph 3.
+                                    </div>
+                                    <div className="trace-line success">
+                                        <span className="t-prefix">[OK]</span> Patient privacy redact protocol applied.
+                                    </div>
+                                </div>
+                                <div className="scan-line"></div>
+                            </div>
+                        </Card>
+                    </CardSwap>
                 </div>
-            </div>
+            </motion.div>
         </div>
     </header>
 
     
     <section className="stats-band">
         <div className="stats-shimmer"></div>
-        <div className="stats-container reveal-up">
+        <motion.div className="stats-container" {...fadeInUp}>
             <div className="stat-item">
                 <div className="stat-value counter" data-target="4">0</div>
                 <div className="stat-label">Evaluation Modules</div>
@@ -183,13 +253,13 @@ const Home = () => {
                 <div className="stat-value counter" data-target="0">0</div>
                 <div className="stat-label">Paid APIs Required</div>
             </div>
-        </div>
+        </motion.div>
     </section>
 
     
     <section className="section" id="how-it-works">
         <div className="section-container">
-            <div className="framework-header reveal-up">
+            <motion.div className="framework-header" {...fadeInUp}>
                 <div className="fh-left">
                     <div className="section-label" style={{justifyContent: 'flex-start', color: '#10B981', letterSpacing: '2px', fontSize: '12px'}}>THE SAFETY FRAMEWORK</div>
                     <h2 className="section-title" style={{textAlign: 'left', marginTop: '10px', fontSize: 'clamp(28px, 4vw, 42px)', marginBottom: '0'}}>Rigorous Clinical Verification Pipeline</h2>
@@ -199,7 +269,7 @@ const Home = () => {
                         "Deploying medical LLMs without verification is a liability. We provide the mathematical proof of clinical safety."
                     </div>
                 </div>
-            </div>
+            </motion.div>
 
             <style>
             {`
@@ -300,14 +370,35 @@ const Home = () => {
             /* Light mode overrides inside style tag to be safe */
             [data-theme="light"] .framework-header .section-title { color: #1A1F36; }
             [data-theme="light"] .fh-right { border-left-color: rgba(0,0,0,0.1); }
-            [data-theme="light"] .fh-quote { color: #6B7280; }
+            [data-theme="light"] .fh-quote { color: #4B5563; }
+            
             [data-theme="light"] .framework-card { 
-                background: linear-gradient(135deg, #FFFFFF, #F8FAFC);
-                border: 1px solid rgba(0,0,0,0.06);
-                box-shadow: var(--shadow-card); 
+                border: 1px solid rgba(0,0,0,0.05);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.03); 
+                transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             }
-            [data-theme="light"] .fc-title { color: #1A1F36; }
-            [data-theme="light"] .fc-desc { color: #6B7280; }
+            
+            [data-theme="light"] .fc-green { background: linear-gradient(135deg, #10B981, #059669); }
+            [data-theme="light"] .fc-blue { background: linear-gradient(135deg, #3B82F6, #2563EB); }
+            [data-theme="light"] .fc-amber { background: linear-gradient(135deg, #F59E0B, #D97706); }
+            [data-theme="light"] .fc-rose { background: linear-gradient(135deg, #E11D48, #BE123C); }
+
+            [data-theme="light"] .framework-card .fc-title,
+            [data-theme="light"] .framework-card .fc-desc,
+            [data-theme="light"] .framework-card .fc-tag,
+            [data-theme="light"] .framework-card .fc-icon {
+                color: #FFFFFF !important;
+            }
+
+            [data-theme="light"] .framework-card .fc-icon {
+                background: rgba(255, 255, 255, 0.2) !important;
+            }
+
+            [data-theme="light"] .framework-card:hover {
+                transform: translateY(-10px) scale(1.02);
+                box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+                filter: brightness(1.1);
+            }
 
             @media (max-width: 1024px) {
                 .framework-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
@@ -320,57 +411,57 @@ const Home = () => {
             `}
             </style>
 
-            <div className="framework-grid reveal-up">
+            <motion.div className="framework-grid" {...staggerContainer}>
                 
-                <div className="framework-card fc-green">
+                <motion.div className="framework-card fc-green" variants={fadeInUp}>
                     <div className="fc-icon">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                     </div>
                     <h3 className="fc-title">Faithfulness Scoring</h3>
                     <p className="fc-desc">NLI-based claim entailment utilizing fine-tuned DeBERTa-v3 to verify if the LLM output is grounded in provided context.</p>
                     <div className="fc-tag">NLI VERIFICATION</div>
-                </div>
+                </motion.div>
 
-                <div className="framework-card fc-blue">
+                <motion.div className="framework-card fc-blue" variants={fadeInUp}>
                     <div className="fc-icon">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" /></svg>
                     </div>
                     <h3 className="fc-title">Entity Verification</h3>
                     <p className="fc-desc">Drug & dosage cross-check via SciSpaCy NER and DrugBank validation to prevent lethal dosage hallucinations.</p>
                     <div className="fc-tag">BIOMEDICAL NER</div>
-                </div>
+                </motion.div>
 
-                <div className="framework-card fc-amber">
+                <motion.div className="framework-card fc-amber" variants={fadeInUp}>
                     <div className="fc-icon">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M4 22v-8h16v8H4zm2-6v4h4v-4H6zm6 0v4h4v-4h-4zm0-14v10h4V2h-4zM6 8v4h4V8H6z"/></svg>
                     </div>
                     <h3 className="fc-title">Source Credibility</h3>
                     <p className="fc-desc">Hierarchical ranking of medical literature, from RCT meta-analyses to case reports and grey literature.</p>
                     <div className="fc-tag">EVIDENCE TIERING</div>
-                </div>
+                </motion.div>
 
-                <div className="framework-card fc-rose">
+                <motion.div className="framework-card fc-rose" variants={fadeInUp}>
                     <div className="fc-icon">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L1 21h22L12 2zm0 3.5l7.5 13.5h-15L12 5.5zM11 10v4h2v-4h-2zm0 5v2h2v-2h-2z"/></svg>
                     </div>
                     <h3 className="fc-title">Contradiction Detection</h3>
                     <p className="fc-desc">Advanced internal consistency checking across sentences and paragraphs to detect self-contradictory reasoning.</p>
                     <div className="fc-tag">COHERENCE LOGIC</div>
-                </div>
+                </motion.div>
 
-            </div>
+            </motion.div>
         </div>
     </section>
 
     
     <section className="section" id="risk-bands">
         <div className="section-container">
-            <div className="section-header reveal-up">
-                <div className="section-label home-section-label"><span className="sl-dash">—</span>RISK SCORING<span className="sl-dash">—</span></div>
+            <motion.div className="section-header" {...fadeInUp}>
+                <div className="section-label home-section-label">RISK SCORING</div>
                 <h2 className="section-title">Know Exactly How Risky Every Answer Is</h2>
-            </div>
+            </motion.div>
             
-            <div className="risk-grid reveal-up">
+            <motion.div className="risk-grid" {...staggerContainer}>
 
                 {/* LOW RISK */}
                 <div className="risk-card-v2 risk-low">
@@ -430,7 +521,7 @@ const Home = () => {
                 </div>
 
                 {/* CRITICAL RISK */}
-                <div className="risk-card-v2 risk-crit">
+                <motion.div className="risk-card-v2 risk-crit" variants={fadeInUp}>
                     <div className="rc-bg-img"><img src="/risk_crit.png" alt="Critical Risk Visual" /></div>
                     <div className="rc-orb rc-orb-1"></div>
                     <div className="rc-orb rc-orb-2"></div>
@@ -446,57 +537,57 @@ const Home = () => {
                         <div className="rc-desc">Severe hallucinations. Contradictions or critical entity errors found.</div>
                         <div className="rc-action">Block ↗</div>
                     </div>
-                </div>
+                </motion.div>
 
-            </div>
+            </motion.div>
         </div>
     </section>
 
     
     <section className="section" id="tech-stack">
         <div className="section-container">
-            <div className="section-header reveal-up">
-                <div className="section-label home-section-label"><span className="sl-dash">—</span>TECHNOLOGY<span className="sl-dash">—</span></div>
+            <motion.div className="section-header" {...fadeInUp}>
+                <div className="section-label home-section-label">TECHNOLOGY</div>
                 <h2 className="section-title">Built on Best-in-Class Open Source Tools</h2>
                 <p className="section-subtitle">Every component is free, reproducible, and runs without any paid API.</p>
-            </div>
+            </motion.div>
             
-            <div className="tech-grid reveal-up">
-                <div className="tech-card">
+            <motion.div className="tech-grid" {...staggerContainer}>
+                <motion.div className="tech-card" variants={fadeInUp}>
                     <div className="tech-icon" style={{color:'#FF6B6B'}}>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
                     </div>
                     <div className="tech-name">BioBERT</div>
                     <div className="tech-purpose">Document Embeddings</div>
-                </div>
-                <div className="tech-card">
+                </motion.div>
+                <motion.div className="tech-card" variants={fadeInUp}>
                     <div className="tech-icon" style={{color:'#00C2FF'}}>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="12" cy="12" r="10"/><path d="M8 12h4l2-4 2 8 2-4h2"/></svg>
                     </div>
                     <div className="tech-name">DeBERTa-v3</div>
                     <div className="tech-purpose">NLI Faithfulness Scoring</div>
-                </div>
-                <div className="tech-card">
+                </motion.div>
+                <motion.div className="tech-card" variants={fadeInUp}>
                     <div className="tech-icon" style={{color:'var(--green-accent)'}}>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
                     </div>
                     <div className="tech-name">SciSpaCy</div>
                     <div className="tech-purpose">Biomedical NER</div>
-                </div>
-                <div className="tech-card">
+                </motion.div>
+                <motion.div className="tech-card" variants={fadeInUp}>
                     <div className="tech-icon" style={{color:'var(--amber-accent)'}}>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
                     </div>
                     <div className="tech-name">FAISS</div>
                     <div className="tech-purpose">Vector Similarity Search</div>
-                </div>
-                <div className="tech-card">
+                </motion.div>
+                <motion.div className="tech-card" variants={fadeInUp}>
                     <div className="tech-icon" style={{color:'#A78BFA'}}>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
                     </div>
                     <div className="tech-name">LangChain</div>
                     <div className="tech-purpose">RAG Pipeline</div>
-                </div>
+                </motion.div>
                 <div className="tech-card">
                     <div className="tech-icon" style={{color:'var(--green-accent)'}}>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
@@ -526,17 +617,17 @@ const Home = () => {
                     <div className="tech-purpose">High-Fidelity Command Center</div>
                 </div>
 
-            </div>
+            </motion.div>
         </div>
     </section>
 
     <section className="section" id="datasets">
         <div className="section-container">
-            <div className="section-header reveal-up">
-                <div className="section-label home-section-label"><span className="sl-dash">—</span>DATA SOURCES<span className="sl-dash">—</span></div>
+            <motion.div className="section-header" {...fadeInUp}>
+                <div className="section-label home-section-label">DATA SOURCES</div>
                 <h2 className="section-title">Verified Clinical Knowledge Bases</h2>
                 <p className="section-subtitle">MediRAG-Eval grounds every decision using over 211K+ verified medical samples and gold-standard biomedical databases to ensure maximum accuracy.</p>
-            </div>
+            </motion.div>
             
             <style>
             {`
@@ -615,9 +706,9 @@ const Home = () => {
             `}
             </style>
 
-            <div className="datasets-grid reveal-up">
+            <motion.div className="datasets-grid" {...staggerContainer}>
                 
-                <div className="dataset-card">
+                <motion.div className="dataset-card" variants={fadeInUp}>
                     <div className="ds-icon">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
                     </div>
@@ -627,7 +718,7 @@ const Home = () => {
                         <div className="ds-stat">11 Lakh+ Samples</div>
                         <div className="ds-source">NIH / NLM</div>
                     </div>
-                </div>
+                </motion.div>
 
                 <div className="dataset-card">
                     <div className="ds-icon">
@@ -665,46 +756,46 @@ const Home = () => {
                     </div>
                 </div>
 
-            </div>
+            </motion.div>
         </div>
     </section>
 
     
     <section className="section">
         <div className="section-container">
-            <div className="section-header reveal-up">
-                <div className="section-label home-section-label"><span className="sl-dash">—</span>USE CASES<span className="sl-dash">—</span></div>
+            <motion.div className="section-header" {...fadeInUp}>
+                <div className="section-label home-section-label">USE CASES</div>
                 <h2 className="section-title">Built For Everyone Building Medical AI</h2>
-            </div>
+            </motion.div>
             
-            <div className="use-cases-grid reveal-up">
-                <div className="persona-card">
+            <motion.div className="use-cases-grid" {...staggerContainer}>
+                <motion.div className="persona-card" variants={fadeInUp}>
                     <div className="persona-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
                     </div>
                     <h3 className="persona-title">AI Developers</h3>
                     <p className="persona-text">Integrate MediRAG-Eval as a post-generation middleware layer in your medical RAG pipeline via the FastAPI endpoint. Get clause-level annotations in your CI/CD pipeline.</p>
                     <Link to="/api-docs" className="cta-link">See API Docs →</Link>
-                </div>
+                </motion.div>
                 
-                <div className="persona-card">
+                <motion.div className="persona-card" variants={fadeInUp}>
                     <div className="persona-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                     </div>
                     <h3 className="persona-title">Researchers</h3>
                     <p className="persona-text">Benchmark your RAG system on PubMedQA, MedQA-USMLE, and BioASQ. Compare faithfulness and RAGAS scores across model variants with full ablation support.</p>
                     <Link to="/console" className="cta-link">See Evaluation Criteria →</Link>
-                </div>
+                </motion.div>
                 
-                <div className="persona-card">
+                <motion.div className="persona-card" variants={fadeInUp}>
                     <div className="persona-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
                     </div>
                     <h3 className="persona-title">AI Governance Teams</h3>
                     <p className="persona-text">Generate structured JSON audit reports for every LLM output. Track hallucination risk trends on the dashboard. Build compliance evidence for CDSCO SaMD regulations.</p>
                     <Link to="/console" className="cta-link">See Dashboard →</Link>
-                </div>
-            </div>
+                </motion.div>
+            </motion.div>
         </div>
     </section>
 
@@ -720,7 +811,7 @@ const Home = () => {
                 <div className="eco-dot-grid"></div>
                 <div className="eco-glow-orb eco-orb-1"></div>
                 <div className="eco-glow-orb eco-orb-2"></div>
-                <div className="ecosystem-content reveal-up">
+                <motion.div className="ecosystem-content" {...fadeInUp}>
                     <div className="badge badge-outline">🇮🇳 Made for Bharat</div>
                     <h2 className="ecosystem-title">Designed for India's Digital Health Future</h2>
                     <p className="ecosystem-text">From eSanjeevani's 13 crore teleconsultations to ABDM's national health stack, India's medical AI ecosystem needs a safety layer. MediRAG-Eval is built to be that layer — open, free, and deployable anywhere.</p>
@@ -729,14 +820,14 @@ const Home = () => {
                         <div className="logo-placeholder">ABDM</div>
                         <div className="logo-placeholder">ICMR</div>
                     </div>
-                </div>
+                </motion.div>
             </div>
         </div>
     </section>
 
     
     <section className="section cta-section">
-        <div className="section-container align-center reveal-up">
+        <motion.div className="section-container align-center" {...fadeInUp}>
             <h2 className="cta-headline">Start Auditing Your Medical AI Today.</h2>
             <p className="cta-subtext">No API key. No GPU required. Clone, install, and run in under 5 minutes.</p>
             
@@ -760,7 +851,7 @@ streamlit run src/dashboard/app.py</code></pre>
             </div>
             
             <div className="cta-footer-note">India Innovates 2026 · Bharat Mandapam · March 28</div>
-        </div>
+        </motion.div>
     </section>
 
     
