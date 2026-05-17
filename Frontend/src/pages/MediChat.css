@@ -4,9 +4,7 @@
     display: flex;
     height: 100vh;
     width: 100vw;
-    background: url('/chatnowpc.png') no-repeat center center;
-    background-size: cover;
-    background-attachment: fixed;
+    background: var(--bg-dark, #0A0F1E);
     overflow: hidden;
     position: fixed;
     top: 0;
@@ -747,9 +745,7 @@
 
 /* Premium Light Theme Overhaul */
 [data-theme="light"] .medichat-layout {
-    background: url('/chatnowpcl.png') no-repeat center center;
-    background-size: cover;
-    background-attachment: fixed;
+    background: #EAECF2;
 }
 
 [data-theme="light"] .medichat-layout::after {
@@ -1036,9 +1032,7 @@
 
 @media (max-width: 768px) {
     .medichat-layout {
-        background: url('/chatnowphone.png') no-repeat center center;
-        background-size: cover;
-        background-attachment: scroll !important; /* Avoid fixed bg stretch issue on iOS/Android */
+        background: var(--bg-dark, #0A0F1E);
         padding-top: 60px !important; /* Aligns correctly below mobile navbar */
     }
     

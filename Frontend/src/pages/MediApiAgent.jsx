@@ -749,29 +749,19 @@ const MediApiAgent = () => {
                     </div>
 
                     {/* Mobile Mockup */}
-                    <div style={{ 
-                        width: '320px', 
-                        height: '540px', 
-                        background: 'var(--gov-card, #121826)', 
-                        borderRadius: '32px', 
-                        border: '8px solid rgba(0,0,0,0.1)',
-                        position: 'relative',
-                        overflow: 'hidden',
-                        boxShadow: '0 20px 50px rgba(0,0,0,0.1)',
-                        fontFamily: 'Inter, sans-serif'
-                    }}>
+                    <div className="simulated-phone">
                         {/* Status Bar */}
-                        <div style={{ height: '30px', padding: '0 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '10px', color: 'rgba(0,0,0,0.3)' }}>
+                        <div className="phone-status-bar">
                             <span>9:41</span>
                             <div style={{ display: 'flex', gap: '4px' }}><span>📶</span><span>🔋</span></div>
                         </div>
 
                         {/* App Header */}
-                        <div style={{ padding: '20px', display: 'flex', alignItems: 'center', gap: '12px', borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
+                        <div className="phone-app-header">
                             <div style={{ width: '32px', height: '32px', background: '#e53e3e', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', fontWeight: 800, color: 'white' }}>Ap</div>
                             <div>
-                                <div style={{ fontSize: '14px', fontWeight: 800, color: 'var(--text-white)', margin: 0 }}>Apollo 247</div>
-                                <div style={{ fontSize: '11px', color: '#00C896', margin: 0 }}>Health assistant</div>
+                                <div className="phone-header-title">Apollo 247</div>
+                                <div style={{ fontSize: '11px', color: '#00C896', margin: 0, fontWeight: 500 }}>Health assistant</div>
                             </div>
                         </div>
 
@@ -779,53 +769,53 @@ const MediApiAgent = () => {
                         <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
                             {activeDemoStep === 0 && (
                                 <>
-                                    <div style={{ border: '1px dashed rgba(0,0,0,0.1)', borderRadius: '12px', padding: '20px', textAlign: 'center' }}>
+                                    <div className="phone-upload-box">
                                         <div style={{ color: '#4dabf7', marginBottom: '8px' }}>📤</div>
-                                        <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-white)' }}>Upload your health document</div>
-                                        <div style={{ fontSize: '9px', color: 'var(--text-gray-dim)' }}>Lab report, prescription, discharge summary</div>
+                                        <div className="phone-text-main">Upload your health document</div>
+                                        <div className="phone-text-sub">Lab report, prescription, discharge summary</div>
                                     </div>
 
-                                    <div style={{ fontSize: '9px', textAlign: 'center', color: 'var(--text-gray-dim)', position: 'relative' }}>
-                                        <div style={{ position: 'absolute', top: '50%', left: 0, right: 0, height: '1px', background: 'rgba(0,0,0,0.05)' }}></div>
-                                        <span style={{ background: 'var(--gov-card)', padding: '0 8px', position: 'relative' }}>or try an example</span>
+                                    <div className="phone-separator">
+                                        <div className="phone-separator-line"></div>
+                                        <span className="phone-separator-text">or try an example</span>
                                     </div>
 
-                                    <div style={{ background: 'rgba(0,0,0,0.03)', border: '1px solid rgba(0,0,0,0.08)', borderRadius: '10px', padding: '12px', display: 'flex', gap: '12px', alignItems: 'center' }}>
+                                    <div className="phone-doc-card">
                                         <div style={{ background: '#e53e3e22', color: '#e53e3e', padding: '4px 8px', borderRadius: '4px', fontSize: '10px', fontWeight: 800 }}>PDF</div>
                                         <div style={{ textAlign: 'left' }}>
-                                            <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-white)' }}>Discharge_Summary_Rajan.pdf</div>
-                                            <div style={{ fontSize: '9px', color: 'var(--text-gray-dim)' }}>Apollo Hospitals • 3 pages • 124 KB</div>
+                                            <div className="phone-text-main">Discharge_Summary_Rajan.pdf</div>
+                                            <div className="phone-text-sub">Apollo Hospitals • 3 pages • 124 KB</div>
                                         </div>
                                     </div>
 
-                                    <div style={{ background: 'rgba(0,0,0,0.02)', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '12px', padding: '16px', fontSize: '12px', lineHeight: '1.4', textAlign: 'left', color: 'var(--text-white)' }}>
+                                    <div className="phone-msg-bubble">
                                         My doctor mentioned metoprolol 25mg twice daily. Is this a normal dose for me?
                                     </div>
 
-                                    <button style={{ background: 'rgba(0,0,0,0.03)', border: '1px solid rgba(0,0,0,0.1)', color: 'var(--text-white)', padding: '12px', borderRadius: '8px', fontSize: '12px', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer' }}>
+                                    <button className="phone-action-btn">
                                         Ask Apollo AI →
                                     </button>
                                 </>
                             )}
                             
                             {activeDemoStep > 0 && (
-                                <div style={{ background: 'rgba(0,0,0,0.02)', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '12px', padding: '16px', fontSize: '12px', lineHeight: '1.4', textAlign: 'left', color: 'var(--text-white)' }}>
+                                <div className="phone-msg-bubble">
                                     My doctor mentioned metoprolol 25mg twice daily. Is this a normal dose for me?
                                 </div>
                             )}
 
                             {activeDemoStep === 1 && (
-                                <div style={{ fontSize: '11px', padding: '16px', borderRadius: '12px', background: 'rgba(0,0,0,0.05)', alignSelf: 'flex-start', color: 'var(--text-white)' }}>
+                                <div className="phone-typing">
                                     <span>...</span> Generative AI is typing...
                                 </div>
                             )}
 
                             {activeDemoStep === 2 && (
                                 <>
-                                    <div style={{ fontSize: '12px', lineHeight: '1.5', padding: '16px', borderRadius: '12px', background: 'rgba(0,0,0,0.05)', textAlign: 'left', color: 'var(--text-white)' }}>
+                                    <div className="phone-msg-bubble">
                                         Yes, generating 25mg twice daily is a completely normal dosage to begin with for hypertension...
                                     </div>
-                                    <div style={{ marginTop: '-8px', alignSelf: 'center', background: 'rgba(43, 89, 255, 0.1)', border: '1px solid #4dabf7', borderRadius: '20px', padding: '8px 16px', fontSize: '10px', fontWeight: 700, color: '#4dabf7', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <div className="phone-scan-overlay">
                                         <span style={{ fontSize: '14px' }}>🛡️</span> MediRAG Eval: Scanning output...
                                     </div>
                                 </>
@@ -833,16 +823,16 @@ const MediApiAgent = () => {
 
                             {activeDemoStep === 3 && (
                                 <>
-                                    <div style={{ fontSize: '12px', lineHeight: '1.5', padding: '16px', borderRadius: '12px', background: 'rgba(239, 68, 68, 0.05)', border: '1px solid rgba(239, 68, 68, 0.3)', textAlign: 'left', color: 'var(--text-white)' }}>
+                                    <div className="phone-warning-box">
                                         <div style={{ color: '#EF4444', fontWeight: 800, marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                                             <span>⚠️</span> Clinical Error Detected
                                         </div>
                                         Yes, generating 25mg twice daily is a completely normal dosage to begin with for hypertension...
-                                        <div style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px dashed rgba(239, 68, 68, 0.2)', color: 'var(--text-gray-dim)', fontSize: '10px' }}>
+                                        <div className="phone-warning-footer">
                                             <strong style={{color: '#EF4444'}}>MediRAG Audit:</strong> The uploaded document specifies 12.5mg twice daily, not 25mg. Response blocked for patient safety.
                                         </div>
                                     </div>
-                                    <button style={{ background: '#e53e3e', color: 'white', border: 'none', padding: '12px', borderRadius: '8px', fontSize: '12px', fontWeight: 800, cursor: 'pointer' }}>Connect to Human Doctor</button>
+                                    <button className="phone-connect-btn">Connect to Human Doctor</button>
                                 </>
                             )}
                         </div>
